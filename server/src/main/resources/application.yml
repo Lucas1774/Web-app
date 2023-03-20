@@ -1,9 +1,0 @@
-spring:
-  security:
-    user:
-      name: user
-      password: password
-  dataSource:
-    url: jdbc:mysql://localhost:3306/my_first_database
-    username: root
-    password: root
