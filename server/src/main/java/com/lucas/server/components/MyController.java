@@ -15,7 +15,7 @@ public class MyController {
     @Autowired
     private DAO dao;
 
-    @PostMapping
+    @PostMapping("/ans")
     public String postNumber(@RequestBody String number) {
         final String pattern = "\\d+\\[+-*/]\\d+";
         if (number.equals(pattern)){
@@ -25,7 +25,7 @@ public class MyController {
         return "100";
     }
 
-    @GetMapping
+    @GetMapping("/ans")
     @ResponseBody
     public int getInteger() {
         int number = dao.get();
