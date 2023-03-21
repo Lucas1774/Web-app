@@ -27,8 +27,8 @@ To run this application locally, follow these steps:
 2. Install Node.js and MySQL if not already installed
 3. Start the MySQL server and create a new database
 4. Update the database connection details in the `application.properties` or application.yml file located in the src/main/resources directory of the backend server code
-5. Navigate to the server directory and run ./mvnw spring-boot:run to start the backend server
-6. Open a web browser and navigate to http://localhost:3000 to access the application
+5. Navigate to the server directory and run `./mvnw spring-boot:run` to start the backend server
+6. Open a web browser and navigate to `http://localhost:3000` to access the application
 
 ## Contributing
 
