@@ -10,19 +10,18 @@ public class DAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     
-    public Integer get(){
+    public Double get(){
         try{
-            Integer ans = jdbcTemplate.queryForList("SELECT ans FROM my_table WHERE id = (SELECT MAX(id) FROM my_table);", Integer.class).get(0);
-            jdbcTemplate.execute("DELETE FROM my_table ORDER BY id DESC LIMIT 1;");
+            Double ans = jdbcTemplate.queryForList("SELECT ans FROM my_table WHERE id = (SELECT MAX(id) FROM my_table);", Double.class).get(0);
             return ans;
         }
         catch(IndexOutOfBoundsException e){
             System.out.println(0);
-            return 0;
+            return 0.0;
         }
     }
 
-    public void insert(int number) {
+    public void insert(Double number) {
         jdbcTemplate.update("INSERT INTO my_table (ans) VALUES (?);", number);
     }
 

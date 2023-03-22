@@ -1,13 +1,13 @@
 import React from 'react';
+import { Container } from 'react-bootstrap';
 import Calculator from './components/calculator';
 
 function App() {
   return (
-    <div className="App">
-      <Calculator/>
-    </div>
+    <Container className="mt-3">
+      <Calculator />
+    </Container>
   );
 }
 
 export default App;
-

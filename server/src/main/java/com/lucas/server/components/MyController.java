@@ -15,20 +15,20 @@ public class MyController {
     @Autowired
     private DAO dao;
 
+    private Solver solver = new Solver();
+
     @PostMapping("/ans")
     public String postNumber(@RequestBody String number) {
-        final String pattern = "\\d+\\[+-*/]\\d+";
-        if (number.equals(pattern)){
-            System.out.println("accepted pattern: " + number);
+        String result = solver.solveExpression(number);
+        if (result != "Invalid expression") {
+            dao.insert(Double.parseDouble(result));
         }
-        dao.insert(Integer.parseInt(number));
-        return "100";
+        return result;
     }
 
     @GetMapping("/ans")
     @ResponseBody
-    public int getInteger() {
-        int number = dao.get();
-        return number;
+    public Double getInteger() {
+        return dao.get();
     }
 }
