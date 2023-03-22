@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
 import Calculator from './components/calculator';
-import About from './components/about';
+import About from './components/parsedAbout';
 
 function App() {
   return (
