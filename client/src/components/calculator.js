@@ -6,16 +6,19 @@ import "../assets/styles/calculator.css"
 function Calculator() {
   const [input, setInput] = useState("");
   const inputRef = useRef(null);
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    useEffect(() => {
-    inputRef.current.focus();
-    const handleWindowFocus = () => {
+  useEffect(() => {
+    if (isMobile) {
       inputRef.current.focus();
-    };
-    window.addEventListener('focus', handleWindowFocus);
-    return () => {
-      window.removeEventListener('focus', handleWindowFocus);
-    };
+      const handleWindowFocus = () => {
+        inputRef.current.focus();
+      };
+      window.addEventListener('focus', handleWindowFocus);
+      return () => {
+        window.removeEventListener('focus', handleWindowFocus);
+      };
+    }
   });
 
   function handleKeyDown(event) {
