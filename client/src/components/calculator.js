@@ -9,7 +9,7 @@ function Calculator() {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   useEffect(() => {
-    if (isMobile) {
+    if (!isMobile) {
       inputRef.current.focus();
       const handleWindowFocus = () => {
         inputRef.current.focus();
