@@ -43,7 +43,7 @@ function Calculator() {
     event.preventDefault();
     post('/ans', input)
     .then(response => {
-      setInput(response.data);
+      setInput(response.data.toString());
     })
     .catch(error => {
       alert("Error sending data: " + error.message);
@@ -68,7 +68,7 @@ function Calculator() {
         <Col><Button onClick={handleClick} value="(">{'('}</Button></Col>
         <Col><Button onClick={handleClick} value=")">{')'}</Button></Col>
         <Col><Button onClick={handleClick} value="sqrt">{'\u221A'}</Button></Col>
-        <Col><Button onClick={handleClick} value="^ ">^</Button></Col>
+        <Col><Button onClick={handleClick} value="^">^</Button></Col>
         <Col><Button onClick={handleClick} value="log">log</Button></Col>
       </Row>
       <Row >
