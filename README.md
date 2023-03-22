@@ -18,6 +18,7 @@ The following technologies were used to build this application:
 - MySQL - Relational database management system used for storing data.
 - HTML - Markup language used for structuring the client-side application.
 - CSS - Style sheet language used for styling the client-side application.
+- Bootstrap - Front-end framework used for designing and styling web pages and user interfaces in the client-side application.
 
 ## Project Structure
 
@@ -47,4 +48,9 @@ If you wish to contribute to this project, please fork the repository and submit
 This project is licensed under the MIT License.
 # TODO:
 
-Fill this file.
+Fill this file.  
+Deal with parenthesis.  
+Clean display question.  
+Implement logic (reconsider?).  
+Debug.  
+Polish.
