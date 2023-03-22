@@ -53,7 +53,7 @@ function Calculator() {
   function handleReceive() {
     get('/ans')
     .then(response => {
-      setInput (input + response.data);
+      setInput (input + response.data.toString());
     })
     .catch(error => {
       alert("Error receiving data: " + error.message);
