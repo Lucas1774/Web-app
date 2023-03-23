@@ -12,7 +12,7 @@ public class DAO {
     
     public Double get(){
         try{
-            Double ans = jdbcTemplate.queryForList("SELECT ans FROM my_table WHERE id = (SELECT MAX(id) FROM my_table);", Double.class).get(0);
+            Double ans = jdbcTemplate.queryForList("SELECT ans FROM my_table WHERE id = 1", Double.class).get(0);
             return ans;
         }
         catch(IndexOutOfBoundsException e){
@@ -22,7 +22,7 @@ public class DAO {
     }
 
     public void insert(Double number) {
-        jdbcTemplate.update("INSERT INTO my_table (ans) VALUES (?);", number);
+        jdbcTemplate.update("UPDATE my_table SET ans = (?) WHERE id = 1;", number);
     }
 
 }
