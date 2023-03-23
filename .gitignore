@@ -8,3 +8,6 @@
 
 # public
 /public
+
+#misc
+.env.local
