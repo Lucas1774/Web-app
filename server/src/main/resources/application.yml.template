@@ -7,6 +7,6 @@ spring:
       name: <name>
       password: <password>
   datasource:
-    url: jdbc:<server>://<port>/<database>
+    url: jdbc:<server>://<address>:<port>/<database>
     username: <username>
     password: <password>
