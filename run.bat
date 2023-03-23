@@ -1,6 +1,4 @@
 git switch main
-cd server
-start "" /B cmd /C ".\mvnw spring-boot:run"
-cd ..
-cd client
-npm start
+start cmd /k "cd server && mvnw spring-boot:run"
+start cmd /k "cd client && npm start"
+

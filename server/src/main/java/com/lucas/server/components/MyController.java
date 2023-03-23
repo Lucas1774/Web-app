@@ -14,7 +14,6 @@ public class MyController {
     
     @Autowired
     private DAO dao;
-
     private Solver solver = new Solver();
 
     @PostMapping("/ans")

@@ -1,0 +1,12 @@
+spring:
+  IPAddress:
+    privateAddress: <address>
+    publicAddress: <address>
+  security:
+    user:
+      name: <name>
+      password: <password>
+  datasource:
+    url: jdbc:<server>://<port>>/<database>
+    username: <username>
+    password: <password>
