@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://192.168.1.134:8080/api';
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === process.env.REACT_APP_PRIVATE_ADDRESS;
+const BASE_URL = isLocal ? `http://${process.env.REACT_APP_PRIVATE_ADDRESS}:8080/api` : `http://${process.env.REACT_APP_PUBLIC_ADDRESS}:8080/api`;
 const auth = {username: 'user', password: 'password'};
 const config = {
   headers: {
