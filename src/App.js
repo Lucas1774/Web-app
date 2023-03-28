@@ -2,14 +2,15 @@ import React from 'react';
 import { Container } from 'react-bootstrap';
 import Calculator from './components/calculator';
 import About from './components/parsedAbout';
+import "./assets/styles/App.css"
 
 function App() {
   return (
     <div>
       <About />
-    <Container className="mt-3">
-      <Calculator />
-    </Container>
+        <Container className="mt-3">
+          <Calculator />
+        </Container>
     </div>
   );
 }
