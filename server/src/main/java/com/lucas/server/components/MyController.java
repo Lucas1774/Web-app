@@ -17,17 +17,19 @@ public class MyController {
     private Solver solver = new Solver();
 
     @PostMapping("/ans")
-    public String postNumber(@RequestBody String number) {
+    public String post(@RequestBody String number) {
         String result = solver.solveExpression(number);
         if (result != "Invalid expression") {
             dao.insert(Double.parseDouble(result));
+        } else {
+            dao.insertString(number);
         }
         return result;
     }
 
     @GetMapping("/ans")
     @ResponseBody
-    public Double getInteger() {
+    public String get() {
         return dao.get();
     }
 }

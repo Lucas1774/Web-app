@@ -9,20 +9,36 @@ public class DAO {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    private String mode = "ans";
     
-    public Double get(){
-        try{
-            Double ans = jdbcTemplate.queryForList("SELECT ans FROM my_table WHERE id = 1", Double.class).get(0);
-            return ans;
-        }
-        catch(IndexOutOfBoundsException e){
-            System.out.println(0);
-            return 0.0;
+    public String get(){
+        if (mode == "ans"){
+            try{
+                Double ans = this.jdbcTemplate.queryForList("SELECT ans FROM my_table WHERE id = 1", Double.class).get(0);
+                return ans.toString();
+            }
+            catch(IndexOutOfBoundsException e){
+                return "0";
+            }
+        } else {
+            try{
+                String text = this.jdbcTemplate.queryForList("SELECT text FROM my_table WHERE id = 1", String.class).get(0);
+                return text;
+            }
+            catch(IndexOutOfBoundsException e){
+                return "";
+            }
         }
     }
 
     public void insert(Double number) {
-        jdbcTemplate.update("UPDATE my_table SET ans = (?) WHERE id = 1;", number);
+        this.jdbcTemplate.update("UPDATE my_table SET ans = (?) WHERE id = 1;", number);
+        this.mode = "ans";
+    }
+
+    public void insertString(String string) {
+        this.jdbcTemplate.update("UPDATE my_table SET text = (?) WHERE id = 1;", string);
+        this.mode = "string";
     }
 
 }
