@@ -23,4 +23,4 @@ target/
 
 ### misc ###
 server/src/main/resources/application.yml
-server/src/main/resources/certificates/keystore.p12
+server/src/main/resources/certificates/mykeystore.jks

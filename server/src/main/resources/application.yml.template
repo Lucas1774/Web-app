@@ -12,7 +12,7 @@ spring:
     password: <password>
 
 server:
-  port: <8043, 8080>
+  port: <8443, 8080>
   ssl:
     enabled: true
     key-store: <classpath:certificates/fileName.p12>
