@@ -10,3 +10,13 @@ spring:
     url: jdbc:<server>://<address>:<port>/<database>
     username: <username>
     password: <password>
+
+server:
+  port: <8043, 8080>
+  ssl:
+    enabled: true
+    key-store: <classpath:certificates/fileName.p12>
+    key-store-password: <password>
+    key-alias: <name>
+    key-store-type: PKCS12
+
