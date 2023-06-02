@@ -30,12 +30,12 @@ public class DAO {
     }
 
     public void insert(Double number) {
-        this.jdbcTemplate.update("UPDATE my_table SET ans = (?) WHERE id = 1;", number);
+        this.jdbcTemplate.update("CALL update_ans(?)", number);
         this.mode = "ans";
     }
 
     public void insertString(String string) {
-        this.jdbcTemplate.update("UPDATE my_table SET text = (?) WHERE id = 1;", string);
+        this.jdbcTemplate.update("CALL update_text(?)", string);
         this.mode = "string";
     }
 }
