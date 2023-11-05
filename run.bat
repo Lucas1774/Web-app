@@ -5,8 +5,9 @@ if "%1"=="ELEV" (goto run) else (powershell start -verb runas '%0' ELEV & exit /
 cd "%~dp0"
 netsh advfirewall set privateprofile state off
 git switch master
-start /b cmd /c "cd server && mvnw spring-boot:run > nul 2>&1"
-start /b cmd /c "cd client && npm start > nul 2>&1"
+
+start cmd.exe /k "cd server && mvnw spring-boot:run"
+start cmd.exe /k "cd client && npm start"
 
 echo Press any key to exit.
 pause >nul
