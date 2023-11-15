@@ -1,8 +1,8 @@
 This page represents the front end of a bigger web application.
 Its purpose is to emulate the deployment phase.  
 Its content, as of now, is a very basic React app to make the application test-ready.  
-This instance of the application doesn't work because of a couple of reasons:  
-    When you click equals or ans or press enter, a request to a place-holding IP address is made, and google doesn't happen to be listening.  
+This instance of the application doesn't work for a couple of reasons:  
+    When you click equals or ans or press enter, a request to a place-holding IP address is made, and Google doesn't happen to be listening.  
     <s>Even if I replaced that address with mine and had the server running, your browser would block mixed communication between HTTPS and HTTP addresses.</s>  
 
 I made an actual deployment onto my local network through port forwarding, and the application became fully functional worldwide.  

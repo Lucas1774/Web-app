@@ -8,9 +8,9 @@ function App() {
   return (
     <div>
       <About />
-        <Container className="mt-3">
-          <Calculator />
-        </Container>
+      <Container className="mt-3">
+        <Calculator />
+      </Container>
     </div>
   );
 }

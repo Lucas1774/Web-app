@@ -14,31 +14,30 @@
   height: 600px;
 }
 
-.calculator .row {
+.calculator div {
   width: 100%;
   height: 18.5%;
   margin-left: 1%;
 }
 
-    .calculator button {
-      border-color: #000000;
-      font-size: xx-large;
-      color: #000000;
-      font-weight: 500;
-      height: 90%;
-      width: 18%;
-      padding: 0;
-      margin: 3px;
-      text-align: center;
-    }
+.calculator button {
+  border-color: #000000;
+  font-size: xx-large;
+  color: #000000;
+  font-weight: 500;
+  height: 90%;
+  width: 18%;
+  padding: 0;
+  margin: 3px;
+  text-align: center;
+}
 
-  .calculator .first{
-    height: 10.4%;
-    margin-bottom: 4px;
-    
-  }
+.calculator .first {
+  height: 10.4%;
+  margin-bottom: 4px;
 
-    .calculator .first button {
-      background-color: rgb(218, 117, 187);
-    }
-  
+}
+
+.calculator .first button {
+  background-color: rgb(218, 117, 187);
+}
