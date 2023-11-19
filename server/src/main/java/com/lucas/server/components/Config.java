@@ -17,13 +17,15 @@ public class Config {
     private String privateAddress;
     @Value("${spring.IPAddress.publicAddress}")
     private String publicAddress;
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() throws IOException {
-        
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://" + privateAddress + ":3000", "http://" + publicAddress + ":3000"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000", "https://localhost:3000",
+                "http://" + privateAddress + ":3000", "https://" + privateAddress + ":3000",
+                "http://" + publicAddress + ":3000", "https://" + publicAddress + ":3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -41,15 +43,15 @@ public class Config {
     @DependsOn("corsFilter")
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf()
+                .csrf()
                 .disable()
-            .authorizeHttpRequests()
+                .authorizeHttpRequests()
                 .anyRequest().authenticated()
-            .and()
-            .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
-            .httpBasic()
-            .and()
-            .formLogin();
+                .and()
+                .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
+                .httpBasic()
+                .and()
+                .formLogin();
         return http.build();
     }
 }
