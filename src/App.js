@@ -1,6 +1,7 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import Calculator from './components/calculator';
+import SecretSanta from './components/secretSanta';
 import About from './components/parsedAbout';
 import "./assets/styles/App.css"
 
@@ -8,8 +9,13 @@ function App() {
   return (
     <div>
       <About />
-      <Container className="mt-3">
-        <Calculator />
+      <Container>
+        <Row>
+          <Calculator />
+        </Row>
+        <Row>
+          <SecretSanta />
+        </Row>
       </Container>
     </div>
   );
