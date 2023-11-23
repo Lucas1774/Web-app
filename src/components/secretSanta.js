@@ -92,15 +92,14 @@ function SecretSanta() {
         return (
             <>
                 <div>{participants[participantCounter - 1]} is the secret santa for...</div>
-                <div><Button className="pressMeToShow" onClick={showTarget}>Press me to show!</Button></div>
+                <div><Button className="pressMeToShow" type="submit" variant="success" onClick={showTarget}>Press me to show!</Button></div>
             </>
         );
     }
 
     function renderTarget() {
         const participant = participants[participantCounter - 1];
-        const participantInTarget = targets.indexOf(participant);
-        const target = targets[(participantInTarget + 1) % participants.length];
+        const target = targets[(targets.indexOf(participant) + 1) % participants.length];
         return (
             <>
                 <div>{participant} is the secret santa for...</div>
@@ -111,8 +110,6 @@ function SecretSanta() {
 
     function generateRandomCycle(originalArray) {
         const unusedElements = [...originalArray];
-        setTargets((prevCollection) => [...prevCollection, originalArray[0]]);
-        unusedElements.splice(0, 1);
         while (unusedElements.length !== 0) {
             const randomIndex = Math.floor(Math.random() * unusedElements.length);
             const newTarget = unusedElements[randomIndex].toString();
