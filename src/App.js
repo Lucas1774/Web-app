@@ -13,6 +13,7 @@ function App() {
         <Row>
           <Calculator />
         </Row>
+        <div></div>
         <Row>
           <SecretSanta />
         </Row>
