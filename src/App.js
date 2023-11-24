@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import Calculator from './components/calculator';
 import SecretSanta from './components/secretSanta';
 import About from './components/parsedAbout';
@@ -7,18 +7,17 @@ import "./assets/styles/App.css"
 
 function App() {
   return (
-    <div>
+    <>
       <About />
-      <Container>
-        <Row>
+      <Row>
+        <Col>
           <Calculator />
-        </Row>
-        <div></div>
-        <Row>
+        </Col>
+        <Col>
           <SecretSanta />
-        </Row>
-      </Container>
-    </div>
+        </Col>
+      </Row>
+    </>
   );
 }
 

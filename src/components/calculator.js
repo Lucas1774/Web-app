@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { post, get } from "../components/api";
-import { Form, FormControl, Button, Row } from 'react-bootstrap';
+import { Form, FormControl, Button, Row, Col } from 'react-bootstrap';
 import "../assets/styles/calculator.css"
 
 function Calculator() {
@@ -45,7 +45,7 @@ function Calculator() {
       });
   }
   return (
-    <><h1>Calculator</h1>
+    <><h1 id="calculator">Calculator</h1>
       <div className="calculator">
         <Form onSubmit={handleSubmit}>
           <FormControl value={input} onChange={handleKeyDown} />
