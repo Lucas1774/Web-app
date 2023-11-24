@@ -138,7 +138,7 @@ function SecretSanta() {
 
     return (
         <>
-            <h1>Secret Santa</h1>
+            <h1 id="secretSanta">Secret Santa</h1>
             <div className="secretSanta">
                 {isFormVisible && renderForm()}
                 {isSavingVisible && renderSaving()}

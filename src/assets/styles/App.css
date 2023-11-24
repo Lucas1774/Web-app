@@ -5,18 +5,17 @@ body {
 }
 
 h1 {
-    margin: 0;
     color: white;
     padding: 10px;
     text-align: center;
 }
 
-body > div {
-    min-width: fit-content;
+.row {
+    justify-content: space-evenly;
+    flex-wrap: wrap;
 }
 
-.container > div {
+.col {
     max-width: fit-content;
-    display: inherit;
-    margin-top: 50px;
+    min-width: fit-content;
 }
