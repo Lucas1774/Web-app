@@ -51,7 +51,9 @@ function SecretSanta() {
     function handleSubmit() {
         hideEverything();
         setAppState("isSavingVisible", true);
-        setAppState("participants", [...state.participants, state.input]);
+        if (state.input !== "") {
+            setAppState("participants", [...state.participants, state.input]);
+        }
         setTimeout(() => {
             setAppState("input", "");
             setAppState("isSavingVisible", false);
@@ -110,8 +112,8 @@ function SecretSanta() {
             <Form onSubmit={handleSubmit}>
                 <Form.Label>Enter your name:</Form.Label>
                 <Form.Control type="text" value={state.input} onChange={handleKeyDown} ref={inputRef} />
-                <Button type="submit">Add player</Button>
-                <Button onClick={handleStartLottery}>Start raffle</Button>
+                <Button type="submit" variant="success">Add player</Button>
+                <Button variant="success" onClick={handleStartLottery}>Start raffle</Button>
             </Form>
         );
     }
@@ -121,7 +123,7 @@ function SecretSanta() {
     }
 
     function renderSaving() {
-        return <div>Saving...</div>;
+        return state.input === "" ? <div>Type a name</div> : <div>Saving...</div>;
     }
 
     function renderResetting() {
@@ -142,7 +144,7 @@ function SecretSanta() {
             <>
                 <div>{state.participants[state.participantCounter - 1]} is the secret santa for...</div>
                 <div>
-                    <Button className="pressMeToShow" type="submit" variant="success" onClick={showTarget}>
+                    <Button className="pressMeToShow" variant="success" onClick={showTarget}>
                         Press me to show!
                     </Button>
                 </div>
