@@ -1,15 +1,21 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import Calculator from './components/calculator';
+import SecretSanta from './components/secretSanta';
 import "./assets/styles/App.css"
 
 function App() {
   return (
-    <div>
-      <Container className="mt-3">
-        <Calculator />
-      </Container>
-    </div>
+    <>
+      <Row>
+        <Col>
+          <Calculator />
+        </Col>
+        <Col>
+          <SecretSanta />
+        </Col>
+      </Row>
+    </>
   );
 }
 

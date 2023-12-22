@@ -1,26 +1,25 @@
-.form-control {
-  margin-top: 15px;
-  margin-bottom: 10px;
-  padding: 15px;
-}
-
 .calculator {
-  position: absolute;
-  left: 10%;
   background-color: #4e4e4e;
   border: 5px solid #cacacab4;
   border-radius: 5px;
-  width: 400px;
+  width: 360px;
   height: 600px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 0px 10px;
 }
 
-.calculator div {
-  width: 100%;
+.calculator .form-control {
+  margin: 15px 0px;
+  padding: 15px;
+}
+
+.calculator .row {
   height: 18.5%;
-  margin-left: 1%;
+  padding: 0 3%;
 }
 
-.calculator button {
+.calculator .row button {
   border-color: #000000;
   font-size: xx-large;
   color: #000000;
@@ -28,7 +27,6 @@
   height: 90%;
   width: 18%;
   padding: 0;
-  margin: 3px;
   text-align: center;
 }
 
@@ -39,5 +37,5 @@
 }
 
 .calculator .first button {
-  background-color: rgb(218, 117, 187);
+  background-color: salmon;
 }

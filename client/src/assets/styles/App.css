@@ -1,3 +1,21 @@
 body {
     background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    margin: 20px;
+}
+
+h1 {
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.row {
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.col {
+    max-width: fit-content;
+    min-width: fit-content;
 }

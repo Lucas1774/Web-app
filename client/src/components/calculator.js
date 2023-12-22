@@ -1,25 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { post, get } from "../components/api";
-import { Form, FormControl, Button, Row, Container } from 'react-bootstrap';
+import { Form, FormControl, Button, Row } from 'react-bootstrap';
 import "../assets/styles/calculator.css"
 
 function Calculator() {
   const [input, setInput] = useState("");
-  const inputRef = useRef(null);
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-  useEffect(() => {
-    if (!isMobile) {
-      inputRef.current.focus();
-      const handleWindowFocus = () => {
-        inputRef.current.focus();
-      };
-      window.addEventListener('focus', handleWindowFocus);
-      return () => {
-        window.removeEventListener('focus', handleWindowFocus);
-      };
-    }
-  });
 
   function handleKeyDown(event) {
     event.preventDefault();
@@ -60,46 +45,47 @@ function Calculator() {
       });
   }
   return (
-    <Container className="calculator">
-      <Form onSubmit={handleSubmit}>
-        <FormControl ref={inputRef} value={input} onChange={handleKeyDown} />
-      </Form>
-      <Row className="first">
-        <Button onClick={handleClick} value="(">{'('}</Button>
-        <Button onClick={handleClick} value=")">{')'}</Button>
-        <Button onClick={handleClick} value="sqrt">{'\u221A'}</Button>
-        <Button onClick={handleClick} value="^">^</Button>
-        <Button onClick={handleClick} value="log">log</Button>
-      </Row>
-      <Row >
-        <Button onClick={handleClick} value="7">7</Button>
-        <Button onClick={handleClick} value="8">8</Button>
-        <Button onClick={handleClick} value="9">9</Button>
-        <Button onClick={handleDelete}>{'\u2190'}</Button>
-        <Button onClick={handleClear}>C</Button>
-      </Row>
-      <Row>
-        <Button onClick={handleClick} value="6">6</Button>
-        <Button onClick={handleClick} value="5">5</Button>
-        <Button onClick={handleClick} value="4">4</Button>
-        <Button onClick={handleClick} value="*">*</Button>
-        <Button onClick={handleClick} value="/">/</Button>
-      </Row>
-      <Row>
-        <Button onClick={handleClick} value="1">1</Button>
-        <Button onClick={handleClick} value="2">2</Button>
-        <Button onClick={handleClick} value="3">3</Button>
-        <Button onClick={handleClick} value="+">+</Button>
-        <Button onClick={handleClick} value="-">-</Button>
-      </Row>
-      <Row>
-        <Button onClick={handleClick} value="0">0</Button>
-        <Button onClick={handleClick} value=".">.</Button>
-        <Button onClick={handleClick} value="*10^">EXP</Button>
-        <Button onClick={handleReceive}>Ans</Button>
-        <Button type="submit" variant="success" onClick={handleSubmit}>=</Button>
-      </Row>
-    </Container>
+    <><h1 id="calculator">Calculator</h1>
+      <div className="calculator">
+        <Form onSubmit={handleSubmit}>
+          <FormControl value={input} onChange={handleKeyDown} />
+        </Form>
+        <Row className="first">
+          <Button onClick={handleClick} value="(">{'('}</Button>
+          <Button onClick={handleClick} value=")">{')'}</Button>
+          <Button onClick={handleClick} value="sqrt">{'\u221A'}</Button>
+          <Button onClick={handleClick} value="^">^</Button>
+          <Button onClick={handleClick} value="log">log</Button>
+        </Row>
+        <Row>
+          <Button onClick={handleClick} value="7">7</Button>
+          <Button onClick={handleClick} value="8">8</Button>
+          <Button onClick={handleClick} value="9">9</Button>
+          <Button onClick={handleDelete}>{'\u2190'}</Button>
+          <Button onClick={handleClear}>C</Button>
+        </Row>
+        <Row>
+          <Button onClick={handleClick} value="6">6</Button>
+          <Button onClick={handleClick} value="5">5</Button>
+          <Button onClick={handleClick} value="4">4</Button>
+          <Button onClick={handleClick} value="*">*</Button>
+          <Button onClick={handleClick} value="/">/</Button>
+        </Row>
+        <Row>
+          <Button onClick={handleClick} value="1">1</Button>
+          <Button onClick={handleClick} value="2">2</Button>
+          <Button onClick={handleClick} value="3">3</Button>
+          <Button onClick={handleClick} value="+">+</Button>
+          <Button onClick={handleClick} value="-">-</Button>
+        </Row>
+        <Row>
+          <Button onClick={handleClick} value="0">0</Button>
+          <Button onClick={handleClick} value=".">.</Button>
+          <Button onClick={handleClick} value="*10^">EXP</Button>
+          <Button onClick={handleReceive}>Ans</Button>
+          <Button type="submit" variant="success" onClick={handleSubmit}>=</Button>
+        </Row>
+      </div></>
   );
 }
 export default Calculator;
