@@ -24,16 +24,16 @@ function SecretSanta() {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     useEffect(() => {
-        if (!isMobile && inputRef.current) {
-            inputRef.current.focus();
-            const handleWindowFocus = () => {
+        function focusForm() {
+            if (!isMobile && state.isFormVisible) {
                 inputRef.current.focus();
-            };
-            window.addEventListener('focus', handleWindowFocus);
-            return () => {
-                window.removeEventListener('focus', handleWindowFocus);
-            };
-        }
+            }
+        };
+        window.addEventListener('focus', focusForm);
+        focusForm();
+        return () => {
+            window.removeEventListener('focus', focusForm);
+        };
     },);
 
     function setAppState(field, value) {
@@ -118,27 +118,6 @@ function SecretSanta() {
         );
     }
 
-    function renderCalculating() {
-        return <div>Calculating...</div>;
-    }
-
-    function renderSaving() {
-        return state.input === "" ? <div>Type a name</div> : <div>Saving...</div>;
-    }
-
-    function renderResetting() {
-        return <div>Resetting...</div>;
-    }
-
-    function renderNoParticipants() {
-        return (
-            <>
-                <div>Not enough participants.</div>
-                <div>Deleting all previous data.</div>
-            </>
-        )
-    }
-
     function renderChosen() {
         return (
             <>
@@ -151,7 +130,6 @@ function SecretSanta() {
             </>
         )
     }
-
 
     function renderTarget() {
         const participant = state.participants[state.participantCounter - 1];
@@ -188,7 +166,6 @@ function SecretSanta() {
         setAppState("targets", newTargets);
     }
 
-
     function hideEverything() {
         setAppState("isFormVisible", false);
         setAppState("isSavingVisible", false);
@@ -216,10 +193,15 @@ function SecretSanta() {
             <h1 id="secretSanta">Secret Santa</h1>
             <div className="secretSanta">
                 {state.isFormVisible && renderForm()}
-                {state.isSavingVisible && renderSaving()}
-                {state.isCalculatingVisible && renderCalculating()}
-                {state.isResettingVisible && renderResetting()}
-                {state.isNoParticipantsVisible && renderNoParticipants()}
+                {state.isSavingVisible && (state.input !== "" ? <div>Saving...</div> : <div>Type a name</div>)}
+                {state.isCalculatingVisible && <div>Calculating..."</div>}
+                {state.isResettingVisible && <div>Resetting...</div>}
+                {state.isNoParticipantsVisible && (
+                    <>
+                        <div>Not enough participants</div>
+                        <div>Deleting all previous data...</div>
+                    </>
+                )}
                 {state.isChosenVisible && renderChosen()}
                 {state.isTargetVisible && renderTarget()}
                 {state.isRestartButtonVisible && <Button className="restart" onClick={handleReset}>Restart</Button>}
