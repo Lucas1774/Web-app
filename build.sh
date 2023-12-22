@@ -8,6 +8,6 @@ fi
 
 npm run build
 
-mv build/* ..
+cp -r build/* ..
 
 rm -r build
