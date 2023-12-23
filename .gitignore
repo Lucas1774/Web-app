@@ -3,5 +3,8 @@
 # dependencies
 /client/node_modules
 
-#environment
+# environment
 /client/.env.local
+
+# not front end
+/server
