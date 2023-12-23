@@ -3,10 +3,5 @@
 # dependencies
 /client/node_modules
 
-#not front end
-/database
-/server
-/.vscode
-
 #environment
 /client/.env.local
