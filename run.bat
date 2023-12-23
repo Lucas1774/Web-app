@@ -6,8 +6,8 @@ cd "%~dp0"
 netsh advfirewall set privateprofile state off
 git switch master
 
-start cmd.exe /k "cd server && mvnw spring-boot:run"
-start cmd.exe /k "cd client && npm start"
+start /B cmd.exe /c "cd server && mvnw spring-boot:run" >nul 2>&1
+start /B cmd.exe /c "cd client && npm start" >nul 2>&1
 
 echo Press any key to exit.
 pause >nul
