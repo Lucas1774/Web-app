@@ -3,24 +3,18 @@
 # dependencies
 client/node_modules
 
-# testing
+# keys
+server/src/main/resources/application.yml
+server/src/main/resources/certificates/mykeystore.jks
+client/.env.local
 
 # production
 client/build
-
-# misc
-client/.env.local
-
-client/npm-debug.log*
 
 target/
 !server/.mvn/wrapper/maven-wrapper.jar
 !server/**/src/main/**/target/
 !server/**/src/test/**/target/
 
-### VS Code ###
+# misc
 .vscode/
-
-### misc ###
-server/src/main/resources/application.yml
-server/src/main/resources/certificates/mykeystore.jks
