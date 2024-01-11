@@ -194,7 +194,7 @@ function SecretSanta() {
             <div className="secretSanta">
                 {state.isFormVisible && renderForm()}
                 {state.isSavingVisible && (state.input !== "" ? <div>Saving...</div> : <div>Type a name</div>)}
-                {state.isCalculatingVisible && <div>Calculating..."</div>}
+                {state.isCalculatingVisible && <div>Calculating...</div>}
                 {state.isResettingVisible && <div>Resetting...</div>}
                 {state.isNoParticipantsVisible && (
                     <>
