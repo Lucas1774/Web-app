@@ -6,7 +6,7 @@ if [ -d "build" ]; then
   rm -r build
 fi
 
-npm run build
+npm run default-build
 
 cp -r build/* ..
 
