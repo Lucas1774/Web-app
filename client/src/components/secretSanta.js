@@ -81,7 +81,6 @@ function SecretSanta() {
                 setAppState("isCalculatingVisible", false);
                 setAppState("isChosenVisible", true);
                 setAppState("isRestartButtonVisible", true);
-                setAppState("isParticipantListVisible", true);
             }, 1000);
         } else {
             setAppState("isNoParticipantsVisible", true);
