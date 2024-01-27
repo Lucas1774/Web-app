@@ -4,7 +4,7 @@ function Readme() {
   const [readmeContent, setReadmeContent] = useState('');
 
   useEffect(() => {
-    const readmePath = require('../assets/about/info.md');
+    const readmePath = require('../assets/about/README.md');
     fetch(readmePath)
       .then(response => response.text())
       .then(data => {
