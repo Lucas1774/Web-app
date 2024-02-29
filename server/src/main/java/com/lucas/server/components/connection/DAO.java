@@ -1,8 +1,16 @@
-package com.lucas.server.components;
+package com.lucas.server.components.connection;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import com.lucas.server.components.sudoku.Sudoku;
+
+import jakarta.annotation.PostConstruct;
 
 @Repository
 public class DAO {
@@ -37,5 +45,17 @@ public class DAO {
     public void insertString(String string) {
         this.jdbcTemplate.update("CALL update_text(?)", string);
         this.mode = "string";
+    }
+
+    @PostConstruct
+    public List<Sudoku> getSudokus() {
+        // TODO: fix split
+        // TODO: impelemnt sql function
+        List<Sudoku> sudokus = this.jdbcTemplate.query("CALL get_sudokus", (resultSet, rowNum) -> {
+            return new Sudoku(Arrays.stream(resultSet.getString("raw").split(""))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList()));
+        });
+        return sudokus;
     }
 }

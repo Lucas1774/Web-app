@@ -1,4 +1,4 @@
-package com.lucas.server.components;
+package com.lucas.server.components.calculator;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;

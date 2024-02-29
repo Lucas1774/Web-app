@@ -1,4 +1,4 @@
-package com.lucas.server.components;
+package com.lucas.server.components.config;
 
 import java.io.IOException;
 import java.util.Arrays;
