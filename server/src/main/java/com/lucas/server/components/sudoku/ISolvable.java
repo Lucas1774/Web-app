@@ -2,7 +2,9 @@ package com.lucas.server.components.sudoku;
 
 import java.util.List;
 
-public interface IRulable {
+public interface ISolvable {
+
+    public boolean isSolved();
     
     public boolean acceptsNumber(Integer number);
 

@@ -61,18 +61,14 @@ public class SudokuTest {
 
     @Test
     void testPlaceNumber() {
-        Sudoku sudoku = this.createFillAndPrintSudoku(0.7);
+        Sudoku sudoku = this.createFillAndPrintSudoku(0.8);
         boolean placed = false;
-        int number = 0;
         for (int i = 1; i <= 9; i++) {
-            number = i;
-            placed = sudoku.acceptsNumber(number);
+            placed = sudoku.acceptsNumber(i);
             if (placed) {
+                System.out.println("Placed number: " + i);
                 break;
             }
-        }
-        if (placed) {
-            System.out.println("Placed number: " + number);
         }
         System.out.println(sudoku);
     }

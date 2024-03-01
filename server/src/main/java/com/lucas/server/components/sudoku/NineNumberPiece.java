@@ -3,7 +3,7 @@ package com.lucas.server.components.sudoku;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class NineNumberPiece implements IRulable {
+public abstract class NineNumberPiece implements ISolvable {
     protected List<Integer> rawData;
     protected int index;
 
@@ -12,8 +12,9 @@ public abstract class NineNumberPiece implements IRulable {
         this.rawData = new ArrayList<>();
     }
 
-    public int getIndex() {
-        return this.index;
+    @Override
+    public boolean isSolved() {
+        return !this.rawData.contains(0);
     }
 
     @Override
@@ -22,8 +23,8 @@ public abstract class NineNumberPiece implements IRulable {
     }
 
     @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + " = " + rawData;
+    public void set(int index, Integer number) {
+        this.rawData.set(index, number)        ;
     }
 
     @Override
@@ -32,8 +33,11 @@ public abstract class NineNumberPiece implements IRulable {
     }
 
     @Override
-    public void set(int index, Integer number) {
-        this.rawData.set(index, number)        ;
+    public String toString() {
+        return this.getClass().getSimpleName() + " = " + rawData;
     }
 
+    public int getIndex() {
+        return this.index;
+    }
 }
