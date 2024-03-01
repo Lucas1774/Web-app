@@ -9,15 +9,16 @@ public class Block extends NineNumberPiece {
     }
 
     @Override
-    public boolean acceptsNumber(Integer number) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'acceptsNumber'");
-    }
-
-    @Override
     public void fill(List<Integer> rawData) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fill'");
+        super.fill(rawData);
+        for (int i = 0; i < rawData.size(); i++) {
+            int row = i / 9;
+            int column = i % 9;
+            int blockRow = row / 3;
+            int blockColumn = column / 3;
+            if (blockRow * 3 + blockColumn == index) {
+                this.rawData.add(rawData.get(i));
+            }
+        }
     }
-    
 }

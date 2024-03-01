@@ -9,17 +9,11 @@ public class Row extends NineNumberPiece {
     }
 
     @Override
-    public boolean acceptsNumber(Integer number) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'acceptsNumber'");
-    }
-
-    @Override
     public void fill(List<Integer> rawData) {
-        for (Integer number : rawData) {
-            // TODO: implement logic
-            if (number == 0 && this.index == 0) {
-                this.rawData.add(number);
+        super.fill(rawData);
+        for (int i = 0; i < rawData.size(); i++) {
+            if (i / 9 == index) {
+                this.rawData.add(rawData.get(i));
             }
         }
     }
