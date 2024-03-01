@@ -52,11 +52,9 @@ public class DAO {
         // TODO: fix split
         // TODO: impelemnt sql function
         List<Sudoku> sudokus = this.jdbcTemplate.query("CALL get_sudokus", (resultSet, rowNum) -> {
-            Sudoku sudoku = new Sudoku();
-            sudoku.fill(Arrays.stream(resultSet.getString("raw").split(""))
+             return new Sudoku(Arrays.stream(resultSet.getString("raw").split(""))
                     .map(Integer::parseInt)
                     .collect(Collectors.toList()));
-            return sudoku;
         });
         return sudokus;
     }

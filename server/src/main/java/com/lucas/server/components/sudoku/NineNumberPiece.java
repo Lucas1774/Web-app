@@ -9,7 +9,7 @@ public abstract class NineNumberPiece implements IRulable {
 
     public NineNumberPiece(List<Integer> rawData, int index) {
         this.index = index;
-        this.fill(rawData);
+        this.rawData = new ArrayList<>();
     }
 
     public int getIndex() {
@@ -19,11 +19,6 @@ public abstract class NineNumberPiece implements IRulable {
     @Override
     public boolean acceptsNumber(Integer number) {
         return !this.rawData.contains(number);
-    }
-
-    @Override
-    public void fill(List<Integer> rawData) {
-        this.rawData = new ArrayList<>();
     }
 
     @Override

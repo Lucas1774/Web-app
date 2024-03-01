@@ -12,26 +12,21 @@ public class Sudoku implements IRulable {
     private List<Column> columns;
     private List<Block> blocks;
 
-    public Sudoku() {
-        this.rawData = new ArrayList<Integer>();
+    public Sudoku(List<Integer> values) {
+        this.rawData = new ArrayList<Integer>(values);
         this.rows = new ArrayList<Row>();
         this.columns = new ArrayList<Column>();
         this.blocks = new ArrayList<Block>();
-    }
-
-    @Override
-    public boolean acceptsNumber(Integer number) {
-        return this.acceptsNumber(number, false);
-    }
-
-    @Override
-    public void fill(List<Integer> rawData) {
-        this.rawData = rawData;
         for (int i = 0; i < 9; i++) {
             this.rows.add(new Row(rawData, i));
             this.columns.add(new Column(rawData, i));
             this.blocks.add(new Block(rawData, i));
         }
+    }
+
+    @Override
+    public boolean acceptsNumber(Integer number) {
+        return this.acceptsNumber(number, false);
     }
 
     @Override

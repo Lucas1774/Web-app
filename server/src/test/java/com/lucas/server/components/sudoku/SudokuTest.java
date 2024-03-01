@@ -85,7 +85,6 @@ public class SudokuTest {
     }
 
     private Sudoku createFillAndPrintSudoku(double chanceToFill) {
-        Sudoku sudoku = new Sudoku();
         List<Integer> values = new ArrayList<Integer>();
         Random random = new Random();
         boolean fills = false;
@@ -93,7 +92,7 @@ public class SudokuTest {
             fills = random.nextInt(100) + 1 <= chanceToFill * 100;
             values.add( fills ? random.nextInt(9) + 1 : 0);
         }
-        sudoku.fill(values);
+        Sudoku sudoku = new Sudoku(values);
         System.out.print(sudoku);
         return sudoku;
     }
