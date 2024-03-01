@@ -32,7 +32,7 @@ public class Sudoku implements ISolvable {
     @Override
     public boolean acceptsNumber(Integer number) {
         for (int i = 0; i < this.rawData.size(); i++) {
-            if (this.placeNumber(number, i, true)) {
+            if (this.placeNumber(number, i, false, true)) {
                 return true;
             }
         }
@@ -76,16 +76,19 @@ public class Sudoku implements ISolvable {
 
     // TODO: implement regression
     public void solve() {
-        while (this.rawData.contains(0)) {
+        while (!this.isSolved()) {
             for (int place = 0; place < this.rawData.size(); place++) {
-                for (int number = 1; number <= 0; number++) {
-                    this.placeNumber(number, place, true);
+                for (int number = 1; number <= 9; number++) {
+                    if (this.placeNumber(number, place, true, true)) {
+                        System.out.println(this);
+                    }
+                    ;
                 }
             }
         }
     }
 
-    private boolean placeNumber(Integer number, int place, boolean commit) {
+    private boolean placeNumber(Integer number, int place, boolean onlyIfSure, boolean commit) {
         if (0 == this.rawData.get(place)) {
             int rowIndex = this.getRowIndex(place);
             int columnIndex = this.getColumnIndex(place);
@@ -93,6 +96,13 @@ public class Sudoku implements ISolvable {
             Column column = (Column) this.getFromCell(COLUMN, rowIndex, columnIndex);
             Block block = (Block) this.getFromCell(BLOCK, rowIndex, columnIndex);
             if (row.acceptsNumber(number) && column.acceptsNumber(number) && block.acceptsNumber(number)) {
+                if (onlyIfSure) {
+                    for (int i = 1; i <= 9; i++) {
+                        if (i != number && row.acceptsNumber(i) && column.acceptsNumber(i) && block.acceptsNumber(i)) {
+                            return false;
+                        }
+                    }
+                }
                 if (commit) {
                     this.set(place, number);
                 }
@@ -114,8 +124,8 @@ public class Sudoku implements ISolvable {
             case COLUMN:
                 return this.columns.get(column);
             case BLOCK:
-                int blockRow = (int) (row / 3);
-                int blockColumn = (int) (column / 3);
+                int blockRow = row / 3;
+                int blockColumn = column / 3;
                 return this.blocks.get((blockRow * 3 + blockColumn));
             default:
                 throw new IllegalArgumentException("Invalid argument: " + what);

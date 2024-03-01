@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class SudokuTest {
     @Test
     void testgetFromCell() {
-        Sudoku sudoku = this.createFillAndPrintSudoku(1);
+        Sudoku sudoku = this.createFillAndPrintSudoku(1, false);
         int result = sudoku.getFromCell("block", 0, 0).getIndex();
         assertEquals(0, result);
         result = sudoku.getFromCell("block", 2, 3).getIndex();
@@ -35,7 +35,7 @@ public class SudokuTest {
 
     @Test
     void testFillSudokuAndGetRulables() {
-        Sudoku sudoku =  this.createFillAndPrintSudoku(1);
+        Sudoku sudoku =  this.createFillAndPrintSudoku(1, false);
         Random random = new Random();
         int randomRow = random.nextInt(9);
         int randomCol = random.nextInt(9);
@@ -61,7 +61,7 @@ public class SudokuTest {
 
     @Test
     void testPlaceNumber() {
-        Sudoku sudoku = this.createFillAndPrintSudoku(0.8);
+        Sudoku sudoku = this.createFillAndPrintSudoku(0.8, false);
         boolean placed = false;
         for (int i = 1; i <= 9; i++) {
             placed = sudoku.acceptsNumber(i);
@@ -75,18 +75,18 @@ public class SudokuTest {
 
     @Test
     public void testSolve() {
-        Sudoku sudoku = this.createFillAndPrintSudoku(0.3);
+        Sudoku sudoku = this.createFillAndPrintSudoku(0.5, false);
             sudoku.solve();
             System.out.println(sudoku);
     }
 
-    private Sudoku createFillAndPrintSudoku(double chanceToFill) {
+    private Sudoku createFillAndPrintSudoku(double chanceToFill, boolean withRandom) {
         List<Integer> values = new ArrayList<Integer>();
         Random random = new Random();
         boolean fills = false;
         for (int i = 0; i < 81; i++) {
             fills = random.nextInt(100) + 1 <= chanceToFill * 100;
-            values.add( fills ? random.nextInt(9) + 1 : 0);
+            values.add( fills ? withRandom ? random.nextInt(9) + 1 : ((i % 9) + 3 * (i / 9) + (i / 27)) % 9 + 1 : 0);
         }
         Sudoku sudoku = new Sudoku(values);
         System.out.print(sudoku);
