@@ -10,7 +10,7 @@ import com.lucas.server.components.calculator.Solver;
 
 @RestController
 @RequestMapping("/api")
-public class MyController {
+public class Controller {
     
     @Autowired
     private DAO dao;
