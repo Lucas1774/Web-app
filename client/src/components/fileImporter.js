@@ -1,4 +1,7 @@
+
+import { Button } from 'react-bootstrap';
 function FileImporter({ onFileContentChange }) {
+    const fileInput = document.getElementById('file-input');
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -12,10 +15,10 @@ function FileImporter({ onFileContentChange }) {
     };
 
     return (
-        <div>
-            <label for="file-input" class="btn btn-primary forFileInput">Choose File</label>
+        <>
+            <Button onClick={() => document.getElementById('file-input').click()}>Choose File</Button>
             <input id="file-input" type="file" accept=".txt" onChange={handleFileChange} />
-        </div>
+        </>
     );
 }
 
