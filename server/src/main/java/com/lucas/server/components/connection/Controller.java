@@ -58,6 +58,6 @@ public class Controller {
     @GetMapping("/solve/sudoku")
     public String solveSudoku(@RequestParam String sudoku) {
         Sudoku s = Sudoku.withValues(Sudoku.deSerialize(sudoku));
-        return s.solve() ? s.serialize() : sudoku;
+        return s.solve() ? s.serialize() : "\"" + sudoku + "\"";
     }
 }
