@@ -16,7 +16,8 @@
     padding: 15px;
 }
 
-.sudoku button, .sudoku label.forFileInput {
+.sudoku button,
+.sudoku label.forFileInput {
     width: 100%;
     margin: 5px 0px;
     border-color: #000000;
@@ -35,4 +36,38 @@
 
 .sudoku .restart {
     background-color: salmon;
+}
+
+.sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-gap: 3px;
+}
+
+.sudoku-cell {
+    border: 1px solid white;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sudoku-grid .sudoku-cell:nth-child(-n + 9),
+.sudoku-cell:nth-child(n + 28):nth-child(-n + 36),
+.sudoku-grid .sudoku-cell:nth-child(n + 55):nth-child(-n + 63) {
+    border-top: 3px solid white;
+}
+
+.sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
+.sudoku-grid .sudoku-cell:nth-child(n + 46):nth-child(-n + 54),
+.sudoku-grid .sudoku-cell:nth-last-child(-n + 9) {
+    border-bottom: 3px solid white;
+}
+
+.sudoku-cell:nth-child(3n) {
+    border-right: 3px solid white;
+}
+
+.sudoku-cell:nth-child(3n + 1) {
+    border-left: 3px solid white;
 }
