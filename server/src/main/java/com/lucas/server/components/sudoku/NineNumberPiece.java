@@ -28,8 +28,8 @@ public abstract class NineNumberPiece implements ISolvable {
     }
 
     @Override
-    public List<Integer> get() {
-        return this.rawData;
+    public Integer get(int i) {
+        return this.rawData.get(i);
     }
 
     @Override

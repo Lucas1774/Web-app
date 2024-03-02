@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.lucas.server.components.sudoku.Sudoku;
 
-import jakarta.annotation.PostConstruct;
-
 @Repository
 public class DAO {
 
@@ -47,12 +45,13 @@ public class DAO {
         this.mode = "string";
     }
 
-    @PostConstruct
+    //TODO: uncomment annotation
+    //@PostConstruct
     public List<Sudoku> getSudokus() {
         // TODO: fix split
         // TODO: impelemnt sql function
         List<Sudoku> sudokus = this.jdbcTemplate.query("CALL get_sudokus", (resultSet, rowNum) -> {
-             return new Sudoku(Arrays.stream(resultSet.getString("raw").split(""))
+             return Sudoku.withValues(Arrays.stream(resultSet.getString("raw").split(""))
                     .map(Integer::parseInt)
                     .collect(Collectors.toList()));
         });

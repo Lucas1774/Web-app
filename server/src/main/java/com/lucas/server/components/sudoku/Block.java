@@ -6,7 +6,7 @@ public class Block extends NineNumberPiece {
 
     public Block(List<Integer> rawData, int index) {
         super(rawData, index);
-        for (int i = 0; i < rawData.size(); i++) {
+        for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
             int row = i / 9;
             int column = i % 9;
             int blockRow = row / 3;

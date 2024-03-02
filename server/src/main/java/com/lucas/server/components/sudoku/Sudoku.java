@@ -4,24 +4,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sudoku implements ISolvable {
-    private static final String ROW = "row";
-    private static final String COLUMN = "column";
+    public static final int SIZE = 9;
+    public static final int[] DIGITS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    static final String ROW = "row";
+    static final String COLUMN = "column";
     private static final String BLOCK = "block";
+    public static final int NUMBER_OF_CELLS = 81;
     private List<Integer> rawData;
     private List<Row> rows;
     private List<Column> columns;
     private List<Block> blocks;
 
-    public Sudoku(List<Integer> values) {
-        this.rawData = new ArrayList<Integer>(values);
+    private Sudoku(List<Integer> rawData) {
+        this.rawData = new ArrayList<Integer>(rawData);
         this.rows = new ArrayList<Row>();
         this.columns = new ArrayList<Column>();
         this.blocks = new ArrayList<Block>();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < SIZE; i++) {
             this.rows.add(new Row(rawData, i));
             this.columns.add(new Column(rawData, i));
             this.blocks.add(new Block(rawData, i));
         }
+    }
+
+    public static Sudoku withValues(List<Integer> values) {
+        return new Sudoku(values);
+    }
+
+    public static Sudoku withZeros() {
+        List<Integer> zeros = new ArrayList<Integer>();
+        for (int i = 0; i < NUMBER_OF_CELLS; i++) {
+            zeros.add(0);
+        }
+        return new Sudoku(zeros);
+    }
+
+    public static Sudoku withDefaultValues() {
+        List<Integer> rawData = new ArrayList<Integer>();
+        for (int i = 0; i < NUMBER_OF_CELLS; i++) {
+            rawData.add(((i % 9) + 3 * (i / 9) + (i / 27)) % 9 + 1);
+        }
+        return new Sudoku(rawData);
     }
 
     @Override
@@ -31,7 +54,7 @@ public class Sudoku implements ISolvable {
 
     @Override
     public boolean acceptsNumber(Integer number) {
-        for (int i = 0; i < this.rawData.size(); i++) {
+        for (int i = 0; i < NUMBER_OF_CELLS; i++) {
             if (this.placeNumber(number, i, false, true)) {
                 return true;
             }
@@ -47,26 +70,26 @@ public class Sudoku implements ISolvable {
         this.rawData.set(cell, number);
         this.rows.get(rowIndex).set(columnIndex, number);
         this.columns.get(columnIndex).set(rowIndex, number);
-        int blockRow = rowIndex / 3;
-        int blockColumn = columnIndex / 3;
+        int blockRow = rowIndex % 3;
+        int blockColumn = columnIndex % 3;
         this.blocks.get(blockIndex).set(blockRow * 3 + blockColumn, number);
     }
 
     @Override
-    public List<Integer> get() {
-        return this.rawData;
+    public Integer get(int i) {
+        return this.rawData.get(i);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < SIZE; i++) {
             if (i % 3 == 0)
                 sb.append("+-------+-------+-------+\n");
-            for (int j = 0; j < 9; j++) {
+            for (int j = 0; j < SIZE; j++) {
                 if (j % 3 == 0)
                     sb.append("| ");
-                sb.append(this.rawData.get(i * 9 + j)).append(' ');
+                sb.append(this.rawData.get(i * SIZE + j)).append(' ');
             }
             sb.append("|\n");
         }
@@ -77,18 +100,15 @@ public class Sudoku implements ISolvable {
     // TODO: implement regression
     public void solve() {
         while (!this.isSolved()) {
-            for (int place = 0; place < this.rawData.size(); place++) {
-                for (int number = 1; number <= 9; number++) {
-                    if (this.placeNumber(number, place, true, true)) {
-                        System.out.println(this);
-                    }
-                    ;
+            for (int place = 0; place < NUMBER_OF_CELLS; place++) {
+                for (int digit : DIGITS) {
+                    this.placeNumber(digit, place, true, true);
                 }
             }
         }
     }
 
-    private boolean placeNumber(Integer number, int place, boolean onlyIfSure, boolean commit) {
+    public boolean placeNumber(Integer number, int place, boolean onlyIfSure, boolean commit) {
         if (0 == this.rawData.get(place)) {
             int rowIndex = this.getRowIndex(place);
             int columnIndex = this.getColumnIndex(place);
@@ -97,8 +117,9 @@ public class Sudoku implements ISolvable {
             Block block = (Block) this.getFromCell(BLOCK, rowIndex, columnIndex);
             if (row.acceptsNumber(number) && column.acceptsNumber(number) && block.acceptsNumber(number)) {
                 if (onlyIfSure) {
-                    for (int i = 1; i <= 9; i++) {
-                        if (i != number && row.acceptsNumber(i) && column.acceptsNumber(i) && block.acceptsNumber(i)) {
+                    for (int digit : DIGITS) {
+                        if (digit != number && row.acceptsNumber(digit) && column.acceptsNumber(digit)
+                                && block.acceptsNumber(digit)) {
                             return false;
                         }
                     }
@@ -110,11 +131,6 @@ public class Sudoku implements ISolvable {
             }
         }
         return false;
-    }
-
-    public String serialize() {
-        // TODO: implement
-        return this.rawData.toString();
     }
 
     public NineNumberPiece getFromCell(String what, int row, int column) {
@@ -132,12 +148,17 @@ public class Sudoku implements ISolvable {
         }
     }
 
+    public String serialize() {
+        // TODO: implement
+        return this.rawData.toString();
+    }
+
     private int getRowIndex(int rawDataIndex) {
-        return rawDataIndex / 9;
+        return rawDataIndex / SIZE;
     }
 
     private int getColumnIndex(int rawDataIndex) {
-        return rawDataIndex % 9;
+        return rawDataIndex % SIZE;
     }
 
     private int getBlockIndex(int rawDataIndex) {
