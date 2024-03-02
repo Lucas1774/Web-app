@@ -98,14 +98,21 @@ public class Sudoku implements ISolvable {
     }
 
     // TODO: implement regression
-    public void solve() {
+    public boolean solve() {
+        final long TIMEOUT_MILLISECONDS = 5000;
+        long startTime = System.currentTimeMillis();
         while (!this.isSolved()) {
+            if (System.currentTimeMillis() - startTime >= TIMEOUT_MILLISECONDS) {
+                System.out.println("Timeout reached. Solution not found.");
+                return false;
+            }
             for (int place = 0; place < NUMBER_OF_CELLS; place++) {
                 for (int digit : DIGITS) {
                     this.placeNumber(digit, place, true, true);
                 }
             }
         }
+        return true;
     }
 
     public boolean placeNumber(Integer number, int place, boolean onlyIfSure, boolean commit) {
@@ -149,9 +156,16 @@ public class Sudoku implements ISolvable {
     }
 
     public String serialize() {
-        // TODO: implement
-        return this.rawData.toString();
+        return "\"" + this.rawData.toString().replace("[", "").replace("]", "").replaceAll(", ", "") + "\"";
     }
+
+	public static List<Integer> deSerialize(String sudoku) {
+        List<Integer> rawData = new ArrayList<Integer>();
+        for (char c : sudoku.toCharArray()) {
+            rawData.add(Integer.parseInt(String.valueOf(c)));
+        }
+        return rawData;
+	}
 
     private int getRowIndex(int rawDataIndex) {
         return rawDataIndex / SIZE;

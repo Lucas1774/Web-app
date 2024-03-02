@@ -2,6 +2,7 @@ import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import Calculator from './components/calculator';
 import SecretSanta from './components/secretSanta';
+import Sudoku from './components/sudoku';
 import "./assets/styles/App.css"
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
         </Col>
         <Col>
           <SecretSanta />
+        </Col>
+        <Col>
+          <Sudoku />
         </Col>
       </Row>
     </>

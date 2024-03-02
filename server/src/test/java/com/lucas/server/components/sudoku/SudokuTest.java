@@ -79,17 +79,21 @@ public class SudokuTest {
 
     @Test
     public void testSolve() {
-        Sudoku sudoku = generator.generateDefault(4);
+        Sudoku sudoku = generator.generateDefault(5);
             System.out.println(sudoku);
-            sudoku.solve();
-            System.out.println(sudoku);
+            if (sudoku.solve()) {
+                System.out.println("Solved");
+                System.out.println(sudoku);
+            }
     }
 
     @Test
     public void testGenerate() {
-        Sudoku sudoku = generator.generate(4);
+        Sudoku sudoku = generator.generate(5);
         System.out.println(sudoku);
-        sudoku.solve();
+        if (sudoku.solve()) {
+            System.out.println("Solved");
+        }
         System.out.println(sudoku);
     }
 }

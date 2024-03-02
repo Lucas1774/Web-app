@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { Form, Button } from 'react-bootstrap';
 import "../assets/styles/secretSanta.css";
 
@@ -20,21 +20,6 @@ function SecretSanta() {
     };
 
     const [state, setState] = useState(initialState);
-    const inputRef = useRef(null);
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    useEffect(() => {
-        function focusForm() {
-            if (!isMobile && state.isFormVisible) {
-                inputRef.current.focus();
-            }
-        };
-        window.addEventListener('focus', focusForm);
-        focusForm();
-        return () => {
-            window.removeEventListener('focus', focusForm);
-        };
-    },);
 
     function setAppState(field, value) {
         setState((prevState) => ({
@@ -110,7 +95,7 @@ function SecretSanta() {
         return (
             <Form onSubmit={handleSubmit}>
                 <Form.Label>Enter your name:</Form.Label>
-                <Form.Control type="text" value={state.input} onChange={handleKeyDown} ref={inputRef} />
+                <Form.Control type="text" value={state.input} onChange={handleKeyDown} />
                 <Button type="submit" variant="success">Add player</Button>
                 <Button variant="success" onClick={handleStartLottery}>Start raffle</Button>
             </Form>

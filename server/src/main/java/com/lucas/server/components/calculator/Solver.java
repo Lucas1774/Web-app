@@ -1,8 +1,11 @@
 package com.lucas.server.components.calculator;
 
+import org.springframework.stereotype.Service;
+
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+@Service
 public class Solver {
     
     public String solveExpression(String expression) {
