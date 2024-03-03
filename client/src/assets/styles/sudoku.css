@@ -1,50 +1,36 @@
-.sudoku {
-    width: 360px;
-    height: 600px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    padding: 0px 10px;
-}
-
-.sudoku form {
+.row .sudoku form {
     display: flex;
     flex-wrap: wrap;
 }
 
-.sudoku .form-control {
+.row .sudoku .form-control {
     margin: 15px 0px;
     padding: 15px;
 }
 
-.sudoku button,
-.sudoku label.forFileInput {
+.row .sudoku button {
     width: 100%;
     margin: 5px 0px;
-    border-color: #000000;
-    font-size: x-large;
-    color: #000000;
-    font-weight: 500;
-    text-align: center;
     padding: 10px;
 }
 
-.sudoku input[type=file] {
+.row .sudoku .restart {
+    background-color: salmon;
+}
+
+.row .sudoku input[type=file] {
     position: absolute;
     opacity: 0;
     cursor: pointer;
 }
 
-.sudoku .restart {
-    background-color: salmon;
-}
-
-.sudoku-grid {
+.row .sudoku-grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-gap: 3px;
 }
 
-.sudoku-cell {
+.row .sudoku-cell {
     border: 1px solid white;
     aspect-ratio: 1/1;
     display: flex;
@@ -52,22 +38,22 @@
     justify-content: center;
 }
 
-.sudoku-grid .sudoku-cell:nth-child(-n + 9),
-.sudoku-cell:nth-child(n + 28):nth-child(-n + 36),
-.sudoku-grid .sudoku-cell:nth-child(n + 55):nth-child(-n + 63) {
+.row .sudoku-grid .row .sudoku-cell:nth-child(-n + 9),
+.row .sudoku-cell:nth-child(n + 28):nth-child(-n + 36),
+.row .sudoku-grid .row .sudoku-cell:nth-child(n + 55):nth-child(-n + 63) {
     border-top: 3px solid white;
 }
 
-.sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
-.sudoku-grid .sudoku-cell:nth-child(n + 46):nth-child(-n + 54),
-.sudoku-grid .sudoku-cell:nth-last-child(-n + 9) {
+.row .sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
+.row .sudoku-grid .row .sudoku-cell:nth-child(n + 46):nth-child(-n + 54),
+.row .sudoku-grid .row .sudoku-cell:nth-last-child(-n + 9) {
     border-bottom: 3px solid white;
 }
 
-.sudoku-cell:nth-child(3n) {
+.row .sudoku-cell:nth-child(3n) {
     border-right: 3px solid white;
 }
 
-.sudoku-cell:nth-child(3n + 1) {
+.row .sudoku-cell:nth-child(3n + 1) {
     border-left: 3px solid white;
 }

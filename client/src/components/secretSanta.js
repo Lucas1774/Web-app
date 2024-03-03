@@ -33,7 +33,8 @@ function SecretSanta() {
         setAppState("input", event.target.value);
     }
 
-    function handleSubmit() {
+    function handleSubmit(event) {
+        event.preventDefault();
         hideEverything();
         setAppState("isSavingVisible", true);
         if (state.input !== "") {
@@ -45,7 +46,7 @@ function SecretSanta() {
             setAppState("isFormVisible", true);
             setAppState("isRestartButtonVisible", true);
             setAppState("isParticipantListVisible", true);
-        }, 1000);
+        }, state.input !== "" ? 0 : 1000);
     }
 
     function handleReset() {
@@ -175,9 +176,9 @@ function SecretSanta() {
     return (
         <>
             <h1 id="secretSanta">Secret Santa</h1>
-            <div className="secretSanta">
+            <div className="app secretSanta">
                 {state.isFormVisible && renderForm()}
-                {state.isSavingVisible && (state.input !== "" ? <div>Saving...</div> : <div>Type a name</div>)}
+                {state.isSavingVisible && (state.input !== "" ? <div></div> : <div>Type a name</div>)}
                 {state.isCalculatingVisible && <div>Calculating...</div>}
                 {state.isResettingVisible && <div>Resetting...</div>}
                 {state.isNoParticipantsVisible && (
