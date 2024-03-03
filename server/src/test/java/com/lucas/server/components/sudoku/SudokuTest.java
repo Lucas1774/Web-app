@@ -65,7 +65,7 @@ public class SudokuTest {
 
     @Test
     public void testSolve() {
-        Sudoku sudoku = generator.generateDefault(5);
+        Sudoku sudoku = generator.generate(7);
             System.out.println(sudoku);
             if (sudoku.solve()) {
                 System.out.println("Solved");

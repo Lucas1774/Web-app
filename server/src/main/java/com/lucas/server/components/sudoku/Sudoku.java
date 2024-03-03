@@ -97,29 +97,83 @@ public class Sudoku implements ISolvable {
         return sb.toString();
     }
 
-    // TODO: implement regression
-    public boolean solve() {
-        final long TIMEOUT_MILLISECONDS = 5000;
-        long startTime = System.currentTimeMillis();
-        while (!this.isSolved()) {
-            if (System.currentTimeMillis() - startTime >= TIMEOUT_MILLISECONDS) {
-                System.out.println("Timeout reached. Solution not found.");
-                return false;
-            }
-            for (int place = 0; place < NUMBER_OF_CELLS; place++) {
-                List<Integer> possibleNumbers = new ArrayList<>();
-                for (int digit : DIGITS) {
-                     if (this.acceptsNumberInPlace(digit, place)) {
-                        possibleNumbers.add(digit);
-                     };
-                }
-                if (possibleNumbers.size() == 1) {
-                    this.set(place, possibleNumbers.get(0));
-                    break;
+    public boolean solve() {     
+        return this.solveWithTimeout(System.currentTimeMillis() + 5000);
+    }
+
+    private boolean solveWithTimeout(Long timeout) {
+        this.fillGuaranteedCells();
+        if (this.isSolved() || System.currentTimeMillis() > timeout) {
+            return true;
+        }
+        for (int i = 2; i <= SIZE; i++) {
+            List<Integer> promisingCells = this.getPromisingCells(i);
+            if (!promisingCells.isEmpty()) {
+                for (int promisingCell : promisingCells) {
+                    for (int digit : DIGITS) {
+                        if (this.acceptsNumberInPlace(digit, promisingCell)) {
+                            Sudoku sudoku = Sudoku.withValues(this.rawData);
+                            sudoku.set(promisingCell, digit);
+                            if (sudoku.solveWithTimeout(timeout)) {
+                                this.rawData = sudoku.rawData;
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
         }
-        return true;
+        return false;
+    }
+
+    public void fillGuaranteedCells() {
+        boolean changesMade = true;
+        while (changesMade) {
+            changesMade = false;
+            for (int place = 0; place < NUMBER_OF_CELLS; place++) {
+                if (0 == this.rawData.get(place)) {
+                    boolean acceptsOtherNumbers = false;
+                    for (int digit : DIGITS) {
+                        boolean set = false;
+                        if (this.acceptsNumberInPlace(digit, place)) {
+                            for (int j = digit + 1; j <= SIZE; j++) {
+                                if (this.acceptsNumberInPlace(j, place)) {
+                                    acceptsOtherNumbers = true;
+                                    break;
+                                }
+                            }
+                            if (!acceptsOtherNumbers) {
+                                this.set(place, digit);;
+                                set = true;
+                                changesMade = true;
+                                break;
+                            }
+                        }
+                        if (acceptsOtherNumbers || set) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private List<Integer> getPromisingCells(int i) {
+        List<Integer> promisingCells = new ArrayList<>();
+        for (int place = 0; place < NUMBER_OF_CELLS; place++) {
+            if (0 == this.get(place)) {
+                int possibleNumbers = 0;
+                for (int digit : DIGITS) {
+                    if (this.acceptsNumberInPlace(digit, place)) {
+                        possibleNumbers++;
+                    }
+                }
+                if (possibleNumbers == i) {
+                    promisingCells.add(place);
+                }
+            }
+        }
+        return promisingCells;
     }
 
     public boolean acceptsNumberInPlace(Integer number, int place) {
@@ -155,13 +209,13 @@ public class Sudoku implements ISolvable {
         return "\"" + this.rawData.toString().replace("[", "").replace("]", "").replaceAll(", ", "") + "\"";
     }
 
-	public static List<Integer> deSerialize(String sudoku) {
+    public static List<Integer> deSerialize(String sudoku) {
         List<Integer> rawData = new ArrayList<Integer>();
         for (char c : sudoku.toCharArray()) {
             rawData.add(Integer.parseInt(String.valueOf(c)));
         }
         return rawData;
-	}
+    }
 
     private int getRowIndex(int rawDataIndex) {
         return rawDataIndex / SIZE;
