@@ -9,7 +9,6 @@ function Sudoku() {
     const initialState = {
         sudoku: [],
         difficulty: 1,
-        fileContent: '',
         isGenerateOrImportVisible: true,
         isSuccessfullyUploadedVisible: false,
         isPickDifficultyVisible: false,
@@ -34,6 +33,7 @@ function Sudoku() {
     }
 
     function handleKeyDown(event) {
+        event.preventDefault();
         if (!isNaN(event.target.value) && parseInt(event.target.value) >= 1 && parseInt(event.target.value) <= 9) {
             setAppState("difficulty", parseInt(event.target.value));
         } else {
