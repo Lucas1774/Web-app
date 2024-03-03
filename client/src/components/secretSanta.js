@@ -11,7 +11,6 @@ function SecretSanta() {
         isFormVisible: true,
         isSavingVisible: false,
         isCalculatingVisible: false,
-        isResettingVisible: false,
         isNoParticipantsVisible: false,
         isChosenVisible: false,
         isTargetVisible: false,
@@ -47,15 +46,6 @@ function SecretSanta() {
             setAppState("isRestartButtonVisible", true);
             setAppState("isParticipantListVisible", true);
         }, state.input !== "" ? 0 : 1000);
-    }
-
-    function handleReset() {
-        hideEverything();
-        setAppState("isResettingVisible", true);
-        setTimeout(() => {
-            restoreDefaults();
-            setAppState("isResettingVisible", false);
-        }, 1000);
     }
 
     function handleStartLottery() {
@@ -155,7 +145,6 @@ function SecretSanta() {
         setAppState("isFormVisible", false);
         setAppState("isSavingVisible", false);
         setAppState("isCalculatingVisible", false);
-        setAppState("isResettingVisible", false);
         setAppState("isNoParticipantsVisible", false);
         setAppState("isChosenVisible", false);
         setAppState("isTargetVisible", false);
@@ -180,7 +169,6 @@ function SecretSanta() {
                 {state.isFormVisible && renderForm()}
                 {state.isSavingVisible && (state.input !== "" ? <div></div> : <div>Type a name</div>)}
                 {state.isCalculatingVisible && <div>Calculating...</div>}
-                {state.isResettingVisible && <div>Resetting...</div>}
                 {state.isNoParticipantsVisible && (
                     <>
                         <div>Not enough participants</div>
@@ -189,7 +177,8 @@ function SecretSanta() {
                 )}
                 {state.isChosenVisible && renderChosen()}
                 {state.isTargetVisible && renderTarget()}
-                {state.isRestartButtonVisible && <Button className="restart" onClick={handleReset}>Restart</Button>}
+                {state.isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
+                >Restart</Button>}
                 {state.isParticipantListVisible && renderParticipantList()}
             </div>
         </>

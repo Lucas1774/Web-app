@@ -2,6 +2,7 @@
   background-color: #4e4e4e;
   border: 5px solid #cacacab4;
   border-radius: 5px;
+  height: 600px;
 }
 
 .row .calculator .form-control {
