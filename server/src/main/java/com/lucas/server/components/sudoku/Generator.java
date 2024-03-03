@@ -42,9 +42,10 @@ public class Generator {
             for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
                 boolean success = false;
                 for (int digit : digits) {
-                    success = sudoku.placeNumber(digit, place, false, true);
-                    if (success) {
+                    if (sudoku.acceptsNumberInPlace(digit, place)) {
+                        sudoku.set(place, digit);
                         Collections.shuffle(digits, random);
+                        success = true;
                         break;
                     }
                 }
