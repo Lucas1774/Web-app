@@ -54,8 +54,8 @@ public class Sudoku implements ISolvable {
 
     @Override
     public boolean acceptsNumber(Integer number) {
-        for (int i = 0; i < NUMBER_OF_CELLS; i++) {
-            if (this.placeNumber(number, i, false, true)) {
+        for (int place = 0; place < NUMBER_OF_CELLS; place++) {
+            if (this.acceptsNumberInPlace(number, place)) {
                 return true;
             }
         }
@@ -107,15 +107,22 @@ public class Sudoku implements ISolvable {
                 return false;
             }
             for (int place = 0; place < NUMBER_OF_CELLS; place++) {
+                List<Integer> possibleNumbers = new ArrayList<>();
                 for (int digit : DIGITS) {
-                    this.placeNumber(digit, place, true, true);
+                     if (this.acceptsNumberInPlace(digit, place)) {
+                        possibleNumbers.add(digit);
+                     };
+                }
+                if (possibleNumbers.size() == 1) {
+                    this.set(place, possibleNumbers.get(0));
+                    break;
                 }
             }
         }
         return true;
     }
 
-    public boolean placeNumber(Integer number, int place, boolean onlyIfSure, boolean commit) {
+    public boolean acceptsNumberInPlace(Integer number, int place) {
         if (0 == this.rawData.get(place)) {
             int rowIndex = this.getRowIndex(place);
             int columnIndex = this.getColumnIndex(place);
@@ -123,17 +130,6 @@ public class Sudoku implements ISolvable {
             Column column = (Column) this.getFromCell(COLUMN, rowIndex, columnIndex);
             Block block = (Block) this.getFromCell(BLOCK, rowIndex, columnIndex);
             if (row.acceptsNumber(number) && column.acceptsNumber(number) && block.acceptsNumber(number)) {
-                if (onlyIfSure) {
-                    for (int digit : DIGITS) {
-                        if (digit != number && row.acceptsNumber(digit) && column.acceptsNumber(digit)
-                                && block.acceptsNumber(digit)) {
-                            return false;
-                        }
-                    }
-                }
-                if (commit) {
-                    this.set(place, number);
-                }
                 return true;
             }
         }

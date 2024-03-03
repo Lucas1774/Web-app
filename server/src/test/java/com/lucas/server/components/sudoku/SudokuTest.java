@@ -64,20 +64,6 @@ public class SudokuTest {
     }
 
     @Test
-    void testPlaceNumber() {
-        Sudoku sudoku = generator.generateDefault(4);
-        boolean placed = false;
-        for (int i = 1; i <= 9; i++) {
-            placed = sudoku.acceptsNumber(i);
-            if (placed) {
-                System.out.println("Placed number: " + i);
-                break;
-            }
-        }
-        System.out.println(sudoku);
-    }
-
-    @Test
     public void testSolve() {
         Sudoku sudoku = generator.generateDefault(5);
             System.out.println(sudoku);
