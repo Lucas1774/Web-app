@@ -121,7 +121,7 @@ function Sudoku() {
     return (
         <>
             <h1 id="sudoku">Sudoku</h1>
-            <div className="sudoku">
+            <div className="app sudoku">
                 {state.isGenerateOrImportVisible && renderGenerateOrImport()}
                 {state.isSuccessfullyUploadedVisible && <div>Successfully uploaded!</div>}
                 {state.isPickDifficultyVisible && renderDifficultyForm()}
