@@ -46,7 +46,7 @@ function Calculator() {
   }
   return (
     <><h1 id="calculator">Calculator</h1>
-      <div className="calculator">
+      <div className="app calculator">
         <Form onSubmit={handleSubmit}>
           <Form.Control value={input} onChange={handleKeyDown} />
         </Form>
