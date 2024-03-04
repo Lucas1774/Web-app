@@ -39,7 +39,7 @@ public class SudokuTest {
 
     @Test
     void testFillSudokuAndGetRulables() {
-        Sudoku sudoku =  generator.generateDefault(4);
+        Sudoku sudoku = generator.generateDefault(4);
         Random random = new Random();
         int randomRow = random.nextInt(9);
         int randomCol = random.nextInt(9);
@@ -47,14 +47,14 @@ public class SudokuTest {
         System.out.println(sudoku.getFromCell("row", randomRow, randomCol));
         System.out.println(sudoku.getFromCell("column", randomRow, randomCol));
         System.out.println(sudoku.getFromCell("block", randomRow, randomCol));
-        
+
         randomRow = random.nextInt(9);
         randomCol = random.nextInt(9);
         System.out.println("Cell " + (randomRow + 1) + ", " + (randomCol + 1));
         System.out.println(sudoku.getFromCell("row", randomRow, randomCol));
         System.out.println(sudoku.getFromCell("column", randomRow, randomCol));
         System.out.println(sudoku.getFromCell("block", randomRow, randomCol));
-        
+
         randomCol = random.nextInt(9);
         randomRow = random.nextInt(9);
         System.out.println("Cell " + (randomRow + 1) + ", " + (randomCol + 1));
@@ -66,20 +66,14 @@ public class SudokuTest {
     @Test
     public void testSolve() {
         Sudoku sudoku = generator.generate(7);
-            System.out.println(sudoku);
-            if (sudoku.solve()) {
-                System.out.println("Solved");
-                System.out.println(sudoku);
-            }
+        System.out.println(sudoku);
+        sudoku.solve();
+        System.out.println(sudoku);
     }
 
     @Test
     public void testGenerate() {
         Sudoku sudoku = generator.generate(5);
-        System.out.println(sudoku);
-        if (sudoku.solve()) {
-            System.out.println("Solved");
-        }
         System.out.println(sudoku);
     }
 }
