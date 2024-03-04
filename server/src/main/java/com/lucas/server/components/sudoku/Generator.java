@@ -34,8 +34,8 @@ public class Generator {
     private Sudoku doGenerate() {
         Sudoku sudoku = Sudoku.withZeros();
         List<Integer> digits = new ArrayList<>();
-        for (int i = 1; i <= Sudoku.SIZE; i++) {
-            digits.add(i);
+        for (int digit : Sudoku.DIGITS) {
+            digits.add(digit);
         }
             Collections.shuffle(digits, random);
         while (!sudoku.isSolved()) {
