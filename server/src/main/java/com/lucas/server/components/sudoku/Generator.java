@@ -18,7 +18,6 @@ public class Generator {
     public Sudoku generateDefault(int difficulty){
         Sudoku sudoku = Sudoku.withDefaultValues();
         this.setDifficulty(sudoku, difficulty);
-        System.out.print(sudoku);
         return sudoku;
     }
 
@@ -42,7 +41,7 @@ public class Generator {
             for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
                 boolean success = false;
                 for (int digit : digits) {
-                    if (sudoku.acceptsNumberInPlace(digit, place)) {
+                    if (sudoku.acceptsNumberInPlace(place, digit)) {
                         sudoku.set(place, digit);
                         Collections.shuffle(digits, random);
                         success = true;
@@ -59,13 +58,14 @@ public class Generator {
 
     private void setDifficulty(Sudoku sudoku, int difficulty) {
         for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
-            if (!this.fills(1 - (difficulty / 10.0))) {
+            double chanceToFill = (1 - (difficulty / 10.0)) / 1.3;
+            if (!this.fills(1 - (chanceToFill))) {
                 sudoku.set(i, 0);
             }
         }
     }
 
     private boolean fills(double chanceToFill) {
-        return random.nextDouble() < chanceToFill;
+        return random.nextDouble() > chanceToFill;
     }
 }

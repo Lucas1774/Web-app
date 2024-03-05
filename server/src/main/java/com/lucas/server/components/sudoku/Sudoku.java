@@ -3,7 +3,7 @@ package com.lucas.server.components.sudoku;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sudoku implements ISolvable {
+public class Sudoku {
     public static final int SIZE = 9;
     public static final int[] DIGITS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     static final String ROW = "row";
@@ -47,22 +47,10 @@ public class Sudoku implements ISolvable {
         return new Sudoku(rawData);
     }
 
-    @Override
     public boolean isSolved() {
         return !this.rawData.contains(0);
     }
 
-    @Override
-    public boolean acceptsNumber(Integer number) {
-        for (int place = 0; place < NUMBER_OF_CELLS; place++) {
-            if (this.acceptsNumberInPlace(number, place)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public void set(int cell, Integer number) {
         int rowIndex = this.getRowIndex(cell);
         int columnIndex = this.getColumnIndex(cell);
@@ -75,9 +63,8 @@ public class Sudoku implements ISolvable {
         this.blocks.get(blockIndex).set(blockRow * 3 + blockColumn, number);
     }
 
-    @Override
-    public Integer get(int i) {
-        return this.rawData.get(i);
+    public List<Integer> get() {
+        return this.rawData;
     }
 
     @Override
@@ -89,7 +76,7 @@ public class Sudoku implements ISolvable {
             for (int j = 0; j < SIZE; j++) {
                 if (j % 3 == 0)
                     sb.append("| ");
-                sb.append(this.get(i * SIZE + j)).append(' ');
+                sb.append(this.rawData.get(i * SIZE + j)).append(' ');
             }
             sb.append("|\n");
         }
@@ -97,29 +84,35 @@ public class Sudoku implements ISolvable {
         return sb.toString();
     }
 
-	public void solve() {
-        int maxDepth = 2;
-        while(!this.isSolved()) {
+    public void solve() {
+        int maxDepth = 4;
+        while (!this.isSolved()) {
             this.solve(maxDepth);
             maxDepth++;
         }
-	}
+    }
 
-    public boolean solve(int maxDepth) {     
-        this.fillGuaranteedCells();
+    public boolean solve(int maxDepth) {
         if (this.isSolved()) {
             return true;
         }
-        for (int i = 2; i < maxDepth; i++ ) {
+        if (!this.getPromisingCells(0).isEmpty()) {
+            return false;
+        }
+        this.fillTrivial();
+        if (this.isSolved()) {
+            return true;
+        }
+        for (int i = 2; i < maxDepth; i++) {
             List<Integer> promisingCells = this.getPromisingCells(i);
             if (!promisingCells.isEmpty()) {
                 for (int promisingCell : promisingCells) {
                     for (int digit : DIGITS) {
-                        if (this.acceptsNumberInPlace(digit, promisingCell)) {
+                        if (this.acceptsNumberInPlace(promisingCell, digit)) {
                             Sudoku sudoku = Sudoku.withValues(this.rawData);
                             sudoku.set(promisingCell, digit);
                             if (sudoku.solve(maxDepth--)) {
-                                this.rawData = sudoku.getRawData();
+                                this.rawData = sudoku.rawData;
                                 return true;
                             }
                         }
@@ -130,11 +123,19 @@ public class Sudoku implements ISolvable {
         return false;
     }
 
-    private List<Integer> getRawData() {
-        return this.rawData;
-	}
+    public String serialize() {
+        return "\"" + this.rawData.toString().replace("[", "").replace("]", "").replaceAll(", ", "") + "\"";
+    }
 
-	public void fillGuaranteedCells() {
+    public static List<Integer> deSerialize(String sudoku) {
+        List<Integer> rawData = new ArrayList<Integer>();
+        for (char c : sudoku.toCharArray()) {
+            rawData.add(Character.getNumericValue(c));
+        }
+        return rawData;
+    }
+
+    private void fillTrivial() {
         boolean changesMade = true;
         while (changesMade) {
             List<Integer> promisingCells = this.getPromisingCells(1);
@@ -142,7 +143,7 @@ public class Sudoku implements ISolvable {
             if (!promisingCells.isEmpty()) {
                 for (int promisingCell : promisingCells) {
                     for (int digit : DIGITS) {
-                        if (this.acceptsNumberInPlace(digit, promisingCell)) {
+                        if (this.acceptsNumberInPlace(promisingCell, digit)) {
                             this.set(promisingCell, digit);
                             changesMade = true;
                             break;
@@ -156,10 +157,10 @@ public class Sudoku implements ISolvable {
     private List<Integer> getPromisingCells(int i) {
         List<Integer> promisingCells = new ArrayList<>();
         for (int place = 0; place < NUMBER_OF_CELLS; place++) {
-            if (0 == this.get(place)) {
+            if (0 == this.rawData.get(place)) {
                 int count = 0;
                 for (int digit : DIGITS) {
-                    if (this.acceptsNumberInPlace(digit, place)) {
+                    if (this.acceptsNumberInPlace(place, digit)) {
                         count++;
                     }
                 }
@@ -171,21 +172,21 @@ public class Sudoku implements ISolvable {
         return promisingCells;
     }
 
-    public boolean acceptsNumberInPlace(Integer number, int place) {
-        if (0 == this.get(place)) {
+    boolean acceptsNumberInPlace(Integer place, int digit) {
+        if (0 == this.rawData.get(place)) {
             int rowIndex = this.getRowIndex(place);
             int columnIndex = this.getColumnIndex(place);
             Row row = (Row) this.getFromCell(ROW, rowIndex, columnIndex);
             Column column = (Column) this.getFromCell(COLUMN, rowIndex, columnIndex);
             Block block = (Block) this.getFromCell(BLOCK, rowIndex, columnIndex);
-            if (row.acceptsNumber(number) && column.acceptsNumber(number) && block.acceptsNumber(number)) {
+            if (row.acceptsNumber(digit) && column.acceptsNumber(digit) && block.acceptsNumber(digit)) {
                 return true;
             }
         }
         return false;
     }
 
-    public NineNumberPiece getFromCell(String what, int row, int column) {
+    private NineNumberPiece getFromCell(String what, int row, int column) {
         switch (what) {
             case ROW:
                 return this.rows.get(row);
@@ -198,18 +199,6 @@ public class Sudoku implements ISolvable {
             default:
                 throw new IllegalArgumentException("Invalid argument: " + what);
         }
-    }
-
-    public String serialize() {
-        return "\"" + this.rawData.toString().replace("[", "").replace("]", "").replaceAll(", ", "") + "\"";
-    }
-
-    public static List<Integer> deSerialize(String sudoku) {
-        List<Integer> rawData = new ArrayList<Integer>();
-        for (char c : sudoku.toCharArray()) {
-            rawData.add(Integer.parseInt(String.valueOf(c)));
-        }
-        return rawData;
     }
 
     private int getRowIndex(int rawDataIndex) {
