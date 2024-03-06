@@ -42,7 +42,7 @@ public class Sudoku {
     public static Sudoku withDefaultValues() {
         List<Integer> rawData = new ArrayList<Integer>();
         for (int i = 0; i < NUMBER_OF_CELLS; i++) {
-            rawData.add(((i % 9) + 3 * (i / 9) + (i / 27)) % 9 + 1);
+            rawData.add(((i % Sudoku.SIZE) + 3 * (i / Sudoku.SIZE) + (i / 27)) % Sudoku.SIZE + 1);
         }
         return new Sudoku(rawData);
     }
@@ -52,9 +52,9 @@ public class Sudoku {
     }
 
     public void set(int cell, Integer number) {
-        int rowIndex = this.getRowIndex(cell);
-        int columnIndex = this.getColumnIndex(cell);
-        int blockIndex = this.getBlockIndex(cell);
+        int rowIndex = getRowIndex(cell);
+        int columnIndex = getColumnIndex(cell);
+        int blockIndex = getBlockIndex(cell);
         this.rawData.set(cell, number);
         this.rows.get(rowIndex).set(columnIndex, number);
         this.columns.get(columnIndex).set(rowIndex, number);
@@ -174,8 +174,8 @@ public class Sudoku {
 
     boolean acceptsNumberInPlace(Integer place, int digit) {
         if (0 == this.rawData.get(place)) {
-            int rowIndex = this.getRowIndex(place);
-            int columnIndex = this.getColumnIndex(place);
+            int rowIndex = getRowIndex(place);
+            int columnIndex = getColumnIndex(place);
             Row row = (Row) this.getFromCell(ROW, rowIndex, columnIndex);
             Column column = (Column) this.getFromCell(COLUMN, rowIndex, columnIndex);
             Block block = (Block) this.getFromCell(BLOCK, rowIndex, columnIndex);
@@ -201,17 +201,17 @@ public class Sudoku {
         }
     }
 
-    private int getRowIndex(int rawDataIndex) {
+    static int getRowIndex(int rawDataIndex) {
         return rawDataIndex / SIZE;
     }
 
-    private int getColumnIndex(int rawDataIndex) {
+    static int getColumnIndex(int rawDataIndex) {
         return rawDataIndex % SIZE;
     }
 
-    private int getBlockIndex(int rawDataIndex) {
-        int blockRow = this.getRowIndex(rawDataIndex) / 3;
-        int blockColumn = this.getColumnIndex(rawDataIndex) / 3;
+    static int getBlockIndex(int rawDataIndex) {
+        int blockRow = getRowIndex(rawDataIndex) / 3;
+        int blockColumn = getColumnIndex(rawDataIndex) / 3;
         return blockRow * 3 + blockColumn;
     }
 }
