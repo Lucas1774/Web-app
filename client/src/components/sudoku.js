@@ -8,12 +8,12 @@ import "../assets/styles/sudoku.css";
 function Sudoku() {
     const initialState = {
         sudoku: [],
+        initialSudoku: [],
         difficulty: 1,
         isGenerateOrImportVisible: true,
         isSuccessfullyUploadedVisible: false,
         isPickDifficultyVisible: false,
         isSudokuVisible: false,
-        isSolveBUttonVisible: false,
         isRestartButtonVisible: true,
     };
 
@@ -47,8 +47,8 @@ function Sudoku() {
         get(`/generate/sudoku?difficulty=${state.difficulty}`)
             .then(response => {
                 setAppState("sudoku", response.data);
+                setAppState("initialSudoku", response.data);
                 setAppState("isSudokuVisible", true);
-                setAppState("isSolveButtonVisible", true);
                 setAppState("isRestartButtonVisible", true);
             })
             .catch(error => {
@@ -86,6 +86,30 @@ function Sudoku() {
             });
     }
 
+    function check() {
+        get(`/solve/sudoku?sudoku=${state.initialSudoku}`)
+            .then(response => {
+                let solvedSudoku = response.data;
+                let color = 'green';
+                for (let i = 0; i < 81; i++) {
+                    if (state.sudoku[i] !== "0" && solvedSudoku[i] !== state.sudoku[i]) {
+                        color = 'red';
+                        break;
+                    }
+                }
+                setAppState("isSudokuVisible", true);
+                setAppState("isRestartButtonVisible", true);
+                document.querySelector('.sudoku-grid').classList.add(`${color}-border`);
+                setTimeout(() => {
+                    document.querySelector('.sudoku-grid').classList.remove(`${color}-border`);
+                }, 1000);
+            })
+            .catch(error => {
+                alert("Error sending data: " + error.message);
+                restoreDefaults();
+            });
+    }
+
     function renderGenerateOrImport() {
         return (
             <>
@@ -110,7 +134,6 @@ function Sudoku() {
         setAppState("isSuccessfullyUploadedVisible", false);
         setAppState("isPickDifficultyVisible", false);
         setAppState("isSudokuVisible", false);
-        setAppState("isSolveButtonVisible", false);
         setAppState("isRestartButtonVisible", false);
     }
 
@@ -125,8 +148,11 @@ function Sudoku() {
                 {state.isGenerateOrImportVisible && renderGenerateOrImport()}
                 {state.isSuccessfullyUploadedVisible && <div>Successfully uploaded!</div>}
                 {state.isPickDifficultyVisible && renderDifficultyForm()}
-                {state.isSudokuVisible && <SudokuGrid sudokuString={state.sudoku} />}
-                {state.isSolveButtonVisible && <Button type="submit" variant="success" onClick={solve}>Solve</Button>}
+                {state.isSudokuVisible &&
+                    <><SudokuGrid sudokuString={state.sudoku} initialSudokuState={state.initialSudoku} />
+                        <Button type="submit" variant="success" onClick={solve}>Solve</Button>
+                        <Button variant="success" onClick={check}>Check</Button></>
+                }
                 {state.isRestartButtonVisible && <Button className="restart" onClick={restoreDefaults}>Restart</Button>}
             </div>
         </>
