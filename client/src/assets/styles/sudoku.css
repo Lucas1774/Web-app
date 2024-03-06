@@ -30,6 +30,11 @@
     border: 5px solid green;
 }
 
+.blue-border {
+    /* overrides border: none*/
+    border: 2px solid blue !important;
+}
+
 .row .sudoku-cell {
     border: 1px solid white;
     aspect-ratio: 1/1;
