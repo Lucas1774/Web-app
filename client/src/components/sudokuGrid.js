@@ -6,7 +6,7 @@ function SudokuGrid({ sudokuString, onSudokuChange }) {
     useEffect(() => {
         function handleKeyDown(event) {
             let key = event.key;
-            if (key.startsWith('Arrow')) {
+            if (key.startsWith('Arrow') && focusedIndex !== null) {
                 event.preventDefault();
                 let aux;
                 switch (key) {
@@ -46,7 +46,8 @@ function SudokuGrid({ sudokuString, onSudokuChange }) {
                     <input
                         value={digit === '0' ? '' : digit}
                         onChange={(event) => onSudokuChange(index, event)}
-                        onFocus={() => setFocusedIndex(index)} />
+                        onFocus={() => setFocusedIndex(index)}
+                        onBlur={() => setFocusedIndex(null)} />
                 </span>
             ))}
         </div><br></br></>
