@@ -42,6 +42,18 @@ function Sudoku() {
         event.target.select();
     }
 
+    function handleSudokuChange(index, event) {
+        event.preventDefault();
+        const newValue = !event.target.value ? '0' : event.target.value.toString();
+        if (parseInt(newValue) >= 0 && parseInt(newValue) <= 9) {
+            if (state.initialSudoku[index] === '0') {
+                let auxSudoku = [...state.sudoku];
+                auxSudoku[index] = newValue;
+                setAppState("sudoku", auxSudoku.join(''));
+            }
+        }
+    }
+
     function generate() {
         hideEverything();
         get(`/generate/sudoku?difficulty=${state.difficulty}`)
@@ -149,7 +161,7 @@ function Sudoku() {
                 {state.isSuccessfullyUploadedVisible && <div>Successfully uploaded!</div>}
                 {state.isPickDifficultyVisible && renderDifficultyForm()}
                 {state.isSudokuVisible &&
-                    <><SudokuGrid sudokuString={state.sudoku} initialSudokuState={state.initialSudoku} />
+                    <><SudokuGrid sudokuString={state.sudoku} initialSudokuState={state.initialSudoku} onSudokuChange={handleSudokuChange} />
                         <Button type="submit" variant="success" onClick={solve}>Solve</Button>
                         <Button variant="success" onClick={check}>Check</Button></>
                 }
