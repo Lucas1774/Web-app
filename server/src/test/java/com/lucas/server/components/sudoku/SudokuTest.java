@@ -28,7 +28,7 @@ public class SudokuTest {
     public void benchmark() {
         double totalDuration = 0;
         for (int i = 0; i < NUM_RUNS; i++) {
-            int difficulty = (int) (Math.random() * 9) + 1;
+            int difficulty = (int) (Math.random() * Sudoku.SIZE) + 1;
             Sudoku sudoku = generator.generate(difficulty);
             long startTime = System.nanoTime();
             sudoku.solve();

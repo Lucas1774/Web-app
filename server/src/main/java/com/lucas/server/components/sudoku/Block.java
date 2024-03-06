@@ -6,13 +6,9 @@ public class Block extends NineNumberPiece {
 
     public Block(List<Integer> rawData, int index) {
         super(rawData, index);
-        for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
-            int row = i / 9;
-            int column = i % 9;
-            int blockRow = row / 3;
-            int blockColumn = column / 3;
-            if (blockRow * 3 + blockColumn == index) {
-                this.rawData.add(rawData.get(i));
+        for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
+            if (Sudoku.getBlockIndex(place) == index) {
+                this.rawData.add(rawData.get(place));
             }
         }
     }
