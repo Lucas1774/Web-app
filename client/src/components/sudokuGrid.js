@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-function SudokuGrid({ sudokuString, initialSudokuState }) {
-    const [sudokuState, setSudokuState] = useState([]);
+function SudokuGrid({ sudokuString, onSudokuChange }) {
     const [focusedIndex, setFocusedIndex] = useState(null);
-
-    useEffect(() => {
-        setSudokuState(sudokuString.split(''));
-    }, [sudokuString]);
 
     useEffect(() => {
         function handleKeyDown(event) {
@@ -44,26 +39,13 @@ function SudokuGrid({ sudokuString, initialSudokuState }) {
         };
     }, [focusedIndex]);
 
-    function handleChange(index, event) {
-        const newValue = event.target.value;
-        if (!newValue || (newValue >= 1 && newValue <= 9)) {
-            if (initialSudokuState[index] === '0') {
-                setSudokuState((previous) => {
-                    const newState = [...previous];
-                    newState[index] = newValue;
-                    return newState;
-                });
-            }
-        }
-    }
-
     return (
         <><div className="sudoku-grid">
-            {sudokuState.map((digit, index) => (
+            {sudokuString.split('').map((digit, index) => (
                 <span className="sudoku-cell" key={index}>
                     <input
                         value={digit === '0' ? '' : digit}
-                        onChange={(event) => handleChange(index, event)}
+                        onChange={(event) => onSudokuChange(index, event)}
                         onFocus={() => setFocusedIndex(index)} />
                 </span>
             ))}
