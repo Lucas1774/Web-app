@@ -163,7 +163,7 @@ function Sudoku() {
                 {state.isSudokuVisible &&
                     <><SudokuGrid sudokuString={state.sudoku} initialSudokuState={state.initialSudoku} onSudokuChange={handleSudokuChange} />
                         <Button type="submit" variant="success" onClick={solve}>Solve</Button>
-                        <Button variant="success" onClick={check}>Check</Button></>
+                        <Button onClick={check}>Check</Button></>
                 }
                 {state.isRestartButtonVisible && <Button className="restart" onClick={restoreDefaults}>Restart</Button>}
             </div>
