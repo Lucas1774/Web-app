@@ -99,18 +99,9 @@ function Sudoku() {
     }
 
     function check() {
-        get(`/solve/sudoku?sudoku=${state.initialSudoku}`)
+        get(`/check/sudoku?initialSudoku=${state.initialSudoku}&currentSudoku=${state.sudoku}`)
             .then(response => {
-                let solvedSudoku = response.data;
-                let color = 'green';
-                for (let i = 0; i < 81; i++) {
-                    if (state.sudoku[i] !== "0" && solvedSudoku[i] !== state.sudoku[i]) {
-                        color = 'red';
-                        break;
-                    }
-                }
-                setAppState("isSudokuVisible", true);
-                setAppState("isRestartButtonVisible", true);
+                let color = response.data === 1 ? 'green' : 'red';
                 document.querySelector('.sudoku-grid').classList.add(`${color}-border`);
                 setTimeout(() => {
                     document.querySelector('.sudoku-grid').classList.remove(`${color}-border`);

@@ -61,4 +61,19 @@ public class Controller {
         s.solve();
         return s.serialize();
     }
+
+    @GetMapping("/check/sudoku")
+    public String checkSudoku(@RequestParam String initialSudoku, @RequestParam String currentSudoku) {
+        Sudoku s = Sudoku.withValues(Sudoku.deSerialize(initialSudoku));
+        s.solve();
+        String serialized = s.serialize().replaceAll("\"", "");
+        String solvable = "1";
+        for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
+            if (currentSudoku.charAt(i) != '0' && serialized.charAt(i) != currentSudoku.charAt(i)) {
+                solvable = "0";
+                break;
+            }
+        }
+        return solvable;
+    }
 }
