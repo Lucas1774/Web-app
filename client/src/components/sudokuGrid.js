@@ -42,8 +42,9 @@ function SudokuGrid({ sudokuString, onSudokuChange }) {
     return (
         <><div className="sudoku-grid">
             {sudokuString.split('').map((digit, index) => (
-                <span className="sudoku-cell" key={index}>
+                <span className="sudoku-cell">
                     <input
+                        index={index}
                         value={digit === '0' ? '' : digit}
                         onChange={(event) => onSudokuChange(index, event)}
                         onFocus={() => setFocusedIndex(index)}
