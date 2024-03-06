@@ -49,6 +49,11 @@ function Sudoku() {
             if (state.initialSudoku[index] === '0') {
                 let auxSudoku = [...state.sudoku];
                 auxSudoku[index] = newValue;
+                if (0 !== parseInt(newValue)) {
+                    document.querySelector(`input[index="${index}"]`).classList.add(`blue-border`);
+                } else {
+                    document.querySelector(`input[index="${index}"]`).classList.remove(`blue-border`);
+                }
                 setAppState("sudoku", auxSudoku.join(''));
             }
         }
@@ -86,7 +91,7 @@ function Sudoku() {
 
     function solve() {
         hideEverything();
-        get(`/solve/sudoku?sudoku=${state.sudoku}`)
+        get(`/solve/sudoku?sudoku=${state.initialSudoku}`)
             .then(response => {
                 setAppState("sudoku", response.data);
                 setAppState("isSudokuVisible", true);
