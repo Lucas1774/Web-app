@@ -49,9 +49,9 @@ function Sudoku() {
                 let auxSudoku = [...state.sudoku];
                 auxSudoku[index] = newValue.toString();
                 if (0 !== newValue) {
-                    document.querySelector(`input[index="${index}"]`).classList.add(`blue-border`);
+                    document.querySelector(`input[index="${index}"]`).classList.add(`blue-background`);
                 } else {
-                    document.querySelector(`input[index="${index}"]`).classList.remove(`blue-border`);
+                    document.querySelector(`input[index="${index}"]`).classList.remove(`blue-background`);
                 }
                 setAppState("sudoku", auxSudoku.join(''));
             }
