@@ -36,6 +36,13 @@ function Sudoku() {
         }
     }, [state.initialSudoku]);
 
+    // useEfect if state.sudoku length is 81 and it doesn't contain zeros call check()
+    useEffect(() => {
+        if (state.sudoku.length === 81 && state.sudoku.indexOf('0') === -1) {
+            check();
+        }
+    },[state.sudoku, check]);
+
 
     function handleGenerate() {
         hideEverything();
