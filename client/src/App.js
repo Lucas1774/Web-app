@@ -22,10 +22,10 @@ function App() {
           <Calculator />
         </Col>
         <Col>
-          <SecretSanta />
+          <Sudoku />
         </Col>
         <Col>
-          <Sudoku />
+          <SecretSanta />
         </Col>
       </Row>
     </>
