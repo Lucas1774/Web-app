@@ -29,7 +29,9 @@ function Sudoku() {
     useEffect(() => {
         for (let i = 0; i < 81; i++) {
             if (state.initialSudoku[i] === '0') {
-                document.querySelector(`input[index="${i}"]`).classList.add(`white-background`);
+                let element = document.querySelector(`input[index="${i}"]`);
+                element.classList.remove(`blue-background`);
+                element.classList.add(`white-background`);
             }
         }
     }, [state.initialSudoku]);
@@ -57,6 +59,14 @@ function Sudoku() {
             if (state.initialSudoku[index] === '0') {
                 let auxSudoku = [...state.sudoku];
                 auxSudoku[index] = newValue.toString();
+                let element = document.querySelector(`input[index="${index}"]`);
+                if (0 !== newValue) {
+                    element.classList.remove(`white-background`);
+                    element.classList.add(`blue-background`);
+                } else {
+                    element.classList.remove(`blue-background`);
+                    element.classList.add(`white-background`);
+                }
                 setAppState("sudoku", auxSudoku.join(''));
             }
         }
@@ -97,6 +107,7 @@ function Sudoku() {
         get(`/solve/sudoku?sudoku=${state.initialSudoku}`)
             .then(response => {
                 setAppState("sudoku", response.data);
+                setAppState("initialSudoku", response.data);
                 setAppState("isSudokuVisible", true);
                 setAppState("isRestartButtonVisible", true);
             })
@@ -110,10 +121,13 @@ function Sudoku() {
         get(`/check/sudoku?initialSudoku=${state.initialSudoku}&currentSudoku=${state.sudoku}`)
             .then(response => {
                 let color = response.data === 1 ? 'green' : 'red';
-                document.querySelector('.sudoku-grid').classList.add(`${color}-border`);
-                setTimeout(() => {
-                    document.querySelector('.sudoku-grid').classList.remove(`${color}-border`);
-                }, 1000);
+                let grid = document.querySelector('.sudoku-grid');
+                if (grid !== null) {
+                    grid.classList.add(`${color}-border`);
+                    setTimeout(() => {
+                        grid.classList.remove(`${color}-border`);
+                    }, 1000);
+                }
             })
             .catch(error => {
                 alert("Error sending data: " + error.message);
@@ -134,7 +148,7 @@ function Sudoku() {
         return (
             <Form>
                 <Form.Label>Pick difficulty:</Form.Label>
-                <Form.Control value={state.difficulty} onChange={(e) => { handleKeyDown(e); e.target.select() }} onFocus={(e) => e.target.select()} />
+                <Form.Control inputMode="numeric" value={state.difficulty} onChange={(e) => { handleKeyDown(e); e.target.select() }} onFocus={(e) => e.target.select()} />
                 <Button type="submit" variant="success" onClick={generate}>Generate</Button>
             </Form>
         );
