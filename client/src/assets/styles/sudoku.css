@@ -30,26 +30,19 @@
     border: 5px solid green;
 }
 
-.blue-border {
-    /* overrides border: none*/
-    border: 2px solid blue !important;
+.blue-background {
+    background-color: lightblue;
 }
 
 .row .sudoku-cell {
-    border: 1px solid white;
     aspect-ratio: 1/1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .row .sudoku-cell input {
     width: 100%;
     height: 100%;
-    padding: 0.5rem;
-    box-sizing: border-box;
+    font-size: x-large;
     border: none;
-    font-size: 1rem;
     text-align: center;
 }
 
