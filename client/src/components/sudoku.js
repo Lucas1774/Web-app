@@ -39,17 +39,16 @@ function Sudoku() {
         } else {
             event.target.value = state.difficulty;
         }
-        event.target.select();
     }
 
     function handleSudokuChange(index, event) {
         event.preventDefault();
-        const newValue = !event.target.value ? '0' : event.target.value.toString();
-        if (parseInt(newValue) >= 0 && parseInt(newValue) <= 9) {
+        const newValue = !event.target.value ? parseInt('0') : parseInt(event.target.value);
+        if (newValue >= 0 && newValue <= 9) {
             if (state.initialSudoku[index] === '0') {
                 let auxSudoku = [...state.sudoku];
-                auxSudoku[index] = newValue;
-                if (0 !== parseInt(newValue)) {
+                auxSudoku[index] = newValue.toString();
+                if (0 !== newValue) {
                     document.querySelector(`input[index="${index}"]`).classList.add(`blue-border`);
                 } else {
                     document.querySelector(`input[index="${index}"]`).classList.remove(`blue-border`);
@@ -131,7 +130,7 @@ function Sudoku() {
         return (
             <Form>
                 <Form.Label>Pick difficulty:</Form.Label>
-                <Form.Control value={state.difficulty} onChange={handleKeyDown} onFocus={(e) => e.target.select()} onClick={(e) => e.target.select()} />
+                <Form.Control value={state.difficulty} onChange={(e) => { handleKeyDown(e); e.target.select() }} onFocus={(e) => e.target.select()} />
                 <Button type="submit" variant="success" onClick={generate}>Generate</Button>
             </Form>
         );

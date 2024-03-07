@@ -45,9 +45,10 @@ function SudokuGrid({ sudokuString, onSudokuChange }) {
                 <span className="sudoku-cell">
                     <input
                         index={index}
+                        inputMode="numeric"
                         value={digit === '0' ? '' : digit}
-                        onChange={(event) => onSudokuChange(index, event)}
-                        onFocus={() => setFocusedIndex(index)}
+                        onChange={(event) => { onSudokuChange(index, event); event.target.select() }}
+                        onFocus={(event) => { setFocusedIndex(index); event.target.select() }}
                         onBlur={() => setFocusedIndex(null)} />
                 </span>
             ))}
