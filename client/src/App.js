@@ -9,13 +9,14 @@ import "./assets/styles/App.css"
 
 function App() {
   return (
-    <>
+    <><div style={{ display: "flex", flexWrap: "wrap" }}>
       <About />
       <br></br>
       <video controls height="200px" width="400px">
         <source src={video} type="video/webm" />
       </video>
       <br></br>
+    </div>
       <Row>
         <Col>
           <Calculator />
