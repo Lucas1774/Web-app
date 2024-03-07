@@ -30,8 +30,9 @@
     border: 5px solid green;
 }
 
-.blue-background {
-    background-color: lightblue;
+.white-background {
+    /* overrides default color */
+    background-color: white !important;
 }
 
 .row .sudoku-cell {
@@ -39,6 +40,7 @@
 }
 
 .row .sudoku-cell input {
+    background-color: lightblue;
     width: 100%;
     height: 100%;
     font-size: x-large;

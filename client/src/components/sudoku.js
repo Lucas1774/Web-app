@@ -1,5 +1,5 @@
 import SudokuGrid from "./sudokuGrid";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { post, get } from "../components/api";
 import { Form, Button } from 'react-bootstrap';
 import FileImporter from './fileImporter';
@@ -26,6 +26,15 @@ function Sudoku() {
         }));
     };
 
+    useEffect(() => {
+        for (let i = 0; i < 81; i++) {
+            if (state.initialSudoku[i] === '0') {
+                document.querySelector(`input[index="${i}"]`).classList.add(`white-background`);
+            }
+        }
+    }, [state.initialSudoku]);
+
+
     function handleGenerate() {
         hideEverything();
         setAppState("isPickDifficultyVisible", true);
@@ -48,11 +57,6 @@ function Sudoku() {
             if (state.initialSudoku[index] === '0') {
                 let auxSudoku = [...state.sudoku];
                 auxSudoku[index] = newValue.toString();
-                if (0 !== newValue) {
-                    document.querySelector(`input[index="${index}"]`).classList.add(`blue-background`);
-                } else {
-                    document.querySelector(`input[index="${index}"]`).classList.remove(`blue-background`);
-                }
                 setAppState("sudoku", auxSudoku.join(''));
             }
         }
