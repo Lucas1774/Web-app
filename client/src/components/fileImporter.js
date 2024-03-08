@@ -1,6 +1,7 @@
 
 import { Button } from 'react-bootstrap';
-function FileImporter({ onFileContentChange }) {
+const FileImporter = ({ onFileContentChange }) => {
+
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];

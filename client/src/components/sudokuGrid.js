@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-function SudokuGrid({ sudokuString, onSudokuChange }) {
+const SudokuGrid = ({ sudokuString, onSudokuChange }) => {
+
     const [focusedIndex, setFocusedIndex] = useState(null);
 
     useEffect(() => {
-        function handleKeyDown(event) {
+        const handleKeyDown = (event) => {
+
             let key = event.key;
             if (key.startsWith('Arrow') && focusedIndex !== null) {
                 event.preventDefault();
