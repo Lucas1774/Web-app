@@ -10,10 +10,10 @@ const config = {
   }
 };
 
-export function post(url, data) {
+export const post = (url, data) => {
   return axios.post(BASE_URL + url, data, config);
 }
 
-export function get(url) {
+export const get = (url) => {
   return axios.get(BASE_URL + url, config);
 }

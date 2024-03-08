@@ -5,7 +5,7 @@ import SecretSanta from './components/secretSanta';
 import Sudoku from './components/sudoku';
 import "./assets/styles/App.css"
 
-function App() {
+const App = () => {
   return (
     <>
       <Row>
