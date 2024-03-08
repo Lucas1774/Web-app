@@ -7,8 +7,8 @@ import "../assets/styles/sudoku.css";
 
 const Sudoku = () => {
     const initialState = useMemo(() => ({
-        sudoku: [],
-        initialSudoku: [],
+        sudoku: "",
+        initialSudoku: "",
         difficulty: 1,
         isGenerateOrImportVisible: true,
         isSuccessfullyUploadedVisible: false,
@@ -114,6 +114,23 @@ const Sudoku = () => {
         }
     }, [check, state.initialSudoku, state.sudoku]);
 
+    useEffect(() => {
+        const enterListener = (e) => {
+            if (e.key === 'Enter') {
+                check();
+            }
+        };
+        if (state.isSudokuVisible) {
+            document.addEventListener('keydown', enterListener);
+        } else {
+            document.removeEventListener('keydown', enterListener);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', enterListener);
+        };
+    }, [check, state.isSudokuVisible])
+
     const generate = () => {
         hideEverything();
         get(`/generate/sudoku?difficulty=${state.difficulty}`)
@@ -176,7 +193,7 @@ const Sudoku = () => {
                         <Button type="submit" variant="success" onClick={generate}>Generate</Button>
                     </Form>}
                 {state.isSudokuVisible &&
-                    <><SudokuGrid sudokuString={state.sudoku} initialSudokuState={state.initialSudoku} onSudokuChange={handleSudokuChange} />
+                    <><SudokuGrid onKeyDown={solve} sudokuString={state.sudoku} initialSudokuState={state.initialSudoku} onSudokuChange={handleSudokuChange} />
                         <Button type="submit" variant="success" onClick={solve}>Solve</Button>
                         <Button onClick={check}>Check</Button></>
                 }
