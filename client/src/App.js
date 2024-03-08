@@ -7,7 +7,7 @@ import Sudoku from './components/sudoku';
 import video from './assets/video/sudoku_demo.webm';
 import "./assets/styles/App.css"
 
-function App() {
+const App = () => {
   return (
     <><div style={{ display: "flex", flexWrap: "wrap" }}>
       <About />
