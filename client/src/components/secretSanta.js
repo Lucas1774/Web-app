@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Form, Button } from 'react-bootstrap';
 import "../assets/styles/secretSanta.css";
 
-function SecretSanta() {
+const SecretSanta = () => {
+
     const initialState = {
         participantCounter: 1,
         participants: [],
@@ -20,19 +21,22 @@ function SecretSanta() {
 
     const [state, setState] = useState(initialState);
 
-    function setAppState(field, value) {
+    const setAppState = (field, value) => {
+
         setState((prevState) => ({
             ...prevState,
             [field]: value,
         }));
     };
 
-    function handleKeyDown(event) {
+    const handleKeyDown = (event) => {
+
         event.preventDefault();
         setAppState("input", event.target.value);
     }
 
-    function handleSubmit(event) {
+    const handleSubmit = (event) => {
+
         event.preventDefault();
         hideEverything();
         setAppState("isSavingVisible", true);
@@ -48,7 +52,8 @@ function SecretSanta() {
         }, state.input !== "" ? 0 : 1000);
     }
 
-    function handleStartLottery() {
+    const handleStartLottery = () => {
+
         hideEverything();
         if (state.participants.length >= 3) {
             generateRandomCycle(state.participants);
@@ -67,7 +72,8 @@ function SecretSanta() {
         }
     }
 
-    function showTarget() {
+    const showTarget = () => {
+
         hideEverything();
         setAppState("isTargetVisible", true);
         setTimeout(() => {
@@ -82,7 +88,8 @@ function SecretSanta() {
         }, 2000);
     }
 
-    function renderForm() {
+    const renderForm = () => {
+
         return (
             <Form onSubmit={handleSubmit}>
                 <Form.Label>Enter your name:</Form.Label>
@@ -93,7 +100,8 @@ function SecretSanta() {
         );
     }
 
-    function renderChosen() {
+    const renderChosen = () => {
+
         return (
             <>
                 <div>{state.participants[state.participantCounter - 1]} is the secret santa for...</div>
@@ -106,7 +114,8 @@ function SecretSanta() {
         )
     }
 
-    function renderTarget() {
+    const renderTarget = () => {
+
         const participant = state.participants[state.participantCounter - 1];
         const target = state.targets[(state.targets.indexOf(participant) + 1) % state.participants.length];
         return (
@@ -116,7 +125,8 @@ function SecretSanta() {
         );
     }
 
-    function renderParticipantList() {
+    const renderParticipantList = () => {
+
         return (
             <>
                 <h2 style={{ marginTop: '20px' }}>Participants</h2>
@@ -129,7 +139,8 @@ function SecretSanta() {
         );
     }
 
-    function generateRandomCycle(originalArray) {
+    const generateRandomCycle = (originalArray) => {
+
         const unusedElements = [...originalArray];
         let newTargets = [];
         while (unusedElements.length !== 0) {
@@ -141,7 +152,8 @@ function SecretSanta() {
         setAppState("targets", newTargets);
     }
 
-    function hideEverything() {
+    const hideEverything = () => {
+
         setAppState("isFormVisible", false);
         setAppState("isSavingVisible", false);
         setAppState("isCalculatingVisible", false);
@@ -152,7 +164,8 @@ function SecretSanta() {
         setAppState("isParticipantListVisible", false);
     }
 
-    function restoreDefaults() {
+    const restoreDefaults = () => {
+
         setAppState("participantCounter", 1);
         setAppState("participants", []);
         setAppState("targets", []);
