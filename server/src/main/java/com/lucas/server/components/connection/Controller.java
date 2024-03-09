@@ -1,5 +1,6 @@
 package com.lucas.server.components.connection;
 
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,22 +26,32 @@ public class Controller {
     @PostMapping("/ans")
     @ResponseBody
     public String post(@RequestBody String number) {
-        String result = solver.solveExpression(number);
-        if (result != "Invalid expression") {
-            dao.insert(Double.parseDouble(result));
-        } else {
-            dao.insertString(number);
+        try {
+            String result = solver.solveExpression(number);
+            if (result != "Invalid expression") {
+                dao.insert(Double.parseDouble(result));
+            } else {
+                dao.insertString(number);
+            }
+            return result;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "Invalid expression";
         }
-        return result;
     }
 
     @GetMapping("/ans")
     @ResponseBody
     public String get() {
-        return dao.get();
+        try {
+            return dao.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Invalid expression";
+        }
     }
 
-    @PostMapping("/upload/sudoku")
+    @PostMapping("/upload/sudokus")
     @ResponseBody
     public String handleFileUpload(@RequestBody String file) {
         try {
@@ -52,40 +63,60 @@ public class Controller {
         }
     }
 
-    @GetMapping("import/sudoku")
+    @GetMapping("fetch/sudoku")
     @ResponseBody
     public String getRandom() {
-        // TODO: implement
-        return dao.getSudokus().get(new Random().nextInt(dao.getSudokus().size())).serialize();
+        try {
+            List<Sudoku> sudokus = dao.getSudokus();
+            return sudokus.get(new Random().nextInt(sudokus.size())).serialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     @GetMapping("generate/sudoku")
     @ResponseBody
     public String generateRandom(@RequestParam("difficulty") int difficulty) {
-        return generator.generate(difficulty).serialize();
+        try {
+            return generator.generate(difficulty).serialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     @GetMapping("/solve/sudoku")
     @ResponseBody
     public String solveSudoku(@RequestParam String sudoku) {
-        Sudoku s = Sudoku.withValues(Sudoku.deSerialize(sudoku));
-        s.solve();
-        return s.serialize();
+        try {
+            Sudoku s = Sudoku.withValues(Sudoku.deSerialize(sudoku));
+            s.solve();
+            return s.serialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     @GetMapping("/check/sudoku")
     @ResponseBody
     public String checkSudoku(@RequestParam String initialSudoku, @RequestParam String currentSudoku) {
-        Sudoku s = Sudoku.withValues(Sudoku.deSerialize(initialSudoku));
-        s.solve();
-        String serialized = s.serialize().replaceAll("\"", "");
-        String solvable = "1";
-        for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
-            if (currentSudoku.charAt(i) != '0' && serialized.charAt(i) != currentSudoku.charAt(i)) {
-                solvable = "0";
-                break;
+        try {
+            Sudoku s = Sudoku.withValues(Sudoku.deSerialize(initialSudoku));
+            s.solve();
+            String serialized = s.serialize().replaceAll("\"", "");
+            String solvable = "1";
+            for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
+                if (currentSudoku.charAt(i) != '0' && serialized.charAt(i) != currentSudoku.charAt(i)) {
+                    solvable = "0";
+                    break;
+                }
             }
+            return solvable;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
         }
-        return solvable;
     }
 }
