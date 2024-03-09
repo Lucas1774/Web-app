@@ -2,9 +2,9 @@ package com.lucas.server.components.connection;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -36,29 +36,43 @@ public class DAO {
     }
 
     public void insert(Double number) {
-        this.jdbcTemplate.update("CALL update_ans(?)", number);
-        this.mode = "ans";
+        try {
+            this.jdbcTemplate.update("CALL update_ans(?)", number);
+            this.mode = "ans";
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void insertString(String string) {
-        this.jdbcTemplate.update("CALL update_text(?)", string);
-        this.mode = "string";
+        try {
+            this.jdbcTemplate.update("CALL update_text(?)", string);
+            this.mode = "string";
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void insertSudoku(Sudoku sudoku) {
-        this.jdbcTemplate.update("CALL update_sudoku(?)", sudoku.serialize());
+        try {
+            this.jdbcTemplate.update("CALL insert_sudoku(?)", sudoku.serialize());
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
     }
 
-    //TODO: uncomment annotation
-    //@PostConstruct
     public List<Sudoku> getSudokus() {
-        // TODO: fix split
-        // TODO: impelemnt sql function
-        List<Sudoku> sudokus = this.jdbcTemplate.query("CALL get_sudokus", (resultSet, rowNum) -> {
-             return Sudoku.withValues(Arrays.stream(resultSet.getString("raw").split(""))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList()));
-        });
-        return sudokus;
+        try {
+            List<Sudoku> sudokus = this.jdbcTemplate.query("CALL get_sudokus", (resultSet, rowNum) -> {
+                return Sudoku.withValues(resultSet.getString("state").replace("\"", "")
+                        .chars()
+                        .mapToObj(Character::getNumericValue)
+                        .collect(Collectors.toList()));
+            });
+            return sudokus;
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
