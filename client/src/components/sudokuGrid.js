@@ -6,7 +6,6 @@ const SudokuGrid = ({ sudokuString, onSudokuChange }) => {
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-
             let key = event.key;
             if (key.startsWith('Arrow') && focusedIndex !== null) {
                 event.preventDefault();
@@ -34,7 +33,6 @@ const SudokuGrid = ({ sudokuString, onSudokuChange }) => {
                 input.focus();
             }
         }
-
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
