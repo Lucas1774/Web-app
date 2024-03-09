@@ -42,7 +42,7 @@ const SudokuGrid = ({ sudokuString, onSudokuChange }) => {
     return (
         <><div className="sudoku-grid">
             {sudokuString.split('').map((digit, index) => (
-                <span className="sudoku-cell">
+                <span className="sudoku-cell" key={index}>
                     <input
                         index={index}
                         inputMode="numeric"
