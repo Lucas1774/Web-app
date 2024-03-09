@@ -10,14 +10,9 @@ The cool part is that it guarantees a single cycle (reminded me of that one Futu
 
 I've also added a very fancy Sudoku generator and solver, too bad it does require server computing (see [main branch](https://github.com/Lucas1774/Web-app/tree/master/server)).  
 I've injected a demo video into the page. The generated sudokus are not necessarily valid (more than one solution)  
-which makes the check functionality fail potentially. The importer is not implemented yet.  
+which makes the check functionality fail potentially. [The imported ones](https://projecteuler.net/project/resources/p096_sudoku.txt) (sitting on a database) are.  
 The solution is generated serverside, so no cheating allowed!
 
 This message is a react component that parses the readme of this branch of the repository into HTML, which is the weirdest thing I'll ever write.
-
-I like this project because I get to do a lot of stuff:
-- The server is https, and I can set it up with my phone anywhere across the world.
-- Git flows are very interesting.
-- I have scripts to build and deploy the front end of the application into gh-pages, as well as to launch it locally or across the world.
 
 Refer to [this page](https://github.com/Lucas1774/Web-app) for more information.
