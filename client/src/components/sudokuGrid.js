@@ -1,38 +1,42 @@
 import React, { useState, useEffect } from "react";
 
-const SudokuGrid = ({ sudokuString, onSudokuChange }) => {
+const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
 
     const [focusedIndex, setFocusedIndex] = useState(null);
+    const [started, setStarted] = useState(false);
+
+    useEffect(() => {
+        if (!solved() && !started) {
+            const input = document.querySelector(`.sudoku-cell:nth-child(1) input`);
+            input.focus();
+            setStarted(true);
+        }
+    }, [solved, started]);
+
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            let key = event.key;
-            if (key.startsWith('Arrow') && focusedIndex !== null) {
+            const arrowKeyMap = {
+                ArrowUp: -9,
+                ArrowDown: 9,
+                ArrowLeft: -1,
+                ArrowRight: 1,
+            };
+
+            const key = event.key;
+            if (key in arrowKeyMap && focusedIndex !== null) {
                 event.preventDefault();
-                let aux;
-                switch (key) {
-                    case 'ArrowUp':
-                        aux = focusedIndex - 9
-                        break;
-                    case 'ArrowDown':
-                        aux = focusedIndex + 9;
-                        break;
-                    case 'ArrowLeft':
-                        aux = focusedIndex - 1;
-                        break;
-                    case 'ArrowRight':
-                        aux = focusedIndex + 1;
-                        break;
-                    default:
-                        return;
+                const newIndex = focusedIndex + arrowKeyMap[key];
+                if (newIndex >= 0 && newIndex < 81) {
+                    const input = document.querySelector(`.sudoku-cell:nth-child(${newIndex + 1}) input`);
+                    if (input) {
+                        input.focus();
+                        setFocusedIndex(newIndex);
+                    }
                 }
-                if (aux < 0 || aux >= 81) {
-                    return;
-                }
-                const input = document.querySelector(`.sudoku-cell:nth-child(${aux + 1}) input`);
-                input.focus();
             }
-        }
+        };
+
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
@@ -47,8 +51,8 @@ const SudokuGrid = ({ sudokuString, onSudokuChange }) => {
                         index={index}
                         inputMode="numeric"
                         value={digit === '0' ? '' : digit}
-                        onChange={(event) => { onSudokuChange(index, event); event.target.select() }}
-                        onFocus={(event) => { setFocusedIndex(index); event.target.select() }}
+                        onKeyDown={(event) => onSudokuChange(index, event)}
+                        onFocus={() => setFocusedIndex(index)}
                         onBlur={() => setFocusedIndex(null)} />
                 </span>
             ))}
