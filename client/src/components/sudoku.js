@@ -1,5 +1,5 @@
 import SudokuGrid from "./sudokuGrid";
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { post, get } from "../components/api";
 import { Form, Button } from 'react-bootstrap';
 import FileImporter from './fileImporter';
@@ -17,8 +17,9 @@ const Sudoku = () => {
         isRestartButtonVisible: true,
     }), []);
 
-
     const [state, setState] = useState(initialState);
+
+    const formRef = useRef(null);
 
     const setAppState = (field, value) => {
         setState((prevState) => ({
@@ -37,6 +38,28 @@ const Sudoku = () => {
         }
     }, [state.initialSudoku]);
 
+    useEffect(() => {
+        const arrowKeyListener = (event) => {
+            if (event.key === 'ArrowUp' && state.difficulty < 9) {
+                event.preventDefault();
+                setAppState("difficulty", state.difficulty + 1);
+            } else if (event.key === 'ArrowDown' && state.difficulty > 1) {
+                event.preventDefault();
+                setAppState("difficulty", state.difficulty - 1);
+            }
+        };
+        if (state.isPickDifficultyVisible) {
+            document.addEventListener('keydown', arrowKeyListener);
+            formRef.current.focus();
+            formRef.current.select();
+        } else {
+            document.removeEventListener('keydown', arrowKeyListener);
+        }
+        return () => {
+            document.removeEventListener('keydown', arrowKeyListener);
+        };
+    }, [state.difficulty, state.isPickDifficultyVisible]);
+
     const handleGenerate = () => {
         hideEverything();
         setAppState("isPickDifficultyVisible", true);
@@ -47,28 +70,24 @@ const Sudoku = () => {
         event.preventDefault();
         if (!isNaN(event.target.value) && parseInt(event.target.value) >= 1 && parseInt(event.target.value) <= 9) {
             setAppState("difficulty", parseInt(event.target.value));
-        } else {
-            event.target.value = state.difficulty;
         }
     }
 
     const handleSudokuChange = (index, event) => {
         event.preventDefault();
-        const newValue = !event.target.value ? parseInt('0') : parseInt(event.target.value);
-        if (newValue >= 0 && newValue <= 9) {
-            if (state.initialSudoku[index] === '0') {
-                let auxSudoku = [...state.sudoku];
-                auxSudoku[index] = newValue.toString();
-                let element = document.querySelector(`input[index="${index}"]`);
-                if (0 !== newValue) {
-                    element.classList.remove(`white-background`);
-                    element.classList.add(`blue-background`);
-                } else {
-                    element.classList.remove(`blue-background`);
-                    element.classList.add(`white-background`);
-                }
-                setAppState("sudoku", auxSudoku.join(''));
+        const newValue = !event.target.value ? 0 : parseInt(event.target.value);
+        if (newValue >= 0 && newValue <= 9 && state.initialSudoku[index] === '0') {
+            let auxSudoku = [...state.sudoku];
+            auxSudoku[index] = newValue.toString();
+            let element = document.querySelector(`input[index="${index}"]`);
+            if (0 !== newValue) {
+                element.classList.remove(`white-background`);
+                element.classList.add(`blue-background`);
+            } else {
+                element.classList.remove(`blue-background`);
+                element.classList.add(`white-background`);
             }
+            setAppState("sudoku", auxSudoku.join(''));
         }
     }
 
@@ -115,8 +134,9 @@ const Sudoku = () => {
     }, [check, state.initialSudoku, state.sudoku]);
 
     useEffect(() => {
-        const enterListener = (e) => {
-            if (e.key === 'Enter') {
+        const enterListener = (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
                 check();
             }
         };
@@ -125,7 +145,6 @@ const Sudoku = () => {
         } else {
             document.removeEventListener('keydown', enterListener);
         }
-
         return () => {
             document.removeEventListener('keydown', enterListener);
         };
@@ -189,11 +208,11 @@ const Sudoku = () => {
                 {state.isPickDifficultyVisible &&
                     <Form>
                         <Form.Label>Pick difficulty:</Form.Label>
-                        <Form.Control inputMode="numeric" value={state.difficulty} onChange={(e) => { handleKeyDown(e); e.target.select() }} onFocus={(e) => e.target.select()} />
+                        <Form.Control inputMode="numeric" value={state.difficulty} onChange={handleKeyDown} onFocus={(e) => e.target.select()} ref={formRef} />
                         <Button type="submit" variant="success" onClick={generate}>Generate</Button>
                     </Form>}
                 {state.isSudokuVisible &&
-                    <><SudokuGrid onKeyDown={solve} sudokuString={state.sudoku} initialSudokuState={state.initialSudoku} onSudokuChange={handleSudokuChange} />
+                    <><SudokuGrid sudokuString={state.sudoku} onSudokuChange={handleSudokuChange} />
                         <Button type="submit" variant="success" onClick={solve}>Solve</Button>
                         <Button onClick={check}>Check</Button></>
                 }
