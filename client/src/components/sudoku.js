@@ -120,7 +120,7 @@ const Sudoku = () => {
 
     const sendFile = (content) => {
         hideEverything();
-        post('/upload/sudoku', content)
+        post('/upload/sudokus', content)
             .then(() => {
                 setAppState(FieldNames.IS_SUCCESSFULLY_UPLOADED_VISIBLE, true);
                 setTimeout(() => {
@@ -133,9 +133,11 @@ const Sudoku = () => {
             });
     }
 
-    const generate = () => {
+    const generateOrFetch = (event) => {
+        let buttonClicked = event.target.id;
+        let params = buttonClicked === "generate" ? `difficulty=${state.difficulty}` : "";
         hideEverything();
-        get(`/generate/sudoku?difficulty=${state.difficulty}`)
+        get(`/${buttonClicked}/sudoku?${params}`)
             .then(response => {
                 setAppState(FieldNames.SUDOKU, response.data);
                 setAppState(FieldNames.INITIAL_SUDOKU, response.data);
@@ -228,9 +230,10 @@ const Sudoku = () => {
                 {state.isSuccessfullyUploadedVisible && <div>Successfully uploaded!</div>}
                 {state.isPickDifficultyVisible &&
                     <Form>
-                        <Form.Label>Pick difficulty:</Form.Label>
+                        <Form.Label>Pick difficulty (only for generated sudoku):</Form.Label>
                         <Form.Control inputMode="numeric" value={state.difficulty} onKeyDown={handleKeyDown} ref={formRef} />
-                        <Button type="submit" variant="success" onClick={generate}>Generate</Button>
+                        <Button id="generate" type="submit" variant="success" onClick={generateOrFetch}>Generate</Button>
+                        <Button id="fetch" onClick={generateOrFetch}>Fetch</Button>
                     </Form>}
                 {state.isSudokuVisible &&
                     <><SudokuGrid sudokuString={state.sudoku} onSudokuChange={handleSudokuChange} solved={isSolved} />
