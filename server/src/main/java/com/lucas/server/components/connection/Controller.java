@@ -19,8 +19,11 @@ public class Controller {
     private Generator generator;
     @Autowired
     private Solver solver;
+    @Autowired
+    private SudokuParser sudokuParser;
 
     @PostMapping("/ans")
+    @ResponseBody
     public String post(@RequestBody String number) {
         String result = solver.solveExpression(number);
         if (result != "Invalid expression") {
@@ -38,14 +41,21 @@ public class Controller {
     }
 
     @PostMapping("/upload/sudoku")
+    @ResponseBody
     public String handleFileUpload(@RequestBody String file) {
-        // TODO: implement
-        return "sudokus imported";
+        try {
+            sudokuParser.fromString(file.replace("\"", "")).forEach(dao::insertSudoku);
+            return "1";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
     }
 
     @GetMapping("import/sudoku")
     @ResponseBody
     public String getRandom() {
+        // TODO: implement
         return dao.getSudokus().get(new Random().nextInt(dao.getSudokus().size())).serialize();
     }
 
@@ -56,6 +66,7 @@ public class Controller {
     }
 
     @GetMapping("/solve/sudoku")
+    @ResponseBody
     public String solveSudoku(@RequestParam String sudoku) {
         Sudoku s = Sudoku.withValues(Sudoku.deSerialize(sudoku));
         s.solve();
@@ -63,6 +74,7 @@ public class Controller {
     }
 
     @GetMapping("/check/sudoku")
+    @ResponseBody
     public String checkSudoku(@RequestParam String initialSudoku, @RequestParam String currentSudoku) {
         Sudoku s = Sudoku.withValues(Sudoku.deSerialize(initialSudoku));
         s.solve();

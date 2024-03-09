@@ -36,7 +36,7 @@ public class Generator {
         for (int digit : Sudoku.DIGITS) {
             digits.add(digit);
         }
-            Collections.shuffle(digits, random);
+        Collections.shuffle(digits, random);
         while (!sudoku.isSolved()) {
             for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
                 boolean success = false;

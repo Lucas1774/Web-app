@@ -45,6 +45,10 @@ public class DAO {
         this.mode = "string";
     }
 
+    public void insertSudoku(Sudoku sudoku) {
+        this.jdbcTemplate.update("CALL update_sudoku(?)", sudoku.serialize());
+    }
+
     //TODO: uncomment annotation
     //@PostConstruct
     public List<Sudoku> getSudokus() {
