@@ -16,6 +16,7 @@ const FieldNames = {
     IS_RESTART_BUTTON_VISIBLE: "isRestartButtonVisible",
 };
 
+// TODO: error handling
 const Sudoku = () => {
     const initialState = useMemo(() => ({
         [FieldNames.SUDOKU]: "",
