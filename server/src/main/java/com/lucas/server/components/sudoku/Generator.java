@@ -15,57 +15,49 @@ public class Generator {
         this.random = new Random();
     }
 
-    public Sudoku generateDefault(int difficulty){
+    public Sudoku generateDefault(int difficulty) {
         Sudoku sudoku = Sudoku.withDefaultValues();
         this.setDifficulty(sudoku, difficulty);
         return sudoku;
     }
 
     public Sudoku generate(int difficulty) {
-        Sudoku sudoku = null;
-        while (null == sudoku) {
-            sudoku = doGenerate();
-        }
+        Sudoku sudoku = Sudoku.withZeros();
+        this.doGenerate(sudoku);
         this.setDifficulty(sudoku, difficulty);
         return sudoku;
     }
 
-    private Sudoku doGenerate() {
-        Sudoku sudoku = Sudoku.withZeros();
-        List<Integer> digits = new ArrayList<>();
-        for (int digit : Sudoku.DIGITS) {
-            digits.add(digit);
-        }
-        Collections.shuffle(digits, random);
-        while (!sudoku.isSolved()) {
-            for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
-                boolean success = false;
+    public boolean doGenerate(Sudoku sudoku) {
+        List<Integer> digits = new ArrayList<>(Sudoku.DIGITS);
+        for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
+            if (sudoku.get().get(place) == 0) {
+                Collections.shuffle(digits, random);
                 for (int digit : digits) {
                     if (sudoku.acceptsNumberInPlace(place, digit)) {
                         sudoku.set(place, digit);
-                        Collections.shuffle(digits, random);
-                        success = true;
-                        break;
+                        if (doGenerate(sudoku)) {
+                            return true;
+                        }
+                        sudoku.set(place, 0);
                     }
                 }
-                if (!success) {
-                    return null;
-                }
+                return false;
             }
         }
-        return sudoku;
+        return true;
     }
 
     private void setDifficulty(Sudoku sudoku, int difficulty) {
+        int cellsToSetToZero = (int) (Sudoku.NUMBER_OF_CELLS - (17 + ((9 - difficulty) * 6)));
+        List<Integer> possibleCells = new ArrayList<>();
         for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
-            double chanceToFill = (1 - (difficulty / 10.0)) / 1.3;
-            if (!this.fills(1 - (chanceToFill))) {
-                sudoku.set(i, 0);
-            }
+            possibleCells.add(i);
         }
-    }
-
-    private boolean fills(double chanceToFill) {
-        return random.nextDouble() > chanceToFill;
+        for (int i = 0; i < cellsToSetToZero; i++) {
+            int randomCellIndex = random.nextInt(possibleCells.size());
+            sudoku.set(possibleCells.get(randomCellIndex), 0);
+            possibleCells.remove(randomCellIndex);
+        }
     }
 }

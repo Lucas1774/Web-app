@@ -1,11 +1,12 @@
 package com.lucas.server.components.sudoku;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Sudoku {
     public static final int SIZE = 9;
-    public static final int[] DIGITS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    public static final List<Integer> DIGITS = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
     static final String ROW = "row";
     static final String COLUMN = "column";
     private static final String BLOCK = "block";
@@ -42,7 +43,7 @@ public class Sudoku {
     public static Sudoku withDefaultValues() {
         List<Integer> rawData = new ArrayList<Integer>();
         for (int i = 0; i < NUMBER_OF_CELLS; i++) {
-            rawData.add(((i % Sudoku.SIZE) + 3 * (i / Sudoku.SIZE) + (i / 27)) % Sudoku.SIZE + 1);
+            rawData.add(((i % SIZE) + 3 * (i / SIZE) + (i / 27)) % SIZE + 1);
         }
         return new Sudoku(rawData);
     }
@@ -85,38 +86,36 @@ public class Sudoku {
     }
 
     public void solve() {
-        int maxDepth = 4;
+        int maxRisk = 2;
         while (!this.isSolved()) {
-            this.solve(maxDepth);
-            maxDepth++;
+            this.doSolve(maxRisk);
+            maxRisk++;
         }
     }
 
-    public boolean solve(int maxDepth) {
+    private boolean doSolve(int maxRisk) {
         if (this.isSolved()) {
             return true;
-        }
-        if (!this.getPromisingCells(0).isEmpty()) {
-            return false;
         }
         this.fillTrivial();
         if (this.isSolved()) {
             return true;
         }
-        for (int i = 2; i < maxDepth; i++) {
+        for (int i = 2; i <= maxRisk; i++) {
             List<Integer> promisingCells = this.getPromisingCells(i);
             if (!promisingCells.isEmpty()) {
                 for (int promisingCell : promisingCells) {
                     for (int digit : DIGITS) {
                         if (this.acceptsNumberInPlace(promisingCell, digit)) {
-                            Sudoku sudoku = Sudoku.withValues(this.rawData);
+                            Sudoku sudoku = withValues(this.rawData);
                             sudoku.set(promisingCell, digit);
-                            if (sudoku.solve(maxDepth--)) {
+                            if (sudoku.doSolve(maxRisk--)) {
                                 this.rawData = sudoku.rawData;
                                 return true;
                             }
                         }
                     }
+                    return false;
                 }
             }
         }

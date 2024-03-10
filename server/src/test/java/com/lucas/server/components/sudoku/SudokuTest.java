@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class SudokuTest {
-    private static final int NUM_RUNS = 100;
+    private static final int NUM_RUNS = 1000;
     @Autowired
     Generator generator;
 
