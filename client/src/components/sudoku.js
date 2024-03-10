@@ -134,11 +134,14 @@ const Sudoku = () => {
             });
     }
 
-    const generateOrFetch = (event) => {
-        let buttonClicked = event.target.id;
-        let params = buttonClicked === "generate" ? `difficulty=${state.difficulty}` : "";
+    const generateOrFetchFromClick = (event) => {
+        generateOrFetch(event.target.id);
+    }
+
+    const generateOrFetch = useCallback((generateOrFetch) => {
+        let params = generateOrFetch === "generate" ? `?difficulty=${state.difficulty}` : "";
         hideEverything();
-        get(`/${buttonClicked}/sudoku?${params}`)
+        get(`/${generateOrFetch}/sudoku${params}`)
             .then(response => {
                 setAppState(FieldNames.SUDOKU, response.data);
                 setAppState(FieldNames.INITIAL_SUDOKU, response.data);
@@ -149,14 +152,14 @@ const Sudoku = () => {
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
             });
-    }
+    }, [hideEverything, restoreDefaults, state.difficulty])
 
     const check = useCallback(() => {
         const showBorderThenRemove = async (grid, color) => {
             let numberOfFlashes = color === "green" && isSolved() ? 3 : 1;
             for (let i = 0; i < numberOfFlashes; i++) {
                 grid.classList.add(`${color}-border`);
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 500));
                 grid.classList.remove(`${color}-border`);
                 await new Promise(resolve => setTimeout(resolve, 200));
             }
@@ -197,6 +200,28 @@ const Sudoku = () => {
     }, [hideEverything, restoreDefaults, state.initialSudoku])
 
     useEffect(() => {
+        const generateOrFetchFromKey = (event) => {
+            generateOrFetch(event.ctrlKey ? "fetch" : "generate");
+        }
+        const enterListener = (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                generateOrFetchFromKey(event);
+            } else if (event.key === 'Escape') {
+                restoreDefaults();
+            }
+        };
+        if (state.isPickDifficultyVisible) {
+            document.addEventListener('keydown', enterListener);
+        } else {
+            document.removeEventListener('keydown', enterListener);
+        }
+        return () => {
+            document.removeEventListener('keydown', enterListener);
+        };
+    }, [generateOrFetch, restoreDefaults, state.isPickDifficultyVisible])
+
+    useEffect(() => {
         const enterListener = (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -232,9 +257,9 @@ const Sudoku = () => {
                 {state.isPickDifficultyVisible &&
                     <Form>
                         <Form.Label>Pick difficulty (only for generated sudoku):</Form.Label>
-                        <Form.Control inputMode="numeric" value={state.difficulty} onKeyDown={handleKeyDown} ref={formRef} />
-                        <Button id="generate" type="submit" variant="success" onClick={generateOrFetch}>Generate</Button>
-                        <Button id="fetch" onClick={generateOrFetch}>Fetch</Button>
+                        <Form.Control inputMode="numeric" value={state.difficulty} onKeyDown={handleKeyDown} ref={formRef} onChange={() => { }} />
+                        <Button id="generate" variant="success" onClick={generateOrFetchFromClick}>Generate</Button>
+                        <Button id="fetch" onClick={generateOrFetchFromClick}>Fetch</Button>
                     </Form>}
                 {state.isSudokuVisible &&
                     <><SudokuGrid sudokuString={state.sudoku} onSudokuChange={handleSudokuChange} solved={isSolved} />
