@@ -1,5 +1,10 @@
 package com.lucas.server.components.sudoku;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +27,18 @@ public class SudokuTest {
     public void testGenerate() {
         Sudoku sudoku = generator.generate(5);
         System.out.println(sudoku);
+    }
+
+    @Test
+    public void testGenerationConstrains() {
+        for (int i = 0; i < NUM_RUNS; i++) {
+            int difficulty = (int) (Math.random() * Sudoku.SIZE) + 1;
+            Sudoku sudoku = generator.generate(difficulty);
+            assertEquals(17 + ((9 - difficulty) * 6), sudoku.get().stream().filter(cell -> cell != 0).count());
+            assertTrue(IntStream.rangeClosed(1, 9)
+                    .filter(digit -> sudoku.get().contains(digit))
+                    .count() >= 8);
+        }
     }
 
     @Test

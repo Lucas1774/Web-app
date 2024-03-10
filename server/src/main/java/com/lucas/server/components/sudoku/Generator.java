@@ -54,6 +54,18 @@ public class Generator {
         for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
             possibleCells.add(i);
         }
+        List<Integer> digits = new ArrayList<>(Sudoku.DIGITS);
+        Collections.shuffle(digits, random);
+        for (int i = 0; i < digits.size() - 1; i++) {
+            boolean success = false;
+            while (!success) {
+                int randomCellIndex = random.nextInt(possibleCells.size());
+                if (digits.get(i) == sudoku.get().get(possibleCells.get(randomCellIndex))) {
+                    possibleCells.remove(randomCellIndex);
+                    success = true;
+                }
+            }
+        }
         for (int i = 0; i < cellsToSetToZero; i++) {
             int randomCellIndex = random.nextInt(possibleCells.size());
             sudoku.set(possibleCells.get(randomCellIndex), 0);
