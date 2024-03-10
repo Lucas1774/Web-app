@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.Collections;
 
 @Service
@@ -57,14 +59,11 @@ public class Generator {
         List<Integer> digits = new ArrayList<>(Sudoku.DIGITS);
         Collections.shuffle(digits, random);
         for (int i = 0; i < digits.size() - 1; i++) {
-            boolean success = false;
-            while (!success) {
-                int randomCellIndex = random.nextInt(possibleCells.size());
-                if (digits.get(i) == sudoku.get().get(possibleCells.get(randomCellIndex))) {
-                    possibleCells.remove(randomCellIndex);
-                    success = true;
-                }
-            }
+            int digit = digits.get(i);
+            possibleCells.remove(possibleCells.indexOf(possibleCells.get(IntStream.range(0, possibleCells.size())
+                    .filter(cellIndex -> digit == sudoku.get().get(possibleCells.get(cellIndex)))
+                    .mapToObj(Integer::valueOf)
+                    .collect(Collectors.toList()).get(random.nextInt(Sudoku.SIZE)))));
         }
         for (int i = 0; i < cellsToSetToZero; i++) {
             int randomCellIndex = random.nextInt(possibleCells.size());

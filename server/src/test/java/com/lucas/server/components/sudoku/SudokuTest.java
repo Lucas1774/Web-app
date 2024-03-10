@@ -16,21 +16,16 @@ public class SudokuTest {
     Generator generator;
 
     @Test
-    public void testSolve() {
-        Sudoku sudoku = generator.generate(7);
-        System.out.println(sudoku);
-        sudoku.solve();
-        System.out.println(sudoku);
+    public void Solve() {
+        for (int i = 0; i < NUM_RUNS; i++) {
+            Sudoku sudoku = generator.generate((int) (Math.random() * Sudoku.SIZE) + 1);
+            sudoku.solve();
+            assertTrue(sudoku.isSolved());
+        }
     }
 
     @Test
-    public void testGenerate() {
-        Sudoku sudoku = generator.generate(5);
-        System.out.println(sudoku);
-    }
-
-    @Test
-    public void testGenerationConstrains() {
+    public void GenerationConstrains() {
         for (int i = 0; i < NUM_RUNS; i++) {
             int difficulty = (int) (Math.random() * Sudoku.SIZE) + 1;
             Sudoku sudoku = generator.generate(difficulty);
@@ -43,16 +38,21 @@ public class SudokuTest {
 
     @Test
     public void benchmark() {
+        double totalGenerationDuration = 0;
         double totalDuration = 0;
         for (int i = 0; i < NUM_RUNS; i++) {
             int difficulty = (int) (Math.random() * Sudoku.SIZE) + 1;
+            long generationStartTime = System.nanoTime();
             Sudoku sudoku = generator.generate(difficulty);
             long startTime = System.nanoTime();
             sudoku.solve();
             long endTime = System.nanoTime();
+            totalGenerationDuration += (startTime - generationStartTime);
             totalDuration += (endTime - startTime);
         }
+        double averageGenerationDuration = totalGenerationDuration / NUM_RUNS / 1000000;
         double averageDuration = totalDuration / NUM_RUNS / 1000000;
+        System.out.println("Average time taken to generate: " + averageGenerationDuration + " milliseconds");
         System.out.println("Average time taken to solve: " + averageDuration + " milliseconds");
     }
 }
