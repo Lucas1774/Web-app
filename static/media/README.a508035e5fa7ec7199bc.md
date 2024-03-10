@@ -9,10 +9,11 @@ I've added a stupid serverless Secret Santa raffler to play with my co-workers n
 The cool part is that it guarantees a single cycle (reminded me of that one Futurama episode), so it's more fun this way.
 
 I've also added a very fancy Sudoku generator and solver, too bad it does require server computing (see [main branch](https://github.com/Lucas1774/Web-app/tree/master/server)).  
-I've injected a demo video into the page. The generated sudokus are not necessarily valid (more than one solution)  
-which makes the check functionality fail potentially. [The imported ones](https://projecteuler.net/project/resources/p096_sudoku.txt) (sitting on a database) are.  
+I've injected a demo video into the page. The generated sudokus have at least 17 clues, so they are supposed to have exactly one solution.  
+The program can import others from [here](https://projecteuler.net/project/resources/p096_sudoku.txt), and will attempt to store them in a database.  
+I didn't bother implementing custom error message rendering, so if something can't be done it just won't be done.  
 The solution is generated serverside, so no cheating allowed!
 
-This message is a react component that parses the readme of this branch of the repository into HTML, which is the weirdest thing I'll ever write.
+This message is a react component that parses the readme of this branch of the repository into HTML.
 
 Refer to [this page](https://github.com/Lucas1774/Web-app) for more information.
