@@ -12,9 +12,11 @@ const App = () => {
     <><div style={{ display: "flex", flexWrap: "wrap" }}>
       <About />
       <br></br>
-      <video controls width="360px">
-        <source src={video} type="video/webm" />
-      </video>
+      <div style={{ margin: "auto" }}>
+        <video controls width="360px">
+          <source src={video} type="video/webm" />
+        </video>
+      </div>
       <br></br>
     </div>
       <Row>
