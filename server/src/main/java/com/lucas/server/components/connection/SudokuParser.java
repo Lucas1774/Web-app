@@ -28,6 +28,9 @@ public class SudokuParser {
                     newRawData = newRawData.concat(lines[i]);
                 }
             }
+            sudokus.add(Sudoku.withValues(newRawData.chars()
+                    .mapToObj(Character::getNumericValue)
+                    .collect(Collectors.toList())));
             return sudokus;
         } catch (Exception e) {
             return null;
