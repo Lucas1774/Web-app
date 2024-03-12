@@ -3,6 +3,7 @@ package com.lucas.server.components.sudoku;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Random;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
@@ -12,13 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class SudokuTest {
     private static final int NUM_RUNS = 1000;
+    private static final Random random = new Random();
     @Autowired
     Generator generator;
 
     @Test
     public void Solve() {
         for (int i = 0; i < NUM_RUNS; i++) {
-            Sudoku sudoku = generator.generate((int) (Math.random() * Sudoku.SIZE) + 1);
+            Sudoku sudoku = generator.generate(random.nextInt(Sudoku.SIZE) + 1);
             sudoku.solve();
             assertTrue(sudoku.isSolved());
         }
@@ -27,7 +29,7 @@ public class SudokuTest {
     @Test
     public void GenerationConstrains() {
         for (int i = 0; i < NUM_RUNS; i++) {
-            int difficulty = (int) (Math.random() * Sudoku.SIZE) + 1;
+            int difficulty = random.nextInt(Sudoku.SIZE) + 1;
             Sudoku sudoku = generator.generate(difficulty);
             assertEquals(17 + ((9 - difficulty) * 6), sudoku.get().stream().filter(cell -> cell != 0).count());
             assertTrue(IntStream.rangeClosed(1, 9)
@@ -41,7 +43,7 @@ public class SudokuTest {
         double totalGenerationDuration = 0;
         double totalDuration = 0;
         for (int i = 0; i < NUM_RUNS; i++) {
-            int difficulty = (int) (Math.random() * Sudoku.SIZE) + 1;
+            int difficulty = random.nextInt(Sudoku.SIZE) + 1;
             long generationStartTime = System.nanoTime();
             Sudoku sudoku = generator.generate(difficulty);
             long startTime = System.nanoTime();
