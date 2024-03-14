@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class SudokuTest {
-    private static final int NUM_RUNS = 1000;
+    private static final int NUM_RUNS = 100000;
     private static final Random random = new Random();
     @Autowired
     Generator generator;

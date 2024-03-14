@@ -93,29 +93,49 @@ public class Sudoku {
         }
     }
 
+    /**
+     * @param maxRisk forces the program to come back if filling a number doesn't
+     *                clear others
+     * @return
+     */
     private boolean doSolve(int maxRisk) {
         if (this.isSolved()) {
             return true;
         }
-        this.fillTrivial();
-        if (this.isSolved()) {
-            return true;
-        }
-        for (int i = 2; i <= maxRisk; i++) {
+        for (int i = 0; i <= maxRisk; i++) {
             List<Integer> promisingCells = this.getPromisingCells(i);
             if (!promisingCells.isEmpty()) {
-                for (int promisingCell : promisingCells) {
-                    for (int digit : DIGITS) {
-                        if (this.acceptsNumberInPlace(promisingCell, digit)) {
-                            Sudoku sudoku = withValues(this.rawData);
-                            sudoku.set(promisingCell, digit);
-                            if (sudoku.doSolve(maxRisk--)) {
-                                this.rawData = sudoku.rawData;
-                                return true;
+                if (0 == i) {
+                    return false;
+                }
+                if (1 == i) {
+                    for (int promisingCell : promisingCells) {
+                        for (int digit : DIGITS) {
+                            if (this.acceptsNumberInPlace(promisingCell, digit)) {
+                                this.set(promisingCell, digit);
+                                break;
                             }
                         }
                     }
-                    return false;
+                    return this.doSolve(maxRisk);
+                } else {
+                    int count = 0;
+                    for (int promisingCell : promisingCells) {
+                        for (int digit : DIGITS) {
+                            if (this.acceptsNumberInPlace(promisingCell, digit)) {
+                                Sudoku sudoku = withValues(this.rawData);
+                                sudoku.set(promisingCell, digit);
+                                count++;
+                                if (sudoku.doSolve(maxRisk--)) {
+                                    this.rawData = sudoku.rawData;
+                                    return true;
+                                }
+                            }
+                            if (count == i) {
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -132,25 +152,6 @@ public class Sudoku {
             rawData.add(Character.getNumericValue(c));
         }
         return rawData;
-    }
-
-    private void fillTrivial() {
-        boolean changesMade = true;
-        while (changesMade) {
-            List<Integer> promisingCells = this.getPromisingCells(1);
-            changesMade = false;
-            if (!promisingCells.isEmpty()) {
-                for (int promisingCell : promisingCells) {
-                    for (int digit : DIGITS) {
-                        if (this.acceptsNumberInPlace(promisingCell, digit)) {
-                            this.set(promisingCell, digit);
-                            changesMade = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private List<Integer> getPromisingCells(int i) {
@@ -172,15 +173,13 @@ public class Sudoku {
     }
 
     boolean acceptsNumberInPlace(Integer place, int digit) {
-        if (0 == this.rawData.get(place)) {
-            int rowIndex = getRowIndex(place);
-            int columnIndex = getColumnIndex(place);
-            Row row = (Row) this.getFromCell(ROW, rowIndex, columnIndex);
-            Column column = (Column) this.getFromCell(COLUMN, rowIndex, columnIndex);
-            Block block = (Block) this.getFromCell(BLOCK, rowIndex, columnIndex);
-            if (row.acceptsNumber(digit) && column.acceptsNumber(digit) && block.acceptsNumber(digit)) {
-                return true;
-            }
+        int rowIndex = getRowIndex(place);
+        int columnIndex = getColumnIndex(place);
+        Row row = (Row) this.getFromCell(ROW, rowIndex, columnIndex);
+        Column column = (Column) this.getFromCell(COLUMN, rowIndex, columnIndex);
+        Block block = (Block) this.getFromCell(BLOCK, rowIndex, columnIndex);
+        if (row.acceptsNumber(digit) && column.acceptsNumber(digit) && block.acceptsNumber(digit)) {
+            return true;
         }
         return false;
     }
