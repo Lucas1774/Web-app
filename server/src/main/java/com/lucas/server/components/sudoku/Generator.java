@@ -33,7 +33,7 @@ public class Generator {
     public boolean doGenerate(Sudoku sudoku) {
         List<Integer> digits = new ArrayList<>(Sudoku.DIGITS);
         for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
-            if (sudoku.get().get(place) == 0) {
+            if (0 == sudoku.get().get(place)) {
                 Collections.shuffle(digits, random);
                 for (int digit : digits) {
                     if (sudoku.acceptsNumberInPlace(place, digit)) {
