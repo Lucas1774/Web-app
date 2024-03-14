@@ -40,8 +40,10 @@ const SecretSanta = () => {
         event.preventDefault();
         hideEverything();
         setAppState("isSavingVisible", true);
-        if (state.input !== "") {
+        let delay = 1000
+        if (state.input !== "" && !state.participants.includes(state.input)) {
             setAppState("participants", [...state.participants, state.input]);
+            delay = 0;
         }
         setTimeout(() => {
             setAppState("input", "");
@@ -49,7 +51,7 @@ const SecretSanta = () => {
             setAppState("isFormVisible", true);
             setAppState("isRestartButtonVisible", true);
             setAppState("isParticipantListVisible", true);
-        }, state.input !== "" ? 0 : 1000);
+        }, delay);
     }
 
     const handleStartLottery = () => {
@@ -66,9 +68,13 @@ const SecretSanta = () => {
         } else {
             setAppState("isNoParticipantsVisible", true);
             setTimeout(() => {
-                restoreDefaults();
+            setAppState("input", "");
+            setAppState("isSavingVisible", false);
+            setAppState("isFormVisible", true);
+            setAppState("isRestartButtonVisible", true);
+            setAppState("isParticipantListVisible", true);
                 setAppState("isNoParticipantsVisible", false);
-            }, 2000);
+            }, 1000);
         }
     }
 
@@ -180,12 +186,13 @@ const SecretSanta = () => {
             <h1 id="secretSanta">Secret Santa</h1>
             <div className="app secretSanta">
                 {state.isFormVisible && renderForm()}
-                {state.isSavingVisible && (state.input !== "" ? <div></div> : <div>Type a name</div>)}
+                {state.isSavingVisible && (state.input === ""
+                    ? <div>Type a name</div> : state.participants.includes(state.input)
+                        ? <div>Player already registered</div> : <div></div>)}
                 {state.isCalculatingVisible && <div>Calculating...</div>}
                 {state.isNoParticipantsVisible && (
                     <>
                         <div>Not enough participants</div>
-                        <div>Deleting all previous data...</div>
                     </>
                 )}
                 {state.isChosenVisible && renderChosen()}
