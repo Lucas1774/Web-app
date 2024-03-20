@@ -119,20 +119,15 @@ public class Sudoku {
                     }
                     return this.doSolve(maxRisk);
                 } else {
-                    int count = 0;
                     for (int promisingCell : promisingCells) {
                         for (int digit : DIGITS) {
                             if (this.acceptsNumberInPlace(promisingCell, digit)) {
                                 Sudoku sudoku = withValues(this.rawData);
                                 sudoku.set(promisingCell, digit);
-                                count++;
                                 if (sudoku.doSolve(maxRisk--)) {
                                     this.rawData = sudoku.rawData;
                                     return true;
                                 }
-                            }
-                            if (count == i) {
-                                break;
                             }
                         }
                     }
