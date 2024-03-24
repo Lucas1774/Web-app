@@ -27,8 +27,8 @@ public class SudokuParser {
                 if (0 == i % 10) {
                     if (!newRawData.equals("")) {
                         sudokus.add(Sudoku.withValues(newRawData.chars()
-                                .mapToObj(Character::getNumericValue)
-                                .collect(Collectors.toList())));
+                                .map(Character::getNumericValue)
+                                .toArray()));
                     }
                     newRawData = "";
                 } else {
@@ -36,8 +36,8 @@ public class SudokuParser {
                 }
             }
             sudokus.add(Sudoku.withValues(newRawData.chars()
-                    .mapToObj(Character::getNumericValue)
-                    .collect(Collectors.toList())));
+                    .map(Character::getNumericValue)
+                    .toArray()));
             return sudokus;
         } catch (Exception e) {
             return null;

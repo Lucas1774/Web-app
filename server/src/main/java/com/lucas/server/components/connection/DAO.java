@@ -1,7 +1,6 @@
 package com.lucas.server.components.connection;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -66,8 +65,8 @@ public class DAO {
             List<Sudoku> sudokus = this.jdbcTemplate.query("CALL get_sudokus", (resultSet, rowNum) -> {
                 return Sudoku.withValues(resultSet.getString("state").replace("\"", "")
                         .chars()
-                        .mapToObj(Character::getNumericValue)
-                        .collect(Collectors.toList()));
+                        .map(Character::getNumericValue)
+                        .toArray());
             });
             return sudokus;
         } catch (DataAccessException e) {

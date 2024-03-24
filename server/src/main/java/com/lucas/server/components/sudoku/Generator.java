@@ -3,6 +3,7 @@ package com.lucas.server.components.sudoku;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -31,10 +32,10 @@ public class Generator {
     }
 
     public boolean doGenerate(Sudoku sudoku) {
-        List<Integer> digits = new ArrayList<>(Sudoku.DIGITS);
+        int[] digits = Sudoku.DIGITS.clone();
         for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
-            if (0 == sudoku.get().get(place)) {
-                Collections.shuffle(digits, random);
+            if (0 == sudoku.get()[place]) {
+                Collections.shuffle(Arrays.asList(Sudoku.DIGITS), random);
                 for (int digit : digits) {
                     if (sudoku.acceptsNumberInPlace(place, digit)) {
                         sudoku.set(place, digit);
@@ -56,12 +57,12 @@ public class Generator {
         for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
             possibleCells.add(i);
         }
-        List<Integer> digits = new ArrayList<>(Sudoku.DIGITS);
-        Collections.shuffle(digits, random);
-        for (int i = 0; i < digits.size() - 1; i++) {
-            int digit = digits.get(i);
+        int[] digits = Sudoku.DIGITS.clone();
+        Collections.shuffle(Arrays.asList(digits), random);
+        for (int i = 0; i < digits.length - 1; i++) {
+            int digit = digits[i];
             possibleCells.remove(possibleCells.indexOf(possibleCells.get(IntStream.range(0, possibleCells.size())
-                    .filter(cellIndex -> digit == sudoku.get().get(possibleCells.get(cellIndex)))
+                    .filter(cellIndex -> digit == sudoku.get()[possibleCells.get(cellIndex)])
                     .mapToObj(Integer::valueOf)
                     .collect(Collectors.toList()).get(random.nextInt(Sudoku.SIZE)))));
         }
