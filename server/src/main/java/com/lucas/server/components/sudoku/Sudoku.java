@@ -94,9 +94,13 @@ public class Sudoku {
     }
 
     /**
+     * Using a copy of the sudoku is more efficient than editing and rolling back
+     * even trivially-placed numbers
+     * Likewise, keeping count of digits attempted to place is slower than checking
+     * all 9
+     * 
      * @param maxRisk forces the program to come back if filling a number doesn't
      *                clear others
-     * @return
      */
     private boolean doSolve(int maxRisk) {
         if (this.isSolved()) {

@@ -2,7 +2,6 @@ package com.lucas.server.components.connection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -11,10 +10,18 @@ import com.lucas.server.components.sudoku.Sudoku;
 @Service
 public class SudokuParser {
 
+    /**
+     * Dumps a string representing sudoku into a list of sudoku
+     * The string is expected to have ten lines per sudoku, with the first one's
+     * content being irrelevant
+     * It is necessary to escape two backslashes: one for regex one for String
+     * 
+     * @param content the string to parse
+     */
     public List<Sudoku> fromString(String content) {
         try {
             List<Sudoku> sudokus = new ArrayList<>();
-            String[] lines = content.replace("\\r\\n", "newLine").split("newLine");
+            String[] lines = content.split("\\\\r\\\\n|\\\\r|\\\\n");
             String newRawData = "";
             for (int i = 0; i < lines.length; i++) {
                 if (0 == i % 10) {
