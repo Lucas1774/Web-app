@@ -3,7 +3,6 @@ package com.lucas.server.components.sudoku;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -32,10 +31,13 @@ public class Generator {
     }
 
     public boolean doGenerate(Sudoku sudoku) {
-        int[] digits = Sudoku.DIGITS.clone();
+        List<Integer> digits = new ArrayList<>();
+        for (int digit : Sudoku.DIGITS) {
+            digits.add(digit);
+        }
         for (int place = 0; place < Sudoku.NUMBER_OF_CELLS; place++) {
             if (0 == sudoku.get()[place]) {
-                Collections.shuffle(Arrays.asList(Sudoku.DIGITS), random);
+                Collections.shuffle(digits, random);
                 for (int digit : digits) {
                     if (sudoku.acceptsNumberInPlace(place, digit)) {
                         sudoku.set(place, digit);
@@ -58,7 +60,6 @@ public class Generator {
             possibleCells.add(i);
         }
         int[] digits = Sudoku.DIGITS.clone();
-        Collections.shuffle(Arrays.asList(digits), random);
         for (int i = 0; i < digits.length - 1; i++) {
             int digit = digits[i];
             possibleCells.remove(possibleCells.indexOf(possibleCells.get(IntStream.range(0, possibleCells.size())
