@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,9 +32,10 @@ public class SudokuTest {
         for (int i = 0; i < NUM_RUNS; i++) {
             int difficulty = random.nextInt(Sudoku.SIZE) + 1;
             Sudoku sudoku = generator.generate(difficulty);
-            assertEquals(17 + ((9 - difficulty) * 6), sudoku.get().stream().filter(cell -> cell != 0).count());
+            assertEquals(17 + ((9 - difficulty) * 6),
+                    Arrays.asList(sudoku.get()).stream().filter(cell -> (int) cell != 0).count());
             assertTrue(IntStream.rangeClosed(1, 9)
-                    .filter(digit -> sudoku.get().contains(digit))
+                    .filter(digit -> Arrays.asList(sudoku.get()).contains(digit))
                     .count() >= 8);
         }
     }
