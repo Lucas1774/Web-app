@@ -145,7 +145,7 @@ public class Sudoku {
         return "\"" + this.rawData.toString().replace("[", "").replace("]", "").replaceAll(", ", "") + "\"";
     }
 
-    public static List<Integer> deSerialize(String sudoku) {
+    public static List<Integer> deserialize(String sudoku) {
         List<Integer> rawData = new ArrayList<Integer>();
         for (char c : sudoku.toCharArray()) {
             rawData.add(Character.getNumericValue(c));

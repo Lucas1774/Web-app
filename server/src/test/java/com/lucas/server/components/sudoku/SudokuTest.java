@@ -18,7 +18,7 @@ public class SudokuTest {
     Generator generator;
 
     @Test
-    public void Solve() {
+    public void solve() {
         for (int i = 0; i < NUM_RUNS; i++) {
             Sudoku sudoku = generator.generate(random.nextInt(Sudoku.SIZE) + 1);
             sudoku.solve();
@@ -27,7 +27,7 @@ public class SudokuTest {
     }
 
     @Test
-    public void GenerationConstrains() {
+    public void generationConstrains() {
         for (int i = 0; i < NUM_RUNS; i++) {
             int difficulty = random.nextInt(Sudoku.SIZE) + 1;
             Sudoku sudoku = generator.generate(difficulty);
