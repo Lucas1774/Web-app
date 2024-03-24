@@ -90,7 +90,7 @@ public class Controller {
     @ResponseBody
     public String solveSudoku(@RequestParam String sudoku) {
         try {
-            Sudoku s = Sudoku.withValues(Sudoku.deSerialize(sudoku));
+            Sudoku s = Sudoku.withValues(Sudoku.deserialize(sudoku));
             s.solve();
             return s.serialize();
         } catch (Exception e) {
@@ -103,7 +103,7 @@ public class Controller {
     @ResponseBody
     public String checkSudoku(@RequestParam String initialSudoku, @RequestParam String currentSudoku) {
         try {
-            Sudoku s = Sudoku.withValues(Sudoku.deSerialize(initialSudoku));
+            Sudoku s = Sudoku.withValues(Sudoku.deserialize(initialSudoku));
             s.solve();
             String serialized = s.serialize().replaceAll("\"", "");
             String solvable = "1";
