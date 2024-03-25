@@ -130,6 +130,7 @@ public class Sudoku {
                 for (int digit : DIGITS) {
                     if (this.acceptsNumberInPlace(place, digit)) {
                         count++;
+                        break;
                     }
                 }
                 if (count == 0) {
@@ -148,6 +149,9 @@ public class Sudoku {
                 for (int digit : DIGITS) {
                     if (this.acceptsNumberInPlace(place, digit)) {
                         count++;
+                        if (count > 1) {
+                            break;
+                        }
                     }
                 }
                 if (count == 1) {
@@ -165,6 +169,9 @@ public class Sudoku {
                 for (int digit : DIGITS) {
                     if (this.acceptsNumberInPlace(place, digit)) {
                         count++;
+                        if (count > i) {
+                            break;
+                        }
                     }
                 }
                 if (count == i) {
