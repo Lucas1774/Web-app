@@ -85,33 +85,36 @@ public class Sudoku {
         if (this.isSolved()) {
             return true;
         }
-        for (int i = 0; i <= maxRisk; i++) {
-            List<Integer> promisingCells = this.getPromisingCells(i);
-            if (!promisingCells.isEmpty()) {
-                if (0 == i) {
-                    return false;
-                }
-                if (1 == i) {
-                    for (int promisingCell : promisingCells) {
-                        for (int digit : DIGITS) {
-                            if (this.acceptsNumberInPlace(promisingCell, digit)) {
-                                this.set(promisingCell, digit);
-                                break;
-                            }
-                        }
+        if (!this.isSolvable()) {
+            return false;
+        }
+        List<Integer> trivialCells = this.getTrivial();
+        if (!trivialCells.isEmpty()) {
+            for (int trivialCell : trivialCells) {
+                for (int digit : DIGITS) {
+                    if (this.acceptsNumberInPlace(trivialCell, digit)) {
+                        this.set(trivialCell, digit);
+                        break;
                     }
-                    return this.doSolve(maxRisk);
-                } else {
-                    for (int promisingCell : promisingCells) {
-                        for (int digit : DIGITS) {
-                            if (this.acceptsNumberInPlace(promisingCell, digit)) {
-                                Sudoku sudoku = withValues(this.rawData);
-                                sudoku.set(promisingCell, digit);
-                                if (sudoku.doSolve(maxRisk--)) {
-                                    this.rawData = sudoku.rawData;
-                                    return true;
-                                }
-                            }
+                }
+            }
+            return this.doSolve(maxRisk);
+        }
+        for (int i = 2; i <= maxRisk; i++) {
+            int promisingCell = this.getNextPromisingCell(i);
+            if (-1 != promisingCell) {
+                int count = 0;
+                for (int digit : DIGITS) {
+                    if (this.acceptsNumberInPlace(promisingCell, digit)) {
+                        Sudoku sudoku = withValues(this.rawData);
+                        sudoku.set(promisingCell, digit);
+                        count++;
+                        if (sudoku.doSolve(maxRisk--)) {
+                            this.rawData = sudoku.rawData;  
+                            return true;
+                        }
+                        if (count == i || maxRisk == 1) {
+                            return false;
                         }
                     }
                 }
@@ -120,7 +123,24 @@ public class Sudoku {
         return false;
     }
 
-    private List<Integer> getPromisingCells(int i) {
+    private boolean isSolvable() {
+        for (int place = 0; place < NUMBER_OF_CELLS; place++) {
+            if (0 == this.rawData[place]) {
+                int count = 0;
+                for (int digit : DIGITS) {
+                    if (this.acceptsNumberInPlace(place, digit)) {
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private List<Integer> getTrivial() {
         List<Integer> promisingCells = new ArrayList<>();
         for (int place = 0; place < NUMBER_OF_CELLS; place++) {
             if (0 == this.rawData[place]) {
@@ -130,12 +150,29 @@ public class Sudoku {
                         count++;
                     }
                 }
-                if (count == i) {
+                if (count == 1) {
                     promisingCells.add(place);
                 }
             }
         }
         return promisingCells;
+    }
+
+    private int getNextPromisingCell(int i) {
+        for (int place = 0; place < NUMBER_OF_CELLS; place++) {
+            if (0 == this.rawData[place]) {
+                int count = 0;
+                for (int digit : DIGITS) {
+                    if (this.acceptsNumberInPlace(place, digit)) {
+                        count++;
+                    }
+                }
+                if (count == i) {
+                    return place;
+                }
+            }
+        }
+        return -1;
     }
 
     /**
@@ -175,9 +212,8 @@ public class Sudoku {
 
     public static int[] deserialize(String sudoku) {
         int[] rawData = new int[NUMBER_OF_CELLS];
-        char[] chars = sudoku.toCharArray();
         for (int i = 0; i < NUMBER_OF_CELLS; i++) {
-            rawData[i] = Character.getNumericValue(chars[i]);
+            rawData[i] = Character.getNumericValue(sudoku.charAt(i));
         }
         return rawData;
     }
