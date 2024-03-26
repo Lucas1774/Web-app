@@ -31,7 +31,7 @@ If you click `Generate`, you will then be able to select `Generate` to generate 
 Once a sudoku is showing you will be able to navigate it with the `arrow keys` or with the mouse. You cannot remove or override clues (marked with a grey background). Selecting `solve` will solve the SUdoku immediately and render it uneditable. Selecting `check` will have the Sudoku blink red if at least one number is wrong, and blink green otherwise. You can also press `ctrl+enter` or `enter` respectively.  
 Placing the last number in the sudoku will make an auto-check.  
 Pressing `escape` or clicking `reset` at any time will go back to "the main menu".  
-It takes the program <s>less than 2</s> 0.1 milliseconds on average to solve a Sudoku  
+It takes the program less than <s>2</s> 0.1 milliseconds on average to solve a Sudoku  
 If you click `Choose file` you will be able to import sudokus from a `.txt` file, where each sudoku has a one-line header (which will be ignored) and then one nine-digit line per row:
 
     # Sudoku Puzzle 1

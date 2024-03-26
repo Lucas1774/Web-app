@@ -65,7 +65,7 @@ public class Sudoku {
     }
 
     public void solve() {
-        int maxRisk = 2;
+        int maxRisk = 3;
         while (!this.isSolved()) {
             this.doSolve(maxRisk);
             maxRisk++;
@@ -100,7 +100,7 @@ public class Sudoku {
             }
             return this.doSolve(maxRisk);
         }
-        for (int i = 2; i <= maxRisk; i++) {
+        for (int i = 2; i <= SIZE; i++) {
             int promisingCell = this.getNextPromisingCell(i);
             if (-1 != promisingCell) {
                 int count = 0;
@@ -113,7 +113,7 @@ public class Sudoku {
                             this.rawData = sudoku.rawData;  
                             return true;
                         }
-                        if (count == i || maxRisk == 1) {
+                        if (count == i || maxRisk == 0) {
                             return false;
                         }
                     }
