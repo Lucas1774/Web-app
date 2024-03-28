@@ -6,6 +6,7 @@ cd "%~dp0"
 netsh advfirewall set privateprofile state off
 git switch master
 
+set JAVA_HOME=C:\Program Files\Java\jdk-19
 start /B cmd.exe /c "cd server && mvnw spring-boot:run" >nul 2>&1
 start /B cmd.exe /c "cd client && npm start" >nul 2>&1
 
