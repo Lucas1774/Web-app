@@ -1,14 +1,5 @@
-.row .sudoku button {
-    width: 100%;
-    margin: 5px 0px;
-    padding: 10px;
-}
 
-.row .sudoku .restart {
-    background-color: salmon;
-}
-
-.row .sudoku input[type=file] {
+.sudoku input[type=file] {
     position: relative;
     opacity: 0;
     width: 0;
@@ -16,35 +7,35 @@
     cursor: pointer;
 }
 
-.row .sudoku-grid {
+.sudoku .sudoku-grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-gap: 3px;
 }
 
-.red-border {
+.sudoku .red-border {
     border: 5px solid red;
 }
 
-.green-border {
+.sudoku .green-border {
     border: 5px solid green;
 }
 
-.white-background {
+.sudoku .white-background {
     /* overrides default color */
     background-color: white !important;
 }
 
-.blue-background {
+.sudoku .blue-background {
     /* overrides default color */
     background-color: lightblue !important;
 }
 
-.row .sudoku-cell {
+.sudoku .sudoku-cell {
     aspect-ratio: 1/1;
 }
 
-.row .sudoku-cell input {
+.sudoku .sudoku-cell input {
     background-color: lightgray;
     width: 100%;
     height: 100%;
@@ -53,22 +44,22 @@
     text-align: center;
 }
 
-.row .sudoku-cell:nth-child(-n + 9),
-.row .sudoku-cell:nth-child(n + 28):nth-child(-n + 36),
-.row .sudoku-cell:nth-child(n + 55):nth-child(-n + 63) {
+.sudoku .sudoku-cell:nth-child(-n + 9),
+.sudoku .sudoku-cell:nth-child(n + 28):nth-child(-n + 36),
+.sudoku .sudoku-cell:nth-child(n + 55):nth-child(-n + 63) {
     border-top: 3px solid orange;
 }
 
-.row .sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
-.row .sudoku-cell:nth-child(n + 46):nth-child(-n + 54),
-.row .sudoku-cell:nth-last-child(-n + 9) {
+.sudoku .sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
+.sudoku .sudoku-cell:nth-child(n + 46):nth-child(-n + 54),
+.sudoku .sudoku-cell:nth-last-child(-n + 9) {
     border-bottom: 3px solid orange;
 }
 
-.row .sudoku-cell:nth-child(3n) {
+.sudoku .sudoku-cell:nth-child(3n) {
     border-right: 3px solid orange;
 }
 
-.row .sudoku-cell:nth-child(3n + 1) {
+.sudoku .sudoku-cell:nth-child(3n + 1) {
     border-left: 3px solid orange;
 }
