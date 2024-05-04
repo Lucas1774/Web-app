@@ -4,7 +4,7 @@ import Calculator from './components/calculator';
 import SecretSanta from './components/secretSanta';
 import About from './components/parsedAbout';
 import Sudoku from './components/sudoku';
-import RubikScramble from './components/rubikScramble';
+import RubikTimer from './components/rubikTimer';
 import video from './assets/video/sudoku_demo.webm';
 import "./assets/styles/App.css"
 
@@ -33,7 +33,7 @@ const App = () => {
       </Row>
       <Row>
         <Col>
-          <RubikScramble />
+          <RubikTimer />
         </Col>
       </Row>
     </>
