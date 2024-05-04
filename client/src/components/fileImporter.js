@@ -1,8 +1,6 @@
-
 import { Button } from 'react-bootstrap';
+
 const FileImporter = ({ onFileContentChange }) => {
-
-
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         const fileReader = new FileReader();
@@ -20,6 +18,6 @@ const FileImporter = ({ onFileContentChange }) => {
             <input id="file-input" type="file" accept=".txt" onChange={handleFileChange} />
         </>
     );
-}
+};
 
 export default FileImporter;

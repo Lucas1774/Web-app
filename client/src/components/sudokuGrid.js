@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
-
     const [focusedIndex, setFocusedIndex] = useState(null);
     const [started, setStarted] = useState(false);
 
@@ -12,7 +11,6 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
             setStarted(true);
         }
     }, [solved, started]);
-
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -58,5 +56,6 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
             ))}
         </div><br></br></>
     );
-}
+};
+
 export default SudokuGrid;

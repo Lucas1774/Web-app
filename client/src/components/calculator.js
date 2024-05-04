@@ -4,32 +4,27 @@ import { Form, Button, Row } from 'react-bootstrap';
 import "../assets/styles/calculator.css"
 
 const Calculator = () => {
-
   const [input, setInput] = useState("");
 
   const handleKeyDown = (event) => {
-
     event.preventDefault();
     setInput(event.target.value);
-  }
+  };
 
   const handleClick = (event) => {
-
     event.preventDefault();
     setInput(input + event.target.value);
-  }
+  };
 
   const handleDelete = () => {
     setInput(input.substring(0, input.length - 1));
-  }
+  };
 
   const handleClear = () => {
-
     setInput("");
-  }
+  };
 
   const handleSubmit = (event) => {
-
     event.preventDefault();
     post('/ans', input)
       .then(response => {
@@ -38,10 +33,9 @@ const Calculator = () => {
       .catch(error => {
         alert("Error sending data: " + error.message);
       });
-  }
+  };
 
   const handleReceive = () => {
-
     get('/ans')
       .then(response => {
         setInput(input + response.data.toString());
@@ -49,7 +43,8 @@ const Calculator = () => {
       .catch(error => {
         alert("Error receiving data: " + error.message);
       });
-  }
+  };
+
   return (
     <><h1 id="calculator">Calculator</h1>
       <div className="app calculator">
@@ -93,5 +88,6 @@ const Calculator = () => {
         </Row>
       </div></>
   );
-}
+};
+
 export default Calculator;
