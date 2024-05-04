@@ -1,0 +1,15 @@
+.scrambleGenerator h2 {
+    text-align: center;
+}
+
+.scrambleGenerator h3 {
+    font-size: 50px;
+    text-align: center;
+}
+
+.scrambleGenerator h3.green-timer {
+    color: greenyellow;
+}
+.scrambleGenerator h3.running-timer {
+    font-size: 100px;
+}
