@@ -3,7 +3,7 @@ import { Col, Row } from 'react-bootstrap';
 import Calculator from './components/calculator';
 import SecretSanta from './components/secretSanta';
 import Sudoku from './components/sudoku';
-import RubikScramble from './components/rubikScramble';
+import RubikTimer from './components/rubikTimer';
 import "./assets/styles/App.css"
 
 const App = () => {
@@ -22,7 +22,7 @@ const App = () => {
       </Row>
       <Row>
         <Col>
-          <RubikScramble />
+          <RubikTimer />
         </Col>
       </Row>
     </>
