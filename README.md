@@ -67,8 +67,8 @@ To clarify, the idea is to use this app ideally on a phone, passing it around so
 ### Rubik timer
 While the timer is very precise, the displayed time's refresh rate is declared as a constant and used to save computing power.  
 Select a puzzle for which to generate a random scramble.  
-Set the timer to zero by holding `spacebar` or touching your phone screen.  
-Start the timer by releasing it.  
+Set the timer to zero by holding `spacebar` or touching your phone screen (buttons and form fields have priority over this functionality).  
+Start the timer by releasing, or cancel the start-up by dragging your finger or pressing any other key. The scramble won't be lost unless the key is `escape`.  
 As with the other apps, pressing `escape` is equivalent to clicking or pressing `reset`.
 
 
