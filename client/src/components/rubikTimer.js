@@ -138,7 +138,7 @@ const RubikTimer = () => {
 
     return (
         <>
-            <h1 id="rubikTimer">Scramble Generator</h1>
+            <h1 id="rubikTimer">Rubik timer</h1>
             <div className="app rubikTimer">
                 {isFormVisible && renderForm()}
                 {isScrambleVisible && <h2>{scramble}</h2>}
