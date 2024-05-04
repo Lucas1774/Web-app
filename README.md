@@ -14,6 +14,8 @@ The program can import others from [here](https://projecteuler.net/project/resou
 I didn't bother implementing custom error message rendering, so if something can't be done it just won't be done.  
 The solution is generated serverside, so no cheating allowed!
 
+I've now added a small Rubik's cube (and other types of puzzles alike) timer to use on the train on my way to work because I was annoyed at ads, repeated scrambles and other issues with the Android app store apps. As the Secret Santa app, it is completely serverless (for now) and very convenient to use as a very raw timer + scramble generator app.
+
 This message is a react component that parses the readme of this branch of the repository into HTML.
 
 Refer to [this page](https://github.com/Lucas1774/Web-app) for more information.
