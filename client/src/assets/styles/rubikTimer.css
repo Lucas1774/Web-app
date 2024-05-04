@@ -10,6 +10,11 @@
 .rubikTimer h3.green-timer {
     color: greenyellow;
 }
+
 .rubikTimer h3.running-timer {
     font-size: 80px;
+}
+
+.nonSelectable {
+    user-select: none;
 }
