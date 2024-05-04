@@ -20,8 +20,11 @@ const RubikTimer = () => {
     const timerID = useRef(null);
 
     useEffect(() => {
-        const handleKeyUp = (event) => {
-            if (event.key === " " && !isTimerRunning) {
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const prepareEvent = isAndroid ? "touchstart" : "keydown";
+        const startEvent = isAndroid ? "touchend" : "keyup";
+        const handleStartEvent = (event) => {
+            if ((event.key === " " && !isTimerRunning) || isAndroid) {
                 event.preventDefault();
                 const now = performance.now(); // instant time fetch
                 setStartTime(now);
@@ -31,17 +34,17 @@ const RubikTimer = () => {
                     setElapsedTime(performance.now() - now);
                 }, TIMER_REFRESH_RATE);
                 setIsTimerRunning(true);
-                document.removeEventListener("keyup", handleKeyUp);
+                document.removeEventListener(startEvent, handleStartEvent);
             };
         }
-        const handleKeyDown = (event) => {
-            if (event.key === " " && !isTimerRunning) {
+        const handlePrepareEvent = (event) => {
+            if ((event.key === " " && !isTimerRunning) || isAndroid) {
                 event.preventDefault();
                 hideEverything();
                 setElapsedTime(0);
                 setIsTimerVisible(true);
                 document.getElementById("timer").classList.add("green-timer");
-                document.addEventListener("keyup", handleKeyUp);
+                document.addEventListener(startEvent, handleStartEvent);
             } else if (event.key !== "Escape" && isTimerRunning) {
                 event.preventDefault();
                 const now = performance.now(); // instant time fetch
@@ -57,14 +60,14 @@ const RubikTimer = () => {
             }
         };
         if (isTimerVisible) {
-            document.addEventListener("keydown", handleKeyDown);
+            document.addEventListener(prepareEvent, handlePrepareEvent);
         } else {
-            document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener(prepareEvent, handlePrepareEvent);
             clearInterval(timerID.current);
         };
         return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-            document.removeEventListener("keyup", handleKeyUp);
+            document.removeEventListener(prepareEvent, handlePrepareEvent);
+            document.removeEventListener(startEvent, handleStartEvent);
             clearInterval(timerID);
         };
     }, [isTimerRunning, isTimerVisible, selectedPuzzle, startTime]);
