@@ -1,27 +1,26 @@
-.row .calculator {
+.calculator {
   background-color: #4e4e4e;
   border: 5px solid #cacacab4;
   border-radius: 5px;
-  height: 600px;
 }
 
-.row .calculator .row {
+.calculator .row {
   height: 18.5%;
   padding: 0 3%;
 }
 
-.row .calculator .row button {
+.calculator .row button {
   height: 90%;
   width: 18%;
   padding: 0;
 }
 
-.row .calculator .first {
+.calculator .first {
+  margin-top: -5px;
   height: 10.4%;
   margin-bottom: 4px;
-
 }
 
-.row .calculator .first button {
+.calculator .first button {
   background-color: salmon;
 }
