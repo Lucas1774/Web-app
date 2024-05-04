@@ -192,6 +192,7 @@ const Sudoku = () => {
                 event.preventDefault();
                 generateOrFetchFromKey(event);
             } else if (event.key === 'Escape') {
+                event.preventDefault();
                 restoreDefaults();
             }
         };
