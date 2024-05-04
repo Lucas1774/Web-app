@@ -1,66 +1,43 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { post, get } from "../components/api";
 import { Form, Button } from 'react-bootstrap';
 import FileImporter from './fileImporter';
 import SudokuGrid from "./sudokuGrid";
 import "../assets/styles/sudoku.css";
 
-const FieldNames = {
-    SUDOKU: "sudoku",
-    INITIAL_SUDOKU: "initialSudoku",
-    DIFFICULTY: "difficulty",
-    IS_GENERATE_OR_IMPORT_VISIBLE: "isGenerateOrImportVisible",
-    IS_SUCCESSFULLY_UPLOADED_VISIBLE: "isSuccessfullyUploadedVisible",
-    IS_PICK_DIFFICULTY_VISIBLE: "isPickDifficultyVisible",
-    IS_SUDOKU_VISIBLE: "isSudokuVisible",
-    IS_RESTART_BUTTON_VISIBLE: "isRestartButtonVisible",
-};
-
-// TODO: error handling
 const Sudoku = () => {
-    const initialState = useMemo(() => ({
-        [FieldNames.SUDOKU]: "",
-        [FieldNames.INITIAL_SUDOKU]: "",
-        [FieldNames.DIFFICULTY]: 1,
-        [FieldNames.IS_GENERATE_OR_IMPORT_VISIBLE]: true,
-        [FieldNames.IS_SUCCESSFULLY_UPLOADED_VISIBLE]: false,
-        [FieldNames.IS_PICK_DIFFICULTY_VISIBLE]: false,
-        [FieldNames.IS_SUDOKU_VISIBLE]: false,
-        [FieldNames.IS_RESTART_BUTTON_VISIBLE]: true,
-    }), []);
-
-    const [state, setState] = useState(initialState);
+    const [sudoku, setSudoku] = useState("");
+    const [initialSudoku, setInitialSudoku] = useState("");
+    const [difficulty, setDifficulty] = useState(1);
+    const [isGenerateOrImportVisible, setIsGenerateOrImportVisible] = useState(true);
+    const [isSuccessfullyUploadedVisible, setIsSuccessfullyUploadedVisible] = useState(false);
+    const [isPickDifficultyVisible, setIsPickDifficultyVisible] = useState(false);
+    const [isSudokuVisible, setIsSudokuVisible] = useState(false);
+    const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
 
     const formRef = useRef(null);
 
-    const setAppState = (field, value) => {
-        setState((prevState) => ({
-            ...prevState,
-            [field]: value,
-        }));
-    };
-
     useEffect(() => {
         for (let i = 0; i < 81; i++) {
-            if (state.initialSudoku[i] === '0') {
+            if (initialSudoku[i] === '0') {
                 let element = document.querySelector(`input[index="${i}"]`);
                 element.classList.remove(`blue-background`);
                 element.classList.add(`white-background`);
             }
         }
-    }, [state.initialSudoku]);
+    }, [initialSudoku]);
 
     useEffect(() => {
         const arrowKeyListener = (event) => {
-            if (event.key === 'ArrowUp' && state.difficulty < 9) {
+            if (event.key === 'ArrowUp' && difficulty < 9) {
                 event.preventDefault();
-                setAppState(FieldNames.DIFFICULTY, state.difficulty + 1);
-            } else if (event.key === 'ArrowDown' && state.difficulty > 1) {
+                setDifficulty(prevDifficulty => prevDifficulty + 1);
+            } else if (event.key === 'ArrowDown' && difficulty > 1) {
                 event.preventDefault();
-                setAppState(FieldNames.DIFFICULTY, state.difficulty - 1);
+                setDifficulty(prevDifficulty => prevDifficulty - 1);
             }
         };
-        if (state.isPickDifficultyVisible) {
+        if (isPickDifficultyVisible) {
             document.addEventListener('keydown', arrowKeyListener);
             formRef.current.focus();
         } else {
@@ -69,27 +46,27 @@ const Sudoku = () => {
         return () => {
             document.removeEventListener('keydown', arrowKeyListener);
         };
-    }, [state.difficulty, state.isPickDifficultyVisible]);
+    }, [difficulty, isPickDifficultyVisible]);
 
     const handleGenerate = () => {
         hideEverything();
-        setAppState(FieldNames.IS_PICK_DIFFICULTY_VISIBLE, true);
-        setAppState(FieldNames.IS_RESTART_BUTTON_VISIBLE, true);
-    }
+        setIsPickDifficultyVisible(true);
+        setIsRestartButtonVisible(true);
+    };
 
     const handleKeyDown = (event) => {
         let newValue = event.key;
         if (!isNaN(newValue) && parseInt(newValue) >= 1 && parseInt(newValue) <= 9) {
             event.preventDefault();
-            setAppState(FieldNames.DIFFICULTY, parseInt(newValue));
+            setDifficulty(parseInt(newValue));
         }
-    }
+    };
 
     const handleSudokuChange = (index, event) => {
         event.preventDefault();
         const newValue = (event.key === "Backspace" || event.key === "Delete") ? 0 : parseInt(event.key);
-        if (newValue >= 0 && newValue <= 9 && state.initialSudoku[index] === '0') {
-            let auxSudoku = [...state.sudoku];
+        if (newValue >= 0 && newValue <= 9 && initialSudoku[index] === '0') {
+            let auxSudoku = [...sudoku];
             auxSudoku[index] = newValue.toString();
             let element = document.querySelector(`input[index="${index}"]`);
             if (0 !== newValue) {
@@ -99,31 +76,38 @@ const Sudoku = () => {
                 element.classList.remove(`blue-background`);
                 element.classList.add(`white-background`);
             }
-            setAppState(FieldNames.SUDOKU, auxSudoku.join(''));
+            setSudoku(auxSudoku.join(''));
         }
-    }
+    };
 
     const isSolved = useCallback(() => {
-        return state.sudoku.indexOf('0') === -1;
-    }, [state.sudoku])
+        return sudoku.indexOf('0') === -1;
+    }, [sudoku]);
 
     const hideEverything = useCallback(() => {
-        setAppState(FieldNames.IS_GENERATE_OR_IMPORT_VISIBLE, false);
-        setAppState(FieldNames.IS_SUCCESSFULLY_UPLOADED_VISIBLE, false);
-        setAppState(FieldNames.IS_PICK_DIFFICULTY_VISIBLE, false);
-        setAppState(FieldNames.IS_SUDOKU_VISIBLE, false);
-        setAppState(FieldNames.IS_RESTART_BUTTON_VISIBLE, false);
+        setIsGenerateOrImportVisible(false);
+        setIsSuccessfullyUploadedVisible(false);
+        setIsPickDifficultyVisible(false);
+        setIsSudokuVisible(false);
+        setIsRestartButtonVisible(false);
     }, []);
 
     const restoreDefaults = useCallback(() => {
-        setState(initialState);
-    }, [initialState]);
+        setSudoku("");
+        setInitialSudoku("");
+        setDifficulty(1);
+        setIsGenerateOrImportVisible(true);
+        setIsSuccessfullyUploadedVisible(false);
+        setIsPickDifficultyVisible(false);
+        setIsSudokuVisible(false);
+        setIsRestartButtonVisible(true);
+    }, []);
 
     const sendFile = (content) => {
         hideEverything();
         post('/upload/sudokus', content)
             .then(() => {
-                setAppState(FieldNames.IS_SUCCESSFULLY_UPLOADED_VISIBLE, true);
+                setIsSuccessfullyUploadedVisible(true);
                 setTimeout(() => {
                     restoreDefaults();
                 }, 1000);
@@ -132,27 +116,27 @@ const Sudoku = () => {
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
             });
-    }
+    };
 
     const generateOrFetchFromClick = (event) => {
         generateOrFetch(event.target.id);
-    }
+    };
 
     const generateOrFetch = useCallback((generateOrFetch) => {
-        let params = generateOrFetch === "generate" ? `?difficulty=${state.difficulty}` : "";
+        let params = generateOrFetch === "generate" ? `?difficulty=${difficulty}` : "";
         hideEverything();
         get(`/${generateOrFetch}/sudoku${params}`)
             .then(response => {
-                setAppState(FieldNames.SUDOKU, response.data);
-                setAppState(FieldNames.INITIAL_SUDOKU, response.data);
-                setAppState(FieldNames.IS_SUDOKU_VISIBLE, true);
-                setAppState(FieldNames.IS_RESTART_BUTTON_VISIBLE, true);
+                setSudoku(response.data);
+                setInitialSudoku(response.data);
+                setIsSudokuVisible(true);
+                setIsRestartButtonVisible(true);
             })
             .catch(error => {
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
             });
-    }, [hideEverything, restoreDefaults, state.difficulty])
+    }, [difficulty, hideEverything, restoreDefaults]);
 
     const check = useCallback(() => {
         const showBorderThenRemove = async (grid, color) => {
@@ -164,7 +148,7 @@ const Sudoku = () => {
                 await new Promise(resolve => setTimeout(resolve, 200));
             }
         }
-        get(`/check/sudoku?initialSudoku=${state.initialSudoku}&currentSudoku=${state.sudoku}`)
+        get(`/check/sudoku?initialSudoku=${initialSudoku}&currentSudoku=${sudoku}`)
             .then(response => {
                 let color = response.data === 1 ? 'green' : 'red';
                 let grid = document.querySelector('.sudoku-grid');
@@ -176,28 +160,28 @@ const Sudoku = () => {
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
             });
-    }, [isSolved, restoreDefaults, state.initialSudoku, state.sudoku]);
+    }, [initialSudoku, isSolved, restoreDefaults, sudoku]);
 
     useEffect(() => {
-        if (state.sudoku.length === 81 && isSolved() && state.initialSudoku.indexOf('0') !== -1) {
+        if (sudoku.length === 81 && isSolved() && initialSudoku.indexOf('0') !== -1) {
             check();
         }
-    }, [check, isSolved, state.initialSudoku, state.sudoku]);
+    }, [check, initialSudoku, isSolved, sudoku.length]);
 
     const solve = useCallback(() => {
         hideEverything();
-        get(`/solve/sudoku?sudoku=${state.initialSudoku}`)
+        get(`/solve/sudoku?sudoku=${initialSudoku}`)
             .then(response => {
-                setAppState(FieldNames.SUDOKU, response.data);
-                setAppState(FieldNames.INITIAL_SUDOKU, response.data);
-                setAppState(FieldNames.IS_SUDOKU_VISIBLE, true);
-                setAppState(FieldNames.IS_RESTART_BUTTON_VISIBLE, true);
+                setSudoku(response.data);
+                setInitialSudoku(response.data);
+                setIsSudokuVisible(true);
+                setIsRestartButtonVisible(true);
             })
             .catch(error => {
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
             });
-    }, [hideEverything, restoreDefaults, state.initialSudoku])
+    }, [hideEverything, initialSudoku, restoreDefaults]);
 
     useEffect(() => {
         const generateOrFetchFromKey = (event) => {
@@ -211,7 +195,7 @@ const Sudoku = () => {
                 restoreDefaults();
             }
         };
-        if (state.isPickDifficultyVisible) {
+        if (isPickDifficultyVisible) {
             document.addEventListener('keydown', enterListener);
         } else {
             document.removeEventListener('keydown', enterListener);
@@ -219,7 +203,7 @@ const Sudoku = () => {
         return () => {
             document.removeEventListener('keydown', enterListener);
         };
-    }, [generateOrFetch, restoreDefaults, state.isPickDifficultyVisible])
+    }, [generateOrFetch, isPickDifficultyVisible, restoreDefaults]);
 
     useEffect(() => {
         const enterListener = (event) => {
@@ -234,7 +218,7 @@ const Sudoku = () => {
                 restoreDefaults();
             }
         };
-        if (state.isSudokuVisible) {
+        if (isSudokuVisible) {
             document.addEventListener('keydown', enterListener);
         } else {
             document.removeEventListener('keydown', enterListener);
@@ -242,33 +226,34 @@ const Sudoku = () => {
         return () => {
             document.removeEventListener('keydown', enterListener);
         };
-    }, [check, restoreDefaults, solve, state.isSudokuVisible])
+    }, [check, isSudokuVisible, restoreDefaults, solve]);
 
     return (
         <>
             <h1 id="sudoku">Sudoku</h1>
             <div className="app sudoku">
-                {state.isGenerateOrImportVisible &&
+                {isGenerateOrImportVisible &&
                     <>
                         <Button variant="success" onClick={handleGenerate}>Generate</Button>
                         <FileImporter onFileContentChange={sendFile} />
                     </>}
-                {state.isSuccessfullyUploadedVisible && <div>Successfully uploaded!</div>}
-                {state.isPickDifficultyVisible &&
+                {isSuccessfullyUploadedVisible && <div>Successfully uploaded!</div>}
+                {isPickDifficultyVisible &&
                     <Form>
                         <Form.Label>Pick difficulty (only for generated sudoku):</Form.Label>
-                        <Form.Control inputMode="numeric" value={state.difficulty} onKeyDown={handleKeyDown} ref={formRef} onChange={() => { }} />
+                        <Form.Control inputMode="numeric" value={difficulty} onKeyDown={handleKeyDown} ref={formRef} onChange={() => { }} />
                         <Button id="generate" variant="success" onClick={generateOrFetchFromClick}>Generate</Button>
                         <Button id="fetch" onClick={generateOrFetchFromClick}>Fetch</Button>
                     </Form>}
-                {state.isSudokuVisible &&
-                    <><SudokuGrid sudokuString={state.sudoku} onSudokuChange={handleSudokuChange} solved={isSolved} />
+                {isSudokuVisible &&
+                    <><SudokuGrid sudokuString={sudoku} onSudokuChange={handleSudokuChange} solved={isSolved} />
                         <Button type="submit" variant="success" onClick={solve}>Solve</Button>
                         <Button onClick={check}>Check</Button></>
                 }
-                {state.isRestartButtonVisible && <Button className="restart" onClick={restoreDefaults}>Restart</Button>}
+                {isRestartButtonVisible && <Button className="restart" onClick={restoreDefaults}>Restart</Button>}
             </div>
         </>
     );
-}
+};
+
 export default Sudoku;

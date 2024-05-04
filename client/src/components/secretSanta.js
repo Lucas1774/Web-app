@@ -3,150 +3,128 @@ import { Form, Button } from 'react-bootstrap';
 import "../assets/styles/secretSanta.css";
 
 const SecretSanta = () => {
-
-    const initialState = {
-        participantCounter: 1,
-        participants: [],
-        targets: [],
-        input: "",
-        isFormVisible: true,
-        isSavingVisible: false,
-        isCalculatingVisible: false,
-        isNoParticipantsVisible: false,
-        isChosenVisible: false,
-        isTargetVisible: false,
-        isRestartButtonVisible: true,
-        isParticipantListVisible: true,
-    };
-
-    const [state, setState] = useState(initialState);
-
-    const setAppState = (field, value) => {
-
-        setState((prevState) => ({
-            ...prevState,
-            [field]: value,
-        }));
-    };
+    const [participantCounter, setParticipantCounter] = useState(1);
+    const [participants, setParticipants] = useState([]);
+    const [targets, setTargets] = useState([]);
+    const [input, setInput] = useState("");
+    const [isFormVisible, setIsFormVisible] = useState(true);
+    const [isSavingVisible, setIsSavingVisible] = useState(false);
+    const [isCalculatingVisible, setIsCalculatingVisible] = useState(false);
+    const [isNoParticipantsVisible, setIsNoParticipantsVisible] = useState(false);
+    const [isChosenVisible, setIsChosenVisible] = useState(false);
+    const [isTargetVisible, setIsTargetVisible] = useState(false);
+    const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
+    const [isParticipantListVisible, setIsParticipantListVisible] = useState(true);
 
     const handleKeyDown = (event) => {
-
         event.preventDefault();
-        setAppState("input", event.target.value);
-    }
+        setInput(event.target.value);
+    };
 
     const handleSubmit = (event) => {
-
         event.preventDefault();
         hideEverything();
-        setAppState("isSavingVisible", true);
-        let delay = 1000
-        if (state.input !== "" && !state.participants.includes(state.input)) {
-            setAppState("participants", [...state.participants, state.input]);
+        setIsSavingVisible(true);
+        let delay = 1000;
+        if (input !== "" && !participants.includes(input)) {
+            setParticipants([...participants, input]);
             delay = 0;
         }
         setTimeout(() => {
-            setAppState("input", "");
-            setAppState("isSavingVisible", false);
-            setAppState("isFormVisible", true);
-            setAppState("isRestartButtonVisible", true);
-            setAppState("isParticipantListVisible", true);
+            setInput("");
+            setIsSavingVisible(false);
+            setIsFormVisible(true);
+            setIsRestartButtonVisible(true);
+            setIsParticipantListVisible(true);
         }, delay);
-    }
+    };
 
     const handleStartLottery = () => {
-
         hideEverything();
-        if (state.participants.length >= 3) {
-            generateRandomCycle(state.participants);
-            setAppState("isCalculatingVisible", true);
+        if (participants.length >= 3) {
+            generateRandomCycle(participants);
+            setIsCalculatingVisible(true);
             setTimeout(() => {
-                setAppState("isCalculatingVisible", false);
-                setAppState("isChosenVisible", true);
-                setAppState("isRestartButtonVisible", true);
+                setIsCalculatingVisible(false);
+                setIsChosenVisible(true);
+                setIsRestartButtonVisible(true);
             }, 1000);
         } else {
-            setAppState("isNoParticipantsVisible", true);
+            setIsNoParticipantsVisible(true);
             setTimeout(() => {
-            setAppState("input", "");
-            setAppState("isSavingVisible", false);
-            setAppState("isFormVisible", true);
-            setAppState("isRestartButtonVisible", true);
-            setAppState("isParticipantListVisible", true);
-                setAppState("isNoParticipantsVisible", false);
+                setInput("");
+                setIsSavingVisible(false);
+                setIsFormVisible(true);
+                setIsRestartButtonVisible(true);
+                setIsParticipantListVisible(true);
+                setIsNoParticipantsVisible(false);
             }, 1000);
         }
-    }
+    };
 
     const showTarget = () => {
-
         hideEverything();
-        setAppState("isTargetVisible", true);
+        setIsTargetVisible(true);
         setTimeout(() => {
-            setAppState("isTargetVisible", false);
-            setAppState("participantCounter", state.participantCounter + 1);
-            if (state.participants.length > state.participantCounter) {
-                setAppState("isChosenVisible", true);
-                setAppState("isRestartButtonVisible", true);
+            setIsTargetVisible(false);
+            setParticipantCounter(participantCounter + 1);
+            if (participants.length > participantCounter) {
+                setIsChosenVisible(true);
+                setIsRestartButtonVisible(true);
             } else {
                 restoreDefaults();
             }
         }, 2000);
-    }
+    };
 
     const renderForm = () => {
-
         return (
             <Form onSubmit={handleSubmit}>
                 <Form.Label>Enter your name:</Form.Label>
-                <Form.Control type="text" value={state.input} onChange={handleKeyDown} />
+                <Form.Control type="text" value={input} onChange={handleKeyDown} />
                 <Button type="submit" variant="success">Add player</Button>
                 <Button variant="success" onClick={handleStartLottery}>Start raffle</Button>
             </Form>
         );
-    }
+    };
 
     const renderChosen = () => {
-
         return (
             <>
-                <div>{state.participants[state.participantCounter - 1]} is the secret santa for...</div>
+                <div>{participants[participantCounter - 1]} is the secret santa for...</div>
                 <div>
                     <Button className="pressMeToShow" variant="success" onClick={showTarget}>
                         Press me to show!
                     </Button>
                 </div>
             </>
-        )
-    }
+        );
+    };
 
     const renderTarget = () => {
-
-        const participant = state.participants[state.participantCounter - 1];
-        const target = state.targets[(state.targets.indexOf(participant) + 1) % state.participants.length];
+        const participant = participants[participantCounter - 1];
+        const target = targets[(targets.indexOf(participant) + 1) % participants.length];
         return (
             <>
                 <h2 style={{ textAlign: "center" }}>{target}!</h2>
             </>
         );
-    }
+    };
 
     const renderParticipantList = () => {
-
         return (
             <>
-                <h2 style={{ marginTop: '20px' }}>Participants</h2>
+                <h2 style={{ marginTop: "20px" }}>Participants</h2>
                 <div>
-                    {state.participants.map((participant) => (
+                    {participants.map((participant) => (
                         <div key={participant}>{participant}</div>
                     ))}
                 </div>
             </>
         );
-    }
+    };
 
     const generateRandomCycle = (originalArray) => {
-
         const unusedElements = [...originalArray];
         let newTargets = [];
         while (unusedElements.length !== 0) {
@@ -155,54 +133,52 @@ const SecretSanta = () => {
             newTargets = [...newTargets, newTarget];
             unusedElements.splice(randomIndex, 1);
         }
-        setAppState("targets", newTargets);
-    }
+        setTargets(newTargets);
+    };
 
     const hideEverything = () => {
-
-        setAppState("isFormVisible", false);
-        setAppState("isSavingVisible", false);
-        setAppState("isCalculatingVisible", false);
-        setAppState("isNoParticipantsVisible", false);
-        setAppState("isChosenVisible", false);
-        setAppState("isTargetVisible", false);
-        setAppState("isRestartButtonVisible", false);
-        setAppState("isParticipantListVisible", false);
-    }
+        setIsFormVisible(false);
+        setIsSavingVisible(false);
+        setIsCalculatingVisible(false);
+        setIsNoParticipantsVisible(false);
+        setIsChosenVisible(false);
+        setIsTargetVisible(false);
+        setIsRestartButtonVisible(false);
+        setIsParticipantListVisible(false);
+    };
 
     const restoreDefaults = () => {
-
-        setAppState("participantCounter", 1);
-        setAppState("participants", []);
-        setAppState("targets", []);
-        setAppState("input", "");
-        setAppState("isFormVisible", true);
-        setAppState("isRestartButtonVisible", true);
-        setAppState("isParticipantListVisible", true);
-    }
+        setParticipantCounter(1);
+        setParticipants([]);
+        setTargets([]);
+        setInput("");
+        setIsFormVisible(true);
+        setIsRestartButtonVisible(true);
+        setIsParticipantListVisible(true);
+    };
 
     return (
         <>
             <h1 id="secretSanta">Secret Santa</h1>
             <div className="app secretSanta">
-                {state.isFormVisible && renderForm()}
-                {state.isSavingVisible && (state.input === ""
-                    ? <div>Type a name</div> : state.participants.includes(state.input)
+                {isFormVisible && renderForm()}
+                {isSavingVisible && (input === ""
+                    ? <div>Type a name</div> : participants.includes(input)
                         ? <div>Player already registered</div> : <div></div>)}
-                {state.isCalculatingVisible && <div>Calculating...</div>}
-                {state.isNoParticipantsVisible && (
+                {isCalculatingVisible && <div>Calculating...</div>}
+                {isNoParticipantsVisible && (
                     <>
                         <div>Not enough participants</div>
                     </>
                 )}
-                {state.isChosenVisible && renderChosen()}
-                {state.isTargetVisible && renderTarget()}
-                {state.isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
+                {isChosenVisible && renderChosen()}
+                {isTargetVisible && renderTarget()}
+                {isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
                 >Restart</Button>}
-                {state.isParticipantListVisible && renderParticipantList()}
+                {isParticipantListVisible && renderParticipantList()}
             </div>
         </>
     );
-}
+};
 
 export default SecretSanta;
