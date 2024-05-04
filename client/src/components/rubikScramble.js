@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
 import "../assets/styles/scrambleGenerator.css";
 
+const TIMER_REFRESH_RATE = 50;
 const NONE = "none";
 const TWO = "two";
 const THREE = "three";
@@ -9,26 +10,50 @@ const THREE = "three";
 const RubikScramble = () => {
     const [selectedPuzzle, setSelectedPuzzle] = useState(NONE);
     const [scramble, setScramble] = useState("");
+    const [startTime, setStartTime] = useState(0);
+    const [elapsedTime, setElapsedTime] = useState(0);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [isFormVisible, setIsFormVisible] = useState(true);
     const [isScrambleVisible, setIsScrambleVisible] = useState(false);
     const [isTimerVisible, setIsTimerVisible] = useState(false);
     const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
 
+    const timerID = useRef(null);
+
     useEffect(() => {
+        const handleKeyUp = (event) => {
+            if (event.key === " " && !isTimerRunning) {
+                event.preventDefault();
+                const now = performance.now(); // instant time fetch
+                setStartTime(now);
+                document.getElementById("timer").classList.remove("green-timer");
+                document.getElementById("timer").classList.add("running-timer");
+                timerID.current = setInterval(() => {
+                    setElapsedTime(performance.now() - now);
+                }, TIMER_REFRESH_RATE);
+                setIsTimerRunning(true);
+                document.removeEventListener("keyup", handleKeyUp);
+            };
+        }
         const handleKeyDown = (event) => {
             if (event.key === " " && !isTimerRunning) {
                 event.preventDefault();
                 hideEverything();
-                setIsTimerRunning(true);
+                setElapsedTime(0);
                 setIsTimerVisible(true);
+                document.getElementById("timer").classList.add("green-timer");
+                document.addEventListener("keyup", handleKeyUp);
             } else if (event.key !== "Escape" && isTimerRunning) {
                 event.preventDefault();
+                const now = performance.now(); // instant time fetch
                 hideEverything();
+                clearInterval(timerID.current);
+                setElapsedTime(now - startTime);
                 setIsTimerRunning(false);
                 setScramble(generateScramble(selectedPuzzle));
                 setIsScrambleVisible(true);
                 setIsTimerVisible(true);
+                document.getElementById("timer").classList.remove("running-timer");
                 setIsRestartButtonVisible(true);
             }
         };
@@ -36,8 +61,14 @@ const RubikScramble = () => {
             document.addEventListener("keydown", handleKeyDown);
         } else {
             document.removeEventListener("keydown", handleKeyDown);
+            clearInterval(timerID.current);
         };
-    }, [isTimerRunning, isTimerVisible, selectedPuzzle]);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener("keyup", handleKeyUp);
+            clearInterval(timerID);
+        };
+    }, [isTimerRunning, isTimerVisible, selectedPuzzle, startTime]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -76,7 +107,7 @@ const RubikScramble = () => {
             scramble = "R U F L D B";
         }
         return scramble;
-    }
+    };
 
     const renderForm = () => {
         return (
@@ -87,11 +118,13 @@ const RubikScramble = () => {
         );
     };
 
-    // TODO: implement
     const renderTimer = () => {
+        const minutes = Math.floor(elapsedTime / 60000);
+        const seconds = Math.floor((elapsedTime % 60000) / 1000);
+        const milliseconds = (elapsedTime % 1000).toString().padStart(3, '0');
         return (
             <>
-                <h2>Timer</h2>
+                <h3 id="timer">{minutes}:{seconds.toString().padStart(2, '0')}:{milliseconds}</h3>
             </>
         );
     };
@@ -106,6 +139,8 @@ const RubikScramble = () => {
     const restoreDefaults = () => {
         setSelectedPuzzle(NONE);
         setScramble("");
+        setStartTime(0);
+        setElapsedTime(0);
         setIsTimerRunning(false);
         setIsFormVisible(true);
         setIsScrambleVisible(false);
