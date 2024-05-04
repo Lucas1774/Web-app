@@ -139,7 +139,7 @@ const RubikTimer = () => {
         const milliseconds = parseInt((elapsedTime % 1000)).toString().padStart(3, '0');
         return (
             <>
-                <h3 id="timer">{minutes}:{seconds}:{milliseconds}</h3>
+                <h3 className="nonSelectable" id="timer">{minutes}:{seconds}:{milliseconds}</h3>
             </>
         );
     };
@@ -165,12 +165,12 @@ const RubikTimer = () => {
 
     return (
         <>
-            <h1 id="rubikTimer">Rubik timer</h1>
-            <div className="app rubikTimer">
+            <h1 id="rubikTimer" className="nonSelectable">Rubik timer</h1>
+            <div className="app rubikTimer nonSelectable">
                 {isFormVisible && renderForm()}
-                {isScrambleVisible && <h2>{scramble}</h2>}
+                {isScrambleVisible && <h2 className="nonSelectable">{scramble}</h2>}
                 {isTimerVisible && renderTimer()}
-                {isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
+                {isRestartButtonVisible && <Button className="restart nonSelectable" onClick={() => { hideEverything(); restoreDefaults(); }}
                 >Restart</Button>}
             </div>
         </>
