@@ -24,7 +24,7 @@ const RubikTimer = () => {
         const prepareEvent = isAndroid ? "touchstart" : "keydown";
         const startEvent = isAndroid ? "touchend" : "keyup";
         const handleStartEvent = (event) => {
-            if ((event.key === " " && !isTimerRunning) || isAndroid) {
+            if (!isTimerRunning && (event.key === " " || isAndroid)) {
                 event.preventDefault();
                 const now = performance.now(); // instant time fetch
                 setStartTime(now);
@@ -38,14 +38,15 @@ const RubikTimer = () => {
             };
         }
         const handlePrepareEvent = (event) => {
-            if ((event.key === " " && !isTimerRunning) || isAndroid) {
+            if (!isTimerRunning && (event.key === " " || (isAndroid && event.target.id === "timer"))) {
                 event.preventDefault();
                 hideEverything();
                 setElapsedTime(0);
                 setIsTimerVisible(true);
                 document.getElementById("timer").classList.add("green-timer");
+                document.removeEventListener(prepareEvent, handlePrepareEvent);
                 document.addEventListener(startEvent, handleStartEvent);
-            } else if (event.key !== "Escape" && isTimerRunning) {
+            } else if (isTimerRunning && (event.key !== "Escape" || isAndroid)) {
                 event.preventDefault();
                 const now = performance.now(); // instant time fetch
                 hideEverything();
@@ -56,7 +57,13 @@ const RubikTimer = () => {
                 setIsScrambleVisible(true);
                 setIsTimerVisible(true);
                 document.getElementById("timer").classList.remove("running-timer");
-                setIsRestartButtonVisible(true);
+                if (isAndroid) {
+                    setTimeout(() => { // wait a little to not accidentally click something
+                        setIsRestartButtonVisible(true);
+                    }, 200);
+                } else {
+                    setIsRestartButtonVisible(true);
+                }
             }
         };
         if (isTimerVisible) {
@@ -110,12 +117,12 @@ const RubikTimer = () => {
     };
 
     const renderTimer = () => {
-        const minutes = Math.floor(elapsedTime / 60000);
-        const seconds = Math.floor((elapsedTime % 60000) / 1000);
-        const milliseconds = (elapsedTime % 1000).toString().padStart(3, '0');
+        const minutes = parseInt(Math.floor(elapsedTime / 60000)).toString();
+        const seconds = parseInt(Math.floor((elapsedTime % 60000) / 1000)).toString().padStart(2, '0');
+        const milliseconds = parseInt((elapsedTime % 1000)).toString().padStart(3, '0');
         return (
             <>
-                <h3 id="timer">{minutes}:{seconds.toString().padStart(2, '0')}:{milliseconds}</h3>
+                <h3 id="timer">{minutes}:{seconds}:{milliseconds}</h3>
             </>
         );
     };
