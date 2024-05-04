@@ -64,6 +64,14 @@ Type the name of three or more players (cannot be left empty and has to be uniqu
 The program will then prompt each participant (in input order) to click the `Press me to show!` button, after which it will show their giftee's name for 2 seconds.  
 To clarify, the idea is to use this app ideally on a phone, passing it around so each participant can intimately check who they have to gift.
 
+### Rubik timer
+While the timer is very precise, the displayed time's refresh rate is declared as a constant and used to save computing power.  
+Select a puzzle for which to generate a random scramble.  
+Set the timer to zero by holding `spacebar` or touching your phone screen.  
+Start the timer by releasing it.  
+As with the other apps, pressing `escape` is equivalent to clicking or pressing `reset`.
+
+
 ## Installation and Usage
 To run this application, follow these steps:
 
