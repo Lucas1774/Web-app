@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
-import "../assets/styles/scrambleGenerator.css";
+import { TWO, THREE } from "../constants";
+import Scramble from "../scramblers/provider";
+import "../assets/styles/rubikTimer.css";
 
 const TIMER_REFRESH_RATE = 50;
-const NONE = "none";
-const TWO = "two";
-const THREE = "three";
 
-const RubikScramble = () => {
-    const [selectedPuzzle, setSelectedPuzzle] = useState(NONE);
+const RubikTimer = () => {
+    const [selectedPuzzle, setSelectedPuzzle] = useState("");
     const [scramble, setScramble] = useState("");
     const [startTime, setStartTime] = useState(0);
     const [elapsedTime, setElapsedTime] = useState(0);
@@ -50,7 +49,7 @@ const RubikScramble = () => {
                 clearInterval(timerID.current);
                 setElapsedTime(now - startTime);
                 setIsTimerRunning(false);
-                setScramble(generateScramble(selectedPuzzle));
+                setScramble(Scramble(selectedPuzzle));
                 setIsScrambleVisible(true);
                 setIsTimerVisible(true);
                 document.getElementById("timer").classList.remove("running-timer");
@@ -92,21 +91,10 @@ const RubikScramble = () => {
         let puzzle = event.target.id;
         hideEverything();
         setSelectedPuzzle(puzzle);
-        setScramble(generateScramble(puzzle));
+        setScramble(Scramble(puzzle));
         setIsScrambleVisible(true);
         setIsTimerVisible(true);
         setIsRestartButtonVisible(true);
-    };
-
-    // TODO: implement
-    const generateScramble = (puzzle) => {
-        let scramble = "";
-        if (puzzle === TWO) {
-            scramble = "R U F";
-        } else if (puzzle === THREE) {
-            scramble = "R U F L D B";
-        }
-        return scramble;
     };
 
     const renderForm = () => {
@@ -137,7 +125,7 @@ const RubikScramble = () => {
     };
 
     const restoreDefaults = () => {
-        setSelectedPuzzle(NONE);
+        setSelectedPuzzle("");
         setScramble("");
         setStartTime(0);
         setElapsedTime(0);
@@ -150,8 +138,8 @@ const RubikScramble = () => {
 
     return (
         <>
-            <h1 id="scrambleGenerator">Scramble Generator</h1>
-            <div className="app scrambleGenerator">
+            <h1 id="rubikTimer">Scramble Generator</h1>
+            <div className="app rubikTimer">
                 {isFormVisible && renderForm()}
                 {isScrambleVisible && <h2>{scramble}</h2>}
                 {isTimerVisible && renderTimer()}
@@ -162,4 +150,4 @@ const RubikScramble = () => {
     );
 };
 
-export default RubikScramble;
+export default RubikTimer;
