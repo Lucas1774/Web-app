@@ -17,7 +17,7 @@ export const Scramble = () => {
         if (0 === i) {
             turnLayer = Math.floor(Math.random() * 6);
         }
-        else if (1 === i || lastMoveIndex / 2 !== secondToLastMoveIndex / 2) {
+        else if (1 === i || parseInt(lastMoveIndex / 2) !== parseInt(secondToLastMoveIndex / 2)) {
             turnLayer = Math.floor(Math.random() * 5);
             if (turnLayer === lastMoveIndex) {
                 turnLayer++;
