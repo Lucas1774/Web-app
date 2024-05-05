@@ -20,16 +20,16 @@ export const Scramble = () => {
         else if (1 === i || parseInt(lastMoveIndex / 2) !== parseInt(secondToLastMoveIndex / 2)) {
             turnLayer = Math.floor(Math.random() * 5);
             if (turnLayer === lastMoveIndex) {
-                turnLayer = (turnLayer + 1) % 6
+                turnLayer++;
             }
         }
         else {
             turnLayer = Math.floor(Math.random() * 4);
             if (turnLayer === lastMoveIndex || turnLayer === secondToLastMoveIndex) {
                 if (turnLayer % 2 === 0) {
-                    turnLayer = (turnLayer + 2) % 6;
+                    turnLayer += 2;
                 } else {
-                    turnLayer = (turnLayer + 1) % 6;
+                    turnLayer++;
                 }
             }
         }
