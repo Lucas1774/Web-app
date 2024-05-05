@@ -1,4 +1,4 @@
-const SCRAMBLE_LENGTH = 20;
+export const SCRAMBLE_LENGTH = 20;
 const SCRAMBLE_MOVES = [
     ["U ", "U2 ", "U' "],
     ["D ", "D2 ", "D' "],
@@ -20,16 +20,17 @@ export const Scramble = () => {
         else if (1 === i || parseInt(lastMoveIndex / 2) !== parseInt(secondToLastMoveIndex / 2)) {
             turnLayer = Math.floor(Math.random() * 5);
             if (turnLayer === lastMoveIndex) {
-                turnLayer++;
+                turnLayer = (turnLayer + 1) % 6
             }
         }
         else {
             turnLayer = Math.floor(Math.random() * 4);
-            if (turnLayer === secondToLastMoveIndex) {
-                turnLayer += 2;
-            }
-            else if (turnLayer === lastMoveIndex) {
-                turnLayer++;
+            if (turnLayer === lastMoveIndex || turnLayer === secondToLastMoveIndex) {
+                if (turnLayer % 2 === 0) {
+                    turnLayer = (turnLayer + 2) % 6;
+                } else {
+                    turnLayer = (turnLayer + 1) % 6;
+                }
             }
         }
         turnIterator = Math.floor(Math.random() * 3);
