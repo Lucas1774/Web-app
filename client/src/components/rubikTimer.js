@@ -19,6 +19,12 @@ const RubikTimer = () => {
 
     const timerID = useRef(null);
 
+    // use effect instead of conditional rendering to avoid event target issues
+    useEffect(() => {
+        let element = document.getElementById("scramble");
+        element.style.display = isScrambleVisible ? "block" : "none";
+    }, [isScrambleVisible]);
+
     useEffect(() => {
         const isAndroid = /Android/i.test(navigator.userAgent);
         const prepareEvent = isAndroid ? "touchstart" : "keydown";
@@ -26,7 +32,7 @@ const RubikTimer = () => {
         const abort = isAndroid ? "touchmove" : "keydown";
         const handleDrag = (event) => {
             event.preventDefault()
-            if (event.key !== " " || isAndroid) {
+            if (isAndroid || event.key !== " ") {
                 document.removeEventListener(startEvent, handleStartEvent);
                 document.removeEventListener(abort, handleDrag);
                 setIsTimerRunning(false);
@@ -38,7 +44,7 @@ const RubikTimer = () => {
             }
         }
         const handleStartEvent = (event) => {
-            if (!isTimerRunning && (event.key === " " || isAndroid)) {
+            if (isAndroid || event.key === " ") {
                 event.preventDefault();
                 const now = performance.now(); // instant time fetch
                 document.removeEventListener(abort, handleDrag);
@@ -53,7 +59,7 @@ const RubikTimer = () => {
             };
         }
         const handlePrepareEvent = (event) => {
-            if (!isTimerRunning && (event.key === " " || (isAndroid && event.target.tagName !== "BUTTON" && event.target.tagName !== "INPUT"))) {
+            if (!isTimerRunning && ((isAndroid && event.target.tagName !== "BUTTON" && event.target.tagName !== "INPUT") || event.key === " ")) {
                 event.preventDefault();
                 hideEverything();
                 setElapsedTime(0);
@@ -62,7 +68,7 @@ const RubikTimer = () => {
                 document.removeEventListener(prepareEvent, handlePrepareEvent);
                 document.addEventListener(abort, handleDrag);
                 document.addEventListener(startEvent, handleStartEvent);
-            } else if (isTimerRunning && (event.key !== "Escape" || isAndroid)) {
+            } else if (isTimerRunning && (isAndroid || event.key !== "Escape")) {
                 event.preventDefault();
                 const now = performance.now(); // instant time fetch
                 hideEverything();
@@ -166,11 +172,11 @@ const RubikTimer = () => {
     return (
         <>
             <h1 id="rubikTimer" className="nonSelectable">Rubik timer</h1>
-            <div className="app rubikTimer nonSelectable">
+            <div className="app rubikTimer">
                 {isFormVisible && renderForm()}
-                {isScrambleVisible && <h2 className="nonSelectable">{scramble}</h2>}
+                {<h2 id="scramble">{scramble}</h2>}
                 {isTimerVisible && renderTimer()}
-                {isRestartButtonVisible && <Button className="restart nonSelectable" onClick={() => { hideEverything(); restoreDefaults(); }}
+                {isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
                 >Restart</Button>}
             </div>
         </>
