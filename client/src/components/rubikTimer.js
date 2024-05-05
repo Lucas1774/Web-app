@@ -55,9 +55,14 @@ const RubikTimer = () => {
                     setElapsedTime(performance.now() - now);
                 }, TIMER_REFRESH_RATE);
                 setIsTimerRunning(true);
-                document.body.classList.remove("nonSelectable");
-                document.getElementById("timer").classList.remove("green-timer");
-                document.getElementById("timer").classList.add("running-timer");
+                let timer = document.getElementById("timer");
+                timer.classList.remove("green-timer");
+                timer.classList.add("running-timer");
+                if (isAndroid) {
+                    timer.scrollIntoView({
+                        block: "center"
+                    });
+                }
             };
         }
         const handlePrepareEvent = (event) => {
@@ -84,9 +89,17 @@ const RubikTimer = () => {
                 setScramble(Scramble(selectedPuzzle));
                 setIsScrambleVisible(true);
                 setIsTimerVisible(true);
+                let timer = document.getElementById("timer");
+                timer.classList.remove("running-timer");
                 if (isAndroid) {
                     setTimeout(() => { // wait a little to not accidentally click something
                         setIsRestartButtonVisible(true);
+                        document.body.classList.remove("nonSelectable");
+                        if (window.matchMedia("(orientation: landscape)").matches) {
+                            timer.scrollIntoView({
+                                block: "end"
+                            })
+                        }
                     }, 200);
                     if (navigator.wakeLock) {
                         navigator.wakeLock.release();
@@ -94,7 +107,6 @@ const RubikTimer = () => {
                 } else {
                     setIsRestartButtonVisible(true);
                 }
-                document.getElementById("timer").classList.remove("running-timer");
             }
         };
         if (isTimerVisible) {
@@ -183,7 +195,7 @@ const RubikTimer = () => {
             <h1 id="rubikTimer">Rubik timer</h1>
             <div className="app rubikTimer">
                 {isFormVisible && renderForm()}
-                {<h2 id="scramble">{scramble}</h2>}
+                {<h2 id="scramble" className={selectedPuzzle}>{scramble}</h2>}
                 {isTimerVisible && renderTimer()}
                 {isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
                 >Restart</Button>}

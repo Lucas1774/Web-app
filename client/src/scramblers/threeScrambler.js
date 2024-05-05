@@ -1,4 +1,4 @@
-const SCRAMBLE_LENGTH = 25;
+const SCRAMBLE_LENGTH = 20;
 const SCRAMBLE_MOVES = [
     ["U ", "U2 ", "U' "],
     ["D ", "D2 ", "D' "],

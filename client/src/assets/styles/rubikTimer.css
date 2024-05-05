@@ -1,20 +1,34 @@
-.rubikTimer h2 {
+.app.rubikTimer h2 {
     text-align: center;
 }
 
-.rubikTimer h3 {
+.app.rubikTimer h3 {
     font-size: 50px;
     text-align: center;
 }
 
-.rubikTimer h3.green-timer {
+.app.rubikTimer h3.green-timer {
     color: greenyellow;
 }
 
-.rubikTimer h3.running-timer {
+.app.rubikTimer h3.running-timer {
     font-size: 80px;
 }
 
 .nonSelectable {
     user-select: none;
+}
+
+@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+    .app.rubikTimer h2.two {
+        font-size: 80px;
+    }
+
+    .app.rubikTimer h2.three {
+        font-size: 60px;
+    }
+
+    .app.rubikTimer h3.running-timer {
+        font-size: 150px;
+    }
 }
