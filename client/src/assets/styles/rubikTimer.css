@@ -1,10 +1,12 @@
 .app.rubikTimer h2 {
     text-align: center;
+    color:rgb(126, 160, 224);
 }
 
 .app.rubikTimer h3 {
     font-size: 50px;
     text-align: center;
+    color:rgb(126, 160, 224);
 }
 
 .app.rubikTimer h3.green-timer {
