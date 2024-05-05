@@ -54,3 +54,9 @@ h1 {
 .app button.restart {
     background-color: salmon;
 }
+
+@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+    .app {
+        width: 600px;
+    }
+}
