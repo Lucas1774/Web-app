@@ -7,16 +7,17 @@ import "../assets/styles/rubikTimer.css";
 const TIMER_REFRESH_RATE = 50;
 
 const RubikTimer = () => {
-    const [selectedPuzzle, setSelectedPuzzle] = useState("");
-    const [scramble, setScramble] = useState("");
-    const [startTime, setStartTime] = useState(0);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [isFormVisible, setIsFormVisible] = useState(true);
     const [isScrambleVisible, setIsScrambleVisible] = useState(false);
     const [isTimerVisible, setIsTimerVisible] = useState(false);
     const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
-
+    
+    const previousTime = useRef(null);
+    const selectedPuzzle = useRef("");
+    const scramble = useRef("");
+    const startTime = useRef(0);
     const timerID = useRef(null);
 
     // use effect instead of conditional rendering to avoid event target issues
@@ -35,6 +36,7 @@ const RubikTimer = () => {
             if (isAndroid || event.key !== " ") {
                 document.removeEventListener(startEvent, handleStartEvent);
                 document.removeEventListener(abort, handleDrag);
+                setElapsedTime(previousTime.current);
                 setIsTimerRunning(false);
                 setIsScrambleVisible(true);
                 setIsTimerVisible(true);
@@ -50,7 +52,8 @@ const RubikTimer = () => {
                 const now = performance.now(); // instant time fetch
                 document.removeEventListener(abort, handleDrag);
                 document.removeEventListener(startEvent, handleStartEvent);
-                setStartTime(now);
+                startTime.current = now;
+                previousTime.current = 0;
                 timerID.current = setInterval(() => {
                     setElapsedTime(performance.now() - now);
                 }, TIMER_REFRESH_RATE);
@@ -69,6 +72,7 @@ const RubikTimer = () => {
             if (!isTimerRunning && ((isAndroid && event.target.tagName !== "BUTTON" && event.target.tagName !== "INPUT") || event.key === " ")) {
                 event.preventDefault();
                 hideEverything();
+                previousTime.current = elapsedTime;
                 setElapsedTime(0);
                 setIsTimerVisible(true);
                 if (navigator.wakeLock) {
@@ -84,9 +88,9 @@ const RubikTimer = () => {
                 const now = performance.now(); // instant time fetch
                 hideEverything();
                 clearInterval(timerID.current);
-                setElapsedTime(now - startTime);
+                setElapsedTime(now - startTime.current);
                 setIsTimerRunning(false);
-                setScramble(Scramble(selectedPuzzle));
+                scramble.current = Scramble(selectedPuzzle.current);
                 setIsScrambleVisible(true);
                 setIsTimerVisible(true);
                 let timer = document.getElementById("timer");
@@ -121,7 +125,7 @@ const RubikTimer = () => {
             document.removeEventListener(abort, handleDrag);
             clearInterval(timerID);
         };
-    }, [isTimerRunning, isTimerVisible, selectedPuzzle, startTime]);
+    }, [isTimerRunning, isTimerVisible]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -144,8 +148,8 @@ const RubikTimer = () => {
         event.preventDefault();
         let puzzle = event.target.id;
         hideEverything();
-        setSelectedPuzzle(puzzle);
-        setScramble(Scramble(puzzle));
+        selectedPuzzle.current = puzzle;
+        scramble.current = Scramble(puzzle);
         setIsScrambleVisible(true);
         setIsTimerVisible(true);
         setIsRestartButtonVisible(true);
@@ -179,9 +183,9 @@ const RubikTimer = () => {
     };
 
     const restoreDefaults = () => {
-        setSelectedPuzzle("");
-        setScramble("");
-        setStartTime(0);
+        selectedPuzzle.current = "";
+        scramble.current = "";
+        startTime.current = 0;
         setElapsedTime(0);
         setIsTimerRunning(false);
         setIsFormVisible(true);
@@ -195,7 +199,7 @@ const RubikTimer = () => {
             <h1 id="rubikTimer">Rubik timer</h1>
             <div className="app rubikTimer">
                 {isFormVisible && renderForm()}
-                {<h2 id="scramble" className={selectedPuzzle}>{scramble}</h2>}
+                {<h2 id="scramble" className={selectedPuzzle.current}>{scramble.current}</h2>}
                 {isTimerVisible && renderTimer()}
                 {isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
                 >Restart</Button>}
