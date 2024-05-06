@@ -21,6 +21,14 @@
     user-select: none;
 }
 
+.app.rubikTimer h2.megaminx {
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 24px;
+    white-space: preserve;
+}
+
 @media (orientation: landscape) and (hover: none) and (pointer: coarse) {
     .app.rubikTimer h2.two {
         font-size: 80px;
@@ -32,5 +40,9 @@
 
     .app.rubikTimer h3.running-timer {
         font-size: 150px;
+    }
+
+    .app.rubikTimer h2.megaminx {
+        font-size: 22px;
     }
 }
