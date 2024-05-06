@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
-import { TWO, THREE } from "../constants";
+import { TWO, THREE, BLD, MEGAMINX } from "../constants";
 import Scramble from "../scramblers/provider";
 import "../assets/styles/rubikTimer.css";
 
@@ -149,6 +149,8 @@ const RubikTimer = () => {
             <>
                 <Button id={TWO} onClick={handleSubmit}>2x2</Button>
                 <Button id={THREE} onClick={handleSubmit}>3x3</Button>
+                <Button id={BLD} onClick={handleSubmit}>BLD</Button>
+                <Button id={MEGAMINX} onClick={handleSubmit}>Megaminx</Button>
             </>
         );
     };
