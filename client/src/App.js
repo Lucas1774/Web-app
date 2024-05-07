@@ -19,8 +19,6 @@ const App = () => {
         <Col>
           <SecretSanta />
         </Col>
-      </Row>
-      <Row>
         <Col>
           <RubikTimer />
         </Col>
