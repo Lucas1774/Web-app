@@ -8,19 +8,22 @@ const TIMER_REFRESH_RATE = 50;
 
 const RubikTimer = () => {
     const [elapsedTime, setElapsedTime] = useState(0);
+    const [isTimerPrepared, setIsTimerPrepared] = useState(false);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [isFormVisible, setIsFormVisible] = useState(true);
     const [scrambleDisplayMode, setScrambleDisplaymode] = useState("block");
     const [isTimerVisible, setIsTimerVisible] = useState(false);
     const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
+    const [shouldFocusTimer, setShouldFocusTimer] = useState(false);
 
     const selectedPuzzle = useRef("");
-    const scramble = useRef("");
+    const scramble = useRef(null);
+    const timer = useRef(null);
     const startTime = useRef(0);
     const timerID = useRef(null);
+    const isAndroid = /Android/i.test(navigator.userAgent);
 
     useEffect(() => {
-        const isAndroid = /Android/i.test(navigator.userAgent);
         const prepareEvent = isAndroid ? "touchstart" : "keydown";
         const startEvent = isAndroid ? "touchend" : "keyup";
         const abort = isAndroid ? "touchmove" : "keydown";
@@ -29,12 +32,11 @@ const RubikTimer = () => {
             if (isAndroid || event.key !== " ") {
                 document.removeEventListener(startEvent, handleStartEvent);
                 document.removeEventListener(abort, handleDrag);
-                setIsTimerRunning(false);
+                setIsTimerPrepared(false);
                 setScrambleDisplaymode("block");
                 setIsTimerVisible(true);
                 setIsRestartButtonVisible(true);
                 document.body.classList.remove("nonSelectable");
-                document.getElementById("timer").classList.remove("green-timer");
                 document.addEventListener(prepareEvent, handlePrepareEvent);
             }
         }
@@ -48,12 +50,10 @@ const RubikTimer = () => {
                 timerID.current = setInterval(() => {
                     setElapsedTime(performance.now() - now);
                 }, TIMER_REFRESH_RATE);
+                setIsTimerPrepared(false);
                 setIsTimerRunning(true);
-                let timer = document.getElementById("timer");
-                timer.classList.remove("green-timer");
-                timer.classList.add("running-timer");
                 if (isAndroid) {
-                    timer.scrollIntoView({
+                    timer.current.scrollIntoView({
                         block: "center"
                     });
                 }
@@ -64,12 +64,12 @@ const RubikTimer = () => {
                 event.preventDefault();
                 hideEverything();
                 setIsTimerVisible(true);
+                setIsTimerPrepared(true);
                 if (navigator.wakeLock) {
                     navigator.wakeLock.request("screen");
                 }
                 document.body.classList.add("nonSelectable");
                 document.removeEventListener(prepareEvent, handlePrepareEvent);
-                document.getElementById("timer").classList.add("green-timer");
                 document.addEventListener(abort, handleDrag);
                 document.addEventListener(startEvent, handleStartEvent);
             } else if (isTimerRunning && (isAndroid || event.key !== "Escape")) {
@@ -82,16 +82,12 @@ const RubikTimer = () => {
                 scramble.current = Scramble(selectedPuzzle.current);
                 setScrambleDisplaymode("block");
                 setIsTimerVisible(true);
-                let timer = document.getElementById("timer");
-                timer.classList.remove("running-timer");
                 if (isAndroid) {
                     setTimeout(() => { // wait a little to not accidentally click something
                         setIsRestartButtonVisible(true);
                         document.body.classList.remove("nonSelectable");
                         if (window.matchMedia("(orientation: landscape)").matches) {
-                            timer.scrollIntoView({
-                                block: "end"
-                            })
+                            setShouldFocusTimer(true);
                         }
                     }, 200);
                     if (navigator.wakeLock) {
@@ -114,7 +110,7 @@ const RubikTimer = () => {
             document.removeEventListener(abort, handleDrag);
             clearInterval(timerID);
         };
-    }, [isTimerRunning, isTimerVisible]);
+    }, [isAndroid, isTimerRunning, isTimerVisible]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -142,7 +138,17 @@ const RubikTimer = () => {
         setScrambleDisplaymode("block");
         setIsTimerVisible(true);
         setIsRestartButtonVisible(true);
+        setShouldFocusTimer(true);
     };
+
+    useEffect(() => {
+        if (shouldFocusTimer && isAndroid) {
+            timer.current.scrollIntoView({
+                block: "end"
+            })
+            setShouldFocusTimer(false);
+        }
+    }, [isAndroid, shouldFocusTimer]);
 
     const renderForm = () => {
         return (
@@ -156,19 +162,24 @@ const RubikTimer = () => {
     };
 
     const renderTimer = () => {
-        const timer = document.getElementById("timer")
-        if (timer && timer.classList.contains("green-timer")) {
-            return (
-                <h3 id="timer">0:00:000</h3>
-            );
+        let timerValue;
+        if (timer.current && isTimerPrepared) {
+            timerValue = "0:00:000";
         } else {
             const minutes = parseInt(Math.floor(elapsedTime / 60000)).toString();
             const seconds = parseInt(Math.floor((elapsedTime % 60000) / 1000)).toString().padStart(2, '0');
             const milliseconds = parseInt((elapsedTime % 1000)).toString().padStart(3, '0');
-            return (
-                <h3 id="timer">{minutes}:{seconds}:{milliseconds}</h3>
-            );
+            timerValue = `${minutes}:${seconds}:${milliseconds}`;
         }
+        let timerClass = "";
+        if (isTimerRunning) {
+            timerClass = "running-timer";
+        } else if (isTimerPrepared) {
+            timerClass = "green-timer";
+        }
+        return (
+            <h3 id="timer" ref={timer} className={timerClass}>{timerValue}</h3>
+        );
     };
 
     const hideEverything = () => {
