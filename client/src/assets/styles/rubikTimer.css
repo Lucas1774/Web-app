@@ -1,12 +1,13 @@
 .app.rubikTimer h2 {
+    font-size: 40px;
     text-align: center;
-    color:rgb(126, 160, 224);
+    color: rgb(126, 160, 224);
 }
 
 .app.rubikTimer h3 {
     font-size: 50px;
     text-align: center;
-    color:rgb(126, 160, 224);
+    color: rgb(126, 160, 224);
 }
 
 .app.rubikTimer h3.green-timer {
@@ -25,24 +26,28 @@
     text-align: left;
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 35px;
+    letter-spacing: -6px;
     white-space: preserve;
 }
 
 @media (orientation: landscape) and (hover: none) and (pointer: coarse) {
     .app.rubikTimer h2.two {
-        font-size: 80px;
+        font-size: 100px;
+        line-height: 100px;
     }
 
-    .app.rubikTimer h2.three, .app.rubikTimer h2.bld {
-        font-size: 60px;
+    .app.rubikTimer h2.three,
+    .app.rubikTimer h2.bld {
+        font-size: 70px;
+        line-height: 65px;
+    }
+
+    .app.rubikTimer h2.megaminx {
+        line-height: 35px;
     }
 
     .app.rubikTimer h3.running-timer {
         font-size: 150px;
-    }
-
-    .app.rubikTimer h2.megaminx {
-        font-size: 22px;
     }
 }
