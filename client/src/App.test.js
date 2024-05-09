@@ -1,14 +1,13 @@
 
 import { render } from '@testing-library/react';
 import Scramble from "./scramblers/provider";
-import { TWO, THREE, BLD } from "./constants";
-import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
+import { EMPTY_TIMER, TWO, THREE, BLD } from "./constants";
 import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
+import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
 import { SCRAMBLE_LENGTH as BLD_SCRAMBLE_LENGTH } from "./scramblers/bldScrambler";
 
 const isTimerRunning = false;
 const isTimerPrepared = false;
-const EMPTY_TIMER = "-:--:---";
 const isHorizontal = false;
 const averageDisplay = isTimerRunning || isTimerPrepared ? "none" : "grid";
 

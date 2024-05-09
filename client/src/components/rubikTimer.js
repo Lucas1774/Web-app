@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from 'react-bootstrap';
-import { TWO, THREE, BLD, MEGAMINX } from "../constants";
+import { EMPTY_TIMER, TWO, THREE, BLD, MEGAMINX } from "../constants";
 import Scramble from "../scramblers/provider";
 import "../assets/styles/rubikTimer.css";
 
 const TIMER_REFRESH_RATE = 50;
-const EMPTY_TIMER = "-:--:---";
 
 const RubikTimer = () => {
     const isAndroid = /Android/i.test(navigator.userAgent);
