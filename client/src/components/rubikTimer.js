@@ -20,6 +20,7 @@ const RubikTimer = () => {
     const [shouldLockScreen, setIsScreenLocked] = useState(false);
     const [recentTimes, setRecentTimes] = useState([]);
 
+    const wakeLock = useRef(null);
     const selectedPuzzle = useRef("");
     const scramble = useRef(null);
     const timer = useRef(null);
@@ -136,12 +137,17 @@ const RubikTimer = () => {
     }, [isAndroid, focusTimer]);
 
     useEffect(() => {
-        if (navigator.wakeLock) {
-            if (shouldLockScreen) {
-                navigator.wakeLock.request("screen");
-            } else {
-                navigator.wakeLock.release();
+        async function requestWakeLock() {
+            try {
+                wakeLock.current = await navigator.wakeLock.request('screen');
+            } catch (error) {
+                console.error(error);
             }
+        }
+        if (navigator.wakeLock && shouldLockScreen) {
+            requestWakeLock();
+        } else if (wakeLock.current) {
+            wakeLock.current.release();
         }
     }, [shouldLockScreen]);
 
