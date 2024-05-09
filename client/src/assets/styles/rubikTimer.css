@@ -7,7 +7,7 @@
 .app.rubikTimer h3 {
     font-size: 50px;
     text-align: center;
-    color: rgb(126, 160, 224);
+    color: rgb(145, 93, 175);
 }
 
 .app.rubikTimer h3.green-timer {
@@ -16,6 +16,15 @@
 
 .app.rubikTimer h3.running-timer {
     font-size: 80px;
+}
+
+.app.rubikTimer h4 {
+    color: rgb(155, 113, 22);
+}
+
+.background {
+    grid-template-rows: repeat(3, 1fr);
+    grid-auto-flow: column;
 }
 
 .nonSelectable {
@@ -47,7 +56,32 @@
         line-height: 35px;
     }
 
+    .app.rubikTimer h3 {
+        padding-left: 22%;
+    }
+
+    .app.rubikTimer h3.green-timer {
+        padding: 0;
+    }
+
     .app.rubikTimer h3.running-timer {
+        padding: 0;
         font-size: 150px;
+    }
+
+    .app.rubikTimer h4 {
+        line-height: 20px;
+    }
+    
+    .timerContainer {
+        position: relative;
+    }
+    
+    .background {
+        position: absolute;
+        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: 0.23fr 0.25fr 0.52fr;
+        bottom: 0px;
+        width: 100%;
     }
 }
