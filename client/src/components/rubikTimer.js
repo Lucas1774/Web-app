@@ -30,16 +30,6 @@ const RubikTimer = () => {
     const timerInterval = useRef(null)
 
     useEffect(() => {
-        const handleOrientationChange = () => {
-            setIsHorizontal(window.matchMedia("(orientation: landscape)").matches && isAndroid);
-        }
-        window.addEventListener('resize', handleOrientationChange);
-        return () => {
-            window.removeEventListener('resize', handleOrientationChange);
-        }
-    }, [isAndroid])
-
-    useEffect(() => {
         const prepareEvent = isAndroid ? "touchstart" : "keydown";
         const startEvent = isAndroid ? "touchend" : "keyup";
         const abort = isAndroid ? "touchmove" : "keydown";
@@ -121,6 +111,16 @@ const RubikTimer = () => {
             document.removeEventListener(stopEvent, handleStop);
         };
     }, [isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible, startTime]);
+
+    useEffect(() => {
+        const handleOrientationChange = () => {
+            setIsHorizontal(window.matchMedia("(orientation: landscape)").matches && isAndroid);
+        }
+        window.addEventListener('resize', handleOrientationChange);
+        return () => {
+            window.removeEventListener('resize', handleOrientationChange);
+        }
+    }, [isAndroid])
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -239,7 +239,7 @@ const RubikTimer = () => {
         setScrambleDisplaymode("block");
         setIsTimerVisible(true);
         setIsRestartButtonVisible(true);
-        setShouldFocusTimer("center");
+        setShouldFocusTimer("end");
     };
 
     const hideEverything = () => {
