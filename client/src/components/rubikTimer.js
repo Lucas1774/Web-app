@@ -7,9 +7,9 @@ import "../assets/styles/rubikTimer.css";
 const TIMER_REFRESH_RATE = 50;
 const EMPTY_TIMER = "-:--:---";
 
-const RubikTimer = () => {;
+const RubikTimer = () => {
     const isAndroid = /Android/i.test(navigator.userAgent);
-    
+
     const [elapsedTime, setElapsedTime] = useState(0);
     const [startTime, setStartTime] = useState(0);
     const [isTimerPrepared, setIsTimerPrepared] = useState(false);
@@ -195,20 +195,26 @@ const RubikTimer = () => {;
         return (
             <div className="background" style={{ display: averageDisplay }}>
                 {params.map(({ label, length, removeBestAndWorst, align }) => {
-                    const displayTime = recentTimes.length >= length ?
-                        length === 1 ?
-                            formatTime(Math.min(...recentTimes))
-                                .substring(0, EMPTY_TIMER.length)
-                            : formatTime(
-                                removeBestAndWorst
-                                    ? recentTimes.slice(-length)
-                                        .sort((a, b) => a - b)
-                                        .slice(1, -1)
-                                        .reduce((sum, time) => sum + time, 0) / (length - 2)
-                                    : recentTimes.slice(-length)
-                                        .reduce((sum, time) => sum + time, 0) / length
-                            ).substring(0, EMPTY_TIMER.length)
-                        : EMPTY_TIMER;
+                    let displayTime = EMPTY_TIMER;
+                    if (removeBestAndWorst) {
+                        if (recentTimes.length === length - 1) { // 4/5, 11/12 -> make average without best
+                            displayTime = formatTime(recentTimes.sort((a, b) => a - b)
+                                .slice(1)
+                                .reduce((sum, time) => sum + time, 0) / (length - 2));
+                        } else if (recentTimes.length >= length) { // otherwise -> make average without best and worst
+                            displayTime = formatTime(recentTimes.slice(-length)
+                                .sort((a, b) => a - b)
+                                .slice(1, -1)
+                                .reduce((sum, time) => sum + time, 0) / (length - 2));
+                        }
+                    } else if (recentTimes.length >= length) {
+                        if (length === 1) { // best -> pick
+                            displayTime = formatTime(Math.min(...recentTimes));
+                        } else { // otherwise -> make mean
+                            displayTime = formatTime(recentTimes.slice(-length)
+                                .reduce((sum, time) => sum + time, 0) / length);
+                        }
+                    }
                     return (
                         <h4 style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
                     );
