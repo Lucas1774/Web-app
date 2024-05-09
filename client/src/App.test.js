@@ -1,9 +1,10 @@
 
 import { render } from '@testing-library/react';
 import Scramble from "./scramblers/provider";
-import { EMPTY_TIMER, TWO, THREE, BLD } from "./constants";
+import { EMPTY_TIMER, TWO, THREE, FOUR, BLD } from "./constants";
 import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
 import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
+import { SCRAMBLE_LENGTH as FOUR_SCRAMBLE_LENGTH } from "./scramblers/fourScrambler";
 import { SCRAMBLE_LENGTH as BLD_SCRAMBLE_LENGTH } from "./scramblers/bldScrambler";
 
 const isTimerRunning = false;
@@ -93,9 +94,48 @@ test("BLD", () => {
 		expect(lastTwoMoves).not.toBe("LR");
 		expect(lastTwoMoves).not.toBe("LL");
 	}
-
-
 });
+
+test("4x4", () => {
+	for (let i = 0; i < 1000; i++) {
+		const scramble = Scramble(FOUR);
+		console.log(scramble);
+		const axisMoves = scramble.replace(/['2]/g, "");
+		console.log(axisMoves);
+		const completelyRawMoves = axisMoves.replace(/[w\s]/g, "");
+		console.log(completelyRawMoves);
+		expect(completelyRawMoves.length).toBe(FOUR_SCRAMBLE_LENGTH);
+		expect(axisMoves).not.toContain("U U ");
+		expect(axisMoves).not.toContain("D D ");
+		expect(axisMoves).not.toContain("F F ");
+		expect(axisMoves).not.toContain("B B ");
+		expect(axisMoves).not.toContain("R R ");
+		expect(axisMoves).not.toContain("L L ");
+		expect(axisMoves).not.toContain("U D U ");
+		expect(axisMoves).not.toContain("D U D ");
+		expect(axisMoves).not.toContain("F B F ");
+		expect(axisMoves).not.toContain("B F B ");
+		expect(axisMoves).not.toContain("R L R ");
+		expect(axisMoves).not.toContain("L R L ");
+		expect(axisMoves).not.toContain("Uw Uw ");
+		expect(axisMoves).not.toContain("Dw Dw ");
+		expect(axisMoves).not.toContain("Fw Fw ");
+		expect(axisMoves).not.toContain("Bw Bw ");
+		expect(axisMoves).not.toContain("Rw Rw ");
+		expect(axisMoves).not.toContain("Lw Lw ");
+		expect(axisMoves).not.toContain("Uw D Uw ");
+		expect(axisMoves).not.toContain("Uw U Uw ");
+		expect(axisMoves).not.toContain("Dw D Dw ");
+		expect(axisMoves).not.toContain("Dw U Dw ");
+		expect(axisMoves).not.toContain("Fw B Fw ");
+		expect(axisMoves).not.toContain("Fw F Fw ");
+		expect(axisMoves).not.toContain("Bw F Bw ");
+		expect(axisMoves).not.toContain("Bw B Bw ");
+		expect(axisMoves).not.toContain("Rw L Rw ");
+		expect(axisMoves).not.toContain("Rw R Rw ");
+	}
+});
+
 const renderAverages = (recentTimes) => { // mocking the function like this is an approach I can live with
 	const params = [
 		{ label: "best", length: 1, removeBestAndWorst: false, align: "left" },
