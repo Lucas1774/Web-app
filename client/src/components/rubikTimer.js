@@ -7,7 +7,9 @@ import "../assets/styles/rubikTimer.css";
 const TIMER_REFRESH_RATE = 50;
 const EMPTY_TIMER = "-:--:---";
 
-const RubikTimer = () => {
+const RubikTimer = () => {;
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    
     const [elapsedTime, setElapsedTime] = useState(0);
     const [startTime, setStartTime] = useState(0);
     const [isTimerPrepared, setIsTimerPrepared] = useState(false);
@@ -19,13 +21,23 @@ const RubikTimer = () => {
     const [focusTimer, setShouldFocusTimer] = useState("");
     const [shouldLockScreen, setIsScreenLocked] = useState(false);
     const [recentTimes, setRecentTimes] = useState([]);
+    const [isHorizontal, setIsHorizontal] = useState(window.matchMedia("(orientation: landscape)").matches && isAndroid);
 
     const wakeLock = useRef(null);
     const selectedPuzzle = useRef("");
     const scramble = useRef(null);
     const timer = useRef(null);
-    const timerInterval = useRef(null);
-    const isAndroid = /Android/i.test(navigator.userAgent);
+    const timerInterval = useRef(null)
+
+    useEffect(() => {
+        const handleOrientationChange = () => {
+            setIsHorizontal(window.matchMedia("(orientation: landscape)").matches && isAndroid);
+        }
+        window.addEventListener('resize', handleOrientationChange);
+        return () => {
+            window.removeEventListener('resize', handleOrientationChange);
+        }
+    }, [isAndroid])
 
     useEffect(() => {
         const prepareEvent = isAndroid ? "touchstart" : "keydown";
@@ -171,41 +183,37 @@ const RubikTimer = () => {
     };
 
     const renderAverages = () => {
-        let averageDisplay = isTimerRunning || isTimerPrepared ? "none" : "grid";
+        const averageDisplay = isTimerRunning || isTimerPrepared ? "none" : "grid";
+        const params = [
+            { label: "best", length: 1, removeBestAndWorst: false, align: "left" },
+            { label: "mo3", length: 3, removeBestAndWorst: false, align: "left" },
+            { label: "avg5", length: 5, removeBestAndWorst: true, align: "left" },
+            { label: "avg12", length: 12, removeBestAndWorst: true, align: isHorizontal ? "left" : "right" },
+            { label: "mo50", length: 50, removeBestAndWorst: false, align: "right" },
+            { label: "mo100", length: 100, removeBestAndWorst: false, align: "right" },
+        ];
         return (
-            <>
-                <div className="background" style={{ display: averageDisplay }}>
-                    <h4>best {recentTimes.length > 0
-                        ? formatTime(Math.min(...recentTimes))
-                            .substring(0, EMPTY_TIMER.length)
-                        : EMPTY_TIMER}</h4>
-                    {isAndroid && window.matchMedia("(orientation: landscape)").matches && <h4> </h4>}
-                    <h4>avg5 {recentTimes.length >= 5
-                        ? formatTime(recentTimes.slice(-5)
-                            .sort((a, b) => a - b)
-                            .slice(1, -1)
-                            .reduce((sum, time) => sum + time, 0) / 3)
-                            .substring(0, EMPTY_TIMER.length)
-                        : EMPTY_TIMER}</h4>
-                    <h4>avg12 {recentTimes.length >= 12
-                        ? formatTime(recentTimes.slice(-12)
-                            .sort((a, b) => a - b)
-                            .slice(1, -1)
-                            .reduce((sum, time) => sum + time, 0) / 10)
-                            .substring(0, EMPTY_TIMER.length)
-                        : EMPTY_TIMER}</h4>
-                    <h4 style={{ textAlign: "right" }}>{recentTimes.length >= 50
-                        ? formatTime(recentTimes.slice(-50)
-                            .reduce((sum, time) => sum + time, 0) / 50)
-                            .substring(0, EMPTY_TIMER.length)
-                        : EMPTY_TIMER} avg50</h4>
-                    <h4 style={{ textAlign: "right" }}>{recentTimes.length >= 100
-                        ? formatTime(recentTimes.slice(-100)
-                            .reduce((sum, time) => sum + time, 0) / 100)
-                            .substring(0, EMPTY_TIMER.length)
-                        : EMPTY_TIMER} avg100</h4>
-                </div>
-            </>
+            <div className="background" style={{ display: averageDisplay }}>
+                {params.map(({ label, length, removeBestAndWorst, align }) => {
+                    const displayTime = recentTimes.length >= length ?
+                        length === 1 ?
+                            formatTime(Math.min(...recentTimes))
+                                .substring(0, EMPTY_TIMER.length)
+                            : formatTime(
+                                removeBestAndWorst
+                                    ? recentTimes.slice(-length)
+                                        .sort((a, b) => a - b)
+                                        .slice(1, -1)
+                                        .reduce((sum, time) => sum + time, 0) / (length - 2)
+                                    : recentTimes.slice(-length)
+                                        .reduce((sum, time) => sum + time, 0) / length
+                            ).substring(0, EMPTY_TIMER.length)
+                        : EMPTY_TIMER;
+                    return (
+                        <h4 style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
+                    );
+                })}
+            </div>
         );
     }
 
