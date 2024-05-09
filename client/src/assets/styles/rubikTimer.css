@@ -20,6 +20,7 @@
 
 .app.rubikTimer h4 {
     color: rgb(155, 113, 22);
+    line-height: 20px;
 }
 
 .background {
@@ -67,10 +68,6 @@
     .app.rubikTimer h3.running-timer {
         padding: 0;
         font-size: 150px;
-    }
-
-    .app.rubikTimer h4 {
-        line-height: 20px;
     }
     
     .timerContainer {
