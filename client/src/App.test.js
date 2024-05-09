@@ -118,10 +118,16 @@ test("4x4", () => {
 		expect(axisMoves).not.toContain("R L R ");
 		expect(axisMoves).not.toContain("L R L ");
 		expect(axisMoves).not.toContain("Uw Uw ");
+		expect(axisMoves).not.toContain("Uw Dw ");
+		expect(axisMoves).not.toContain("Dw Uw ");
 		expect(axisMoves).not.toContain("Dw Dw ");
 		expect(axisMoves).not.toContain("Fw Fw ");
+		expect(axisMoves).not.toContain("Fw Bw ");
+		expect(axisMoves).not.toContain("Bw Fw ");
 		expect(axisMoves).not.toContain("Bw Bw ");
 		expect(axisMoves).not.toContain("Rw Rw ");
+		expect(axisMoves).not.toContain("Rw Lw ");
+		expect(axisMoves).not.toContain("Lw Rw ");
 		expect(axisMoves).not.toContain("Lw Lw ");
 		expect(axisMoves).not.toContain("Uw D Uw ");
 		expect(axisMoves).not.toContain("Uw U Uw ");
