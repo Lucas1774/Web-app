@@ -19,19 +19,20 @@ export const Scramble = () => {
     let lastSimpleMoveLayer = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble.split(" ")[THREE_SCRAMBLE_LENGTH - 1][0]];
     let secondToLastSimpleMoveLayer = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble.split(" ")[THREE_SCRAMBLE_LENGTH - 2][0]];
     let lastDoubleMoveLayer = -2;
-    let secondToLastDoubleMoveLayer = -2;
     let lastTurnWidth = 0;
     let turnLayer, turnIterator, turnWidth;
     for (let i = 0; i < SCRAMBLE_LENGTH - THREE_SCRAMBLE_LENGTH; i++) {
         turnWidth = Math.floor(Math.random() * 2);
+        if (turnWidth === 1 && lastTurnWidth === 1) {
+            turnLayer = Math.floor(Math.random() * 6);
+        }
         let axisHasBeenBroken = turnWidth !== lastTurnWidth
             ? parseInt(lastDoubleMoveLayer / 2) !== parseInt(lastSimpleMoveLayer / 2)
             : turnWidth === 0
                 ? parseInt(lastSimpleMoveLayer / 2) !== parseInt(secondToLastSimpleMoveLayer / 2)
-                : parseInt(lastDoubleMoveLayer / 2) !== parseInt(secondToLastDoubleMoveLayer / 2);
+                : false; // no consecutive same-axis wide moves
         if (axisHasBeenBroken) {
-            if (turnWidth !== lastTurnWidth) {
-
+            if (turnWidth !== lastTurnWidth  || turnWidth) {
                 turnLayer = Math.floor(Math.random() * 6);
             } else {
                 turnLayer = Math.floor(Math.random() * 5);
@@ -61,7 +62,6 @@ export const Scramble = () => {
             secondToLastSimpleMoveLayer = lastSimpleMoveLayer;
             lastSimpleMoveLayer = turnLayer;
         } else {
-            secondToLastDoubleMoveLayer = lastDoubleMoveLayer;
             lastDoubleMoveLayer = turnLayer;
         }
         lastTurnWidth = turnWidth;
