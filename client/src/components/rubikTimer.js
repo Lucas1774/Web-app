@@ -223,7 +223,7 @@ const RubikTimer = () => {
                         }
                     }
                     return (
-                        <h4 style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
+                        <h4 key={label} style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
                     );
                 })}
             </div>
