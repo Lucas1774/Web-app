@@ -169,7 +169,6 @@ const SecretSanta = () => {
                 {isNoParticipantsVisible && (
                     <>
                         <div>Not enough participants</div>
-                        <div>Deleting all previous data...</div>
                     </>
                 )}
                 {isChosenVisible && renderChosen()}
