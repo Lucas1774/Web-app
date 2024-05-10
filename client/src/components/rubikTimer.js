@@ -27,6 +27,7 @@ const RubikTimer = () => {
     const scramble = useRef(null);
     const timer = useRef(null);
     const timerInterval = useRef(null)
+    let isTouched = useRef(null);
 
     useEffect(() => {
         const prepareEvent = isAndroid ? "touchstart" : "keydown";
@@ -40,21 +41,25 @@ const RubikTimer = () => {
                 setIsTimerPrepared(true);
                 setIsRestartButtonVisible(false);
                 setScrambleDisplaymode("none");
-                document.body.classList.add("nonSelectable");
             }
         };
         const handleInterrupt = (event) => {
             if (isTimerPrepared && (isAndroid || event.key !== " ")) {
                 event.preventDefault();
-                setIsTimerPrepared(false);
-                setScrambleDisplaymode("block");
-                setIsRestartButtonVisible(true);
-                document.body.classList.remove("nonSelectable");
+                isTouched.current = true;
+                setTimeout(() => {
+                    if (isTouched.current) {
+                        setIsTimerPrepared(false);
+                        setScrambleDisplaymode("block");
+                        setIsRestartButtonVisible(true);
+                    }
+                }, 100)
             }
         };
         const handleStart = (event) => {
             if (isTimerPrepared && (isAndroid || event.key === " ")) {
                 event.preventDefault();
+                isTouched.current = false;
                 const now = performance.now(); // instant time fetch
                 setStartTime(now);
                 timerInterval.current = setInterval(() => {
@@ -81,7 +86,6 @@ const RubikTimer = () => {
                 if (isAndroid) {
                     setTimeout(() => { // wait a little to not accidentally click something
                         setIsRestartButtonVisible(true);
-                        document.body.classList.remove("nonSelectable");
                         setShouldFocusTimer("end");
                     }, 200);
                 } else {
@@ -93,14 +97,16 @@ const RubikTimer = () => {
             setIsScreenLocked(true);
             document.addEventListener(prepareEvent, handlePrepare);
             document.addEventListener(startEvent, handleStart);
-            document.addEventListener(abort, handleInterrupt);
+            document.addEventListener(abort, handleInterrupt, { passive: false });
             document.addEventListener(stopEvent, handleStop);
+            document.body.classList.add("nonSelectable");
         } else {
             setIsScreenLocked(false);
             document.removeEventListener(prepareEvent, handlePrepare);
             document.removeEventListener(startEvent, handleStart);
             document.removeEventListener(abort, handleInterrupt);
             document.removeEventListener(stopEvent, handleStop);
+            document.body.classList.remove("nonSelectable");
         }
         return () => {
             setIsScreenLocked(false);
@@ -108,6 +114,7 @@ const RubikTimer = () => {
             document.removeEventListener(startEvent, handleStart);
             document.removeEventListener(abort, handleInterrupt);
             document.removeEventListener(stopEvent, handleStop);
+            document.body.classList.remove("nonSelectable");
         };
     }, [isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible, startTime]);
 
