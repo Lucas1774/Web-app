@@ -18,7 +18,6 @@ const RubikTimer = () => {
     const [isTimerVisible, setIsTimerVisible] = useState(false);
     const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
     const [focusTimer, setShouldFocusTimer] = useState("");
-    const [shouldLockScreen, setIsScreenLocked] = useState(false);
     const [recentTimes, setRecentTimes] = useState([]);
     const [isHorizontal, setIsHorizontal] = useState(window.matchMedia("(orientation: landscape)").matches && isAndroid);
 
@@ -93,15 +92,24 @@ const RubikTimer = () => {
                 }
             }
         };
+        async function requestWakeLock() {
+            if (navigator.wakeLock) {
+                try {
+                    wakeLock.current = await navigator.wakeLock.request('screen');
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
         if (isTimerVisible) {
-            setIsScreenLocked(true);
+            requestWakeLock();
             document.addEventListener(prepareEvent, handlePrepare);
             document.addEventListener(startEvent, handleStart);
             document.addEventListener(abort, handleInterrupt, { passive: false });
             document.addEventListener(stopEvent, handleStop);
             document.body.classList.add("nonSelectable");
         } else {
-            setIsScreenLocked(false);
+            wakeLock.current?.release();
             document.removeEventListener(prepareEvent, handlePrepare);
             document.removeEventListener(startEvent, handleStart);
             document.removeEventListener(abort, handleInterrupt);
@@ -109,7 +117,7 @@ const RubikTimer = () => {
             document.body.classList.remove("nonSelectable");
         }
         return () => {
-            setIsScreenLocked(false);
+            wakeLock.current?.release();
             document.removeEventListener(prepareEvent, handlePrepare);
             document.removeEventListener(startEvent, handleStart);
             document.removeEventListener(abort, handleInterrupt);
@@ -153,21 +161,6 @@ const RubikTimer = () => {
             setShouldFocusTimer("");
         }
     }, [isAndroid, focusTimer]);
-
-    useEffect(() => {
-        async function requestWakeLock() {
-            try {
-                wakeLock.current = await navigator.wakeLock.request('screen');
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        if (navigator.wakeLock && shouldLockScreen) {
-            requestWakeLock();
-        } else if (wakeLock.current) {
-            wakeLock.current.release();
-        }
-    }, [shouldLockScreen]);
 
     const renderForm = () => {
         return (
