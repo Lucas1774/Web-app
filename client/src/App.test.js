@@ -15,11 +15,7 @@ const averageDisplay = isTimerRunning || isTimerPrepared ? "none" : "grid";
 test("2x2", () => {
 	for (let i = 0; i < 1000; i++) {
 		const scramble = Scramble(TWO);
-		console.log(scramble);
-		const axisMoves = scramble.split(" ")
-			.map(move => move[0])
-			.join("");
-		console.log(axisMoves);
+		const axisMoves = scramble.replace(/[2'\s]/g, "");
 		expect(axisMoves.length).toBe(TWO_SCRAMBLE_LENGTH);
 		expect(axisMoves).not.toContain("UU");
 		expect(axisMoves).not.toContain("FF");
@@ -30,11 +26,7 @@ test("2x2", () => {
 test("3x3", () => {
 	for (let i = 0; i < 1000; i++) {
 		const scramble = Scramble(THREE);
-		console.log(scramble);
-		const axisMoves = scramble.split(" ")
-			.map(move => move[0])
-			.join("");
-		console.log(axisMoves);
+		const axisMoves = scramble.replace(/[2'\s]/g, "");
 		expect(axisMoves.length).toBe(THREE_SCRAMBLE_LENGTH);
 		expect(axisMoves).not.toContain("UU");
 		expect(axisMoves).not.toContain("DD");
@@ -54,13 +46,9 @@ test("3x3", () => {
 test("BLD", () => {
 	for (let i = 0; i < 1000; i++) {
 		const scramble = Scramble(BLD);
-		console.log(scramble);
-		const axisMoves = scramble.split(" ")
-			.map(move => move[0])
-			.join("");
-		console.log(axisMoves);
+		const axisMoves = scramble.replace(/[2'\sw]/g, "");
 		expect(axisMoves.length).toBe(BLD_SCRAMBLE_LENGTH);
-		const nonWideAxisMoves = axisMoves.substring(0, axisMoves.length - 2);
+		const nonWideAxisMoves = axisMoves.slice(0, - 2);
 		expect(nonWideAxisMoves).not.toContain("UU");
 		expect(nonWideAxisMoves).not.toContain("DD");
 		expect(nonWideAxisMoves).not.toContain("FF");
@@ -73,14 +61,14 @@ test("BLD", () => {
 		expect(nonWideAxisMoves).not.toContain("BFB");
 		expect(nonWideAxisMoves).not.toContain("RLR");
 		expect(nonWideAxisMoves).not.toContain("LRL");
-		const secondAndThirdLastMoves = axisMoves.substring(axisMoves.length - 3, axisMoves.length - 1);
+		const secondAndThirdLastMoves = axisMoves.slice(-3, -1);
 		expect(secondAndThirdLastMoves).not.toBe("UD");
 		expect(secondAndThirdLastMoves).not.toBe("DU");
 		expect(secondAndThirdLastMoves).not.toBe("FB");
 		expect(secondAndThirdLastMoves).not.toBe("BF");
 		expect(secondAndThirdLastMoves).not.toBe("RL");
 		expect(secondAndThirdLastMoves).not.toBe("LR");
-		const lastTwoMoves = axisMoves.substring(axisMoves.length - 2);
+		const lastTwoMoves = axisMoves.slice(- 2);
 		expect(lastTwoMoves).not.toBe("UU");
 		expect(lastTwoMoves).not.toBe("UD");
 		expect(lastTwoMoves).not.toBe("DU");
@@ -99,46 +87,45 @@ test("BLD", () => {
 test("4x4", () => {
 	for (let i = 0; i < 1000; i++) {
 		const scramble = Scramble(FOUR);
-		console.log(scramble);
-		const axisMoves = scramble.replace(/['2]/g, "");
-		console.log(axisMoves);
-		const completelyRawMoves = axisMoves.replace(/[w\s]/g, "");
-		console.log(completelyRawMoves);
-		expect(completelyRawMoves.length).toBe(FOUR_SCRAMBLE_LENGTH);
-		expect(axisMoves).not.toContain("U U ");
-		expect(axisMoves).not.toContain("D D ");
-		expect(axisMoves).not.toContain("F F ");
-		expect(axisMoves).not.toContain("B B ");
-		expect(axisMoves).not.toContain("R R ");
-		expect(axisMoves).not.toContain("L L ");
-		expect(axisMoves).not.toContain("U D U ");
-		expect(axisMoves).not.toContain("D U D ");
-		expect(axisMoves).not.toContain("F B F ");
-		expect(axisMoves).not.toContain("B F B ");
-		expect(axisMoves).not.toContain("R L R ");
-		expect(axisMoves).not.toContain("L R L ");
-		expect(axisMoves).not.toContain("Uw Uw ");
-		expect(axisMoves).not.toContain("Uw Dw ");
-		expect(axisMoves).not.toContain("Dw Uw ");
-		expect(axisMoves).not.toContain("Dw Dw ");
-		expect(axisMoves).not.toContain("Fw Fw ");
-		expect(axisMoves).not.toContain("Fw Bw ");
-		expect(axisMoves).not.toContain("Bw Fw ");
-		expect(axisMoves).not.toContain("Bw Bw ");
-		expect(axisMoves).not.toContain("Rw Rw ");
-		expect(axisMoves).not.toContain("Rw Lw ");
-		expect(axisMoves).not.toContain("Lw Rw ");
-		expect(axisMoves).not.toContain("Lw Lw ");
-		expect(axisMoves).not.toContain("Uw D Uw ");
-		expect(axisMoves).not.toContain("Uw U Uw ");
-		expect(axisMoves).not.toContain("Dw D Dw ");
-		expect(axisMoves).not.toContain("Dw U Dw ");
-		expect(axisMoves).not.toContain("Fw B Fw ");
-		expect(axisMoves).not.toContain("Fw F Fw ");
-		expect(axisMoves).not.toContain("Bw F Bw ");
-		expect(axisMoves).not.toContain("Bw B Bw ");
-		expect(axisMoves).not.toContain("Rw L Rw ");
-		expect(axisMoves).not.toContain("Rw R Rw ");
+		const axisMoves = scramble.replace(/[2'\sw]/g, "");
+		expect(axisMoves.length).toBe(FOUR_SCRAMBLE_LENGTH);
+		const sanitizedMoves = scramble.replace(/[2']/g, ""); // keep spaces for easier pattern matching
+		expect(sanitizedMoves).not.toContain("U U ");
+		expect(sanitizedMoves).not.toContain("D D ");
+		expect(sanitizedMoves).not.toContain("F F ");
+		expect(sanitizedMoves).not.toContain("B B ");
+		expect(sanitizedMoves).not.toContain("R R ");
+		expect(sanitizedMoves).not.toContain("L L ");
+		expect(sanitizedMoves).not.toContain("U D U ");
+		expect(sanitizedMoves).not.toContain("D U D ");
+		expect(sanitizedMoves).not.toContain("F B F ");
+		expect(sanitizedMoves).not.toContain("B F B ");
+		expect(sanitizedMoves).not.toContain("R L R ");
+		expect(sanitizedMoves).not.toContain("L R L ");
+		expect(sanitizedMoves).not.toContain("Uw Uw ");
+		expect(sanitizedMoves).not.toContain("Uw Dw ");
+		expect(sanitizedMoves).not.toContain("Dw Uw ");
+		expect(sanitizedMoves).not.toContain("Dw Dw ");
+		expect(sanitizedMoves).not.toContain("Fw Fw ");
+		expect(sanitizedMoves).not.toContain("Fw Bw ");
+		expect(sanitizedMoves).not.toContain("Bw Fw ");
+		expect(sanitizedMoves).not.toContain("Bw Bw ");
+		expect(sanitizedMoves).not.toContain("Rw Rw ");
+		expect(sanitizedMoves).not.toContain("Rw Lw ");
+		expect(sanitizedMoves).not.toContain("Lw Rw ");
+		expect(sanitizedMoves).not.toContain("Lw Lw ");
+		expect(sanitizedMoves).not.toContain("Uw D Uw ");
+		expect(sanitizedMoves).not.toContain("Uw U Uw ");
+		expect(sanitizedMoves).not.toContain("Dw D Dw ");
+		expect(sanitizedMoves).not.toContain("Dw U Dw ");
+		expect(sanitizedMoves).not.toContain("Fw B Fw ");
+		expect(sanitizedMoves).not.toContain("Fw F Fw ");
+		expect(sanitizedMoves).not.toContain("Bw F Bw ");
+		expect(sanitizedMoves).not.toContain("Bw B Bw ");
+		expect(sanitizedMoves).not.toContain("Rw L Rw ");
+		expect(sanitizedMoves).not.toContain("Rw R Rw ");
+		expect(sanitizedMoves).not.toContain("Lw R Lw ");
+		expect(sanitizedMoves).not.toContain("Lw L Lw ");
 	}
 });
 
@@ -175,7 +162,7 @@ const renderAverages = (recentTimes) => { // mocking the function like this is a
 					}
 				}
 				return (
-					<h4 style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
+					<h4 key={label} style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
 				);
 			})}
 		</div>
