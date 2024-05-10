@@ -39,9 +39,10 @@
     font-size: 35px;
     letter-spacing: -6px;
     white-space: preserve;
+    line-height: 35px;
 }
 
-@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+@media (pointer: coarse) and (orientation: landscape) {
     .app.rubikTimer h2.two {
         font-size: 100px;
         line-height: 100px;
@@ -49,12 +50,8 @@
 
     .app.rubikTimer h2.three,
     .app.rubikTimer h2.bld {
-        font-size: 70px;
-        line-height: 65px;
-    }
-
-    .app.rubikTimer h2.megaminx {
-        line-height: 35px;
+        font-size: 68px;
+        line-height: 68px;
     }
 
     .app.rubikTimer h3 {
@@ -69,11 +66,11 @@
         padding: 0;
         font-size: 150px;
     }
-    
+
     .timerContainer {
         position: relative;
     }
-    
+
     .background {
         position: absolute;
         grid-template-rows: repeat(2, 1fr);
