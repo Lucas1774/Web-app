@@ -1,6 +1,7 @@
 body {
     background-color: rgb(0, 0, 0);
     color: rgb(255, 255, 255);
+    margin: 3.5%
 }
 
 h1 {
@@ -13,7 +14,6 @@ h1 {
     flex-direction: column;
     align-items: center;
     padding: 50px 0;
-    min-width: fit-content;
 }
 
 .app {
@@ -45,9 +45,12 @@ h1 {
     background-color: salmon;
 }
 
-@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+@media (pointer: coarse) {
+    .col {
+        flex: auto;
+    }
+
     .app {
         width: 100%;
-        padding: 0 20px;
     }
 }

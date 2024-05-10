@@ -12,9 +12,8 @@ const App = () => {
   return (
     <><div style={{ display: "flex", flexWrap: "wrap" }}>
       <About />
-      <br></br>
-      <div style={{ margin: "auto" }}>
-        <video controls width="360px">
+      <div className='app' style={{ margin: "auto" }}>
+        <video controls width="100%">
           <source src={video} type="video/webm" />
         </video>
       </div>

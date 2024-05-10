@@ -29,7 +29,7 @@
   background-color: salmon;
 }
 
-@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+@media (pointer: coarse) {
   .app.calculator {
     width: 360px;
   }
