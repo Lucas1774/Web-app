@@ -26,7 +26,7 @@ const RubikTimer = () => {
     const scramble = useRef(null);
     const timer = useRef(null);
     const timerInterval = useRef(null)
-    let isTouched = useRef(null);
+    const isTouched = useRef(null);
 
     useEffect(() => {
         const prepareEvent = isAndroid ? "touchstart" : "keydown";
@@ -37,6 +37,9 @@ const RubikTimer = () => {
         const handlePrepare = (event) => {
             if (!isTimerRunning && !isTimerPrepared && ((isAndroid && event.target.tagName !== "BUTTON" && event.target.tagName !== "INPUT") || event.key === " ")) {
                 event.preventDefault();
+                if (isAndroid) {
+                    isTouched.current = true;
+                }
                 setIsTimerPrepared(true);
                 setIsRestartButtonVisible(false);
                 setScrambleDisplaymode("none");
@@ -45,13 +48,17 @@ const RubikTimer = () => {
         const handleInterrupt = (event) => {
             if (isTimerPrepared && (isAndroid || event.key !== " ")) {
                 event.preventDefault();
-                isTouched.current = true;
                 setTimeout(() => {
                     if (isTouched.current) {
                         setIsTimerPrepared(false);
                         setScrambleDisplaymode("block");
                         setIsRestartButtonVisible(true);
                     }
+                }, 100)
+            } else if (isAndroid && isTouched.current) {
+                event.preventDefault();
+                setTimeout(() => {
+                    isTouched.current = false;
                 }, 100)
             }
         };
@@ -83,13 +90,10 @@ const RubikTimer = () => {
                 scramble.current = Scramble(selectedPuzzle.current);
                 setScrambleDisplaymode("block");
                 if (isAndroid) {
-                    setTimeout(() => { // wait a little to not accidentally click something
-                        setIsRestartButtonVisible(true);
-                        setShouldFocusTimer("end");
-                    }, 200);
-                } else {
-                    setIsRestartButtonVisible(true);
+                    isTouched.current = true;
+                    setShouldFocusTimer("end");
                 }
+                setIsRestartButtonVisible(true);
             }
         };
         async function requestWakeLock() {
@@ -100,7 +104,7 @@ const RubikTimer = () => {
                     console.error(error);
                 }
             }
-        }
+        };
         if (isTimerVisible) {
             requestWakeLock();
             document.addEventListener(prepareEvent, handlePrepare);
@@ -241,8 +245,10 @@ const RubikTimer = () => {
         scramble.current = Scramble(puzzle);
         setScrambleDisplaymode("block");
         setIsTimerVisible(true);
+        if (isAndroid) {
+            setShouldFocusTimer("end");
+        }
         setIsRestartButtonVisible(true);
-        setShouldFocusTimer("end");
     };
 
     const hideEverything = () => {
