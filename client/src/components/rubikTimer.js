@@ -129,12 +129,15 @@ const RubikTimer = () => {
     useEffect(() => {
         const handleOrientationChange = () => {
             setIsHorizontal(window.matchMedia("(orientation: landscape)").matches && isAndroid);
+            if (isTimerVisible) {
+                setShouldFocusTimer(isTimerRunning ? "center" : "end");
+            }
         }
         window.addEventListener('resize', handleOrientationChange);
         return () => {
             window.removeEventListener('resize', handleOrientationChange);
         }
-    }, [isAndroid])
+    }, [isAndroid, isTimerRunning, isTimerVisible])
 
     useEffect(() => {
         const handleKeyDown = (event) => {
