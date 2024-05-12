@@ -10,7 +10,6 @@ const RubikTimer = () => {
     const isAndroid = /Android/i.test(navigator.userAgent);
 
     const [elapsedTime, setElapsedTime] = useState(0);
-    const [startTime, setStartTime] = useState(0);
     const [isTimerPrepared, setIsTimerPrepared] = useState(false);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [isFormVisible, setIsFormVisible] = useState(true);
@@ -21,6 +20,7 @@ const RubikTimer = () => {
     const [recentTimes, setRecentTimes] = useState([]);
     const [isHorizontal, setIsHorizontal] = useState(window.matchMedia("(orientation: landscape)").matches && isAndroid);
 
+    const startTime = useRef(0);
     const wakeLock = useRef(null);
     const selectedPuzzle = useRef("");
     const scramble = useRef(null);
@@ -29,13 +29,9 @@ const RubikTimer = () => {
     const isTouched = useRef(null);
 
     useEffect(() => {
-        const prepareEvent = isAndroid ? "touchstart" : "keydown";
-        const startEvent = isAndroid ? "touchend" : "keyup";
-        const abort = isAndroid ? "touchmove" : "keydown";
-        const stopEvent = isAndroid ? "touchstart" : "keydown";
-
+        const prepareTrigger = isAndroid ? "touchstart" : "keydown";
         const handlePrepare = (event) => {
-            if (!isTimerRunning && !isTimerPrepared && ((isAndroid && event.target.tagName !== "BUTTON" && event.target.tagName !== "INPUT") || event.key === " ")) {
+            if ((isAndroid && event.target.tagName !== "BUTTON" && event.target.tagName !== "INPUT") || event.key === " ") {
                 event.preventDefault();
                 if (isAndroid) {
                     isTouched.current = true;
@@ -45,8 +41,20 @@ const RubikTimer = () => {
                 setScrambleDisplaymode("none");
             }
         };
+        if (isTimerVisible && !isTimerRunning && !isTimerPrepared) {
+            document.addEventListener(prepareTrigger, handlePrepare);
+        } else {
+            document.removeEventListener(prepareTrigger, handlePrepare);
+        }
+        return () => {
+            document.removeEventListener(prepareTrigger, handlePrepare);
+        }
+    }, [isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible])
+
+    useEffect(() => {
+        const abortTrigger = isAndroid ? "touchmove" : "keydown";
         const handleInterrupt = (event) => {
-            if (isTimerPrepared && (isAndroid || event.key !== " ")) {
+            if (isAndroid && isTouched.current) {
                 event.preventDefault();
                 setTimeout(() => {
                     if (isTouched.current) {
@@ -55,19 +63,51 @@ const RubikTimer = () => {
                         setIsRestartButtonVisible(true);
                     }
                 }, 100)
-            } else if (isAndroid && isTouched.current) {
+            } else if (event.key !== " ") {
+                event.preventDefault();
+                setIsTimerPrepared(false);
+                setScrambleDisplaymode("block");
+                setIsRestartButtonVisible(true);
+            }
+        }
+        if (isTimerPrepared) {
+            document.addEventListener(abortTrigger, handleInterrupt, { passive: false });
+        } else {
+            document.removeEventListener(abortTrigger, handleInterrupt);
+        }
+        return () => {
+            document.removeEventListener(abortTrigger, handleInterrupt);
+        }
+    }, [isAndroid, isTimerPrepared])
+
+    useEffect(() => {
+        const dragAfterStopTrigger = "touchmove";
+        const handleTouchAfterStop = (event) => {
+            if (isTouched.current) {
                 event.preventDefault();
                 setTimeout(() => {
                     isTouched.current = false;
                 }, 100)
             }
-        };
+        }
+        if (isTimerVisible && isAndroid) {
+            document.addEventListener(dragAfterStopTrigger, handleTouchAfterStop, { passive: false });
+        } else {
+            document.removeEventListener(dragAfterStopTrigger, handleTouchAfterStop);
+        }
+        return () => {
+            document.removeEventListener(dragAfterStopTrigger, handleTouchAfterStop);
+        }
+    }, [isAndroid, isTimerVisible]);
+
+    useEffect(() => {
+        const startTrigger = isAndroid ? "touchend" : "keyup";
         const handleStart = (event) => {
-            if (isTimerPrepared && (isAndroid || event.key === " ")) {
+            if (isAndroid || event.key === " ") {
                 event.preventDefault();
                 isTouched.current = false;
                 const now = performance.now(); // instant time fetch
-                setStartTime(now);
+                startTime.current = now;
                 timerInterval.current = setInterval(() => {
                     setElapsedTime(performance.now() - now);
                 }, TIMER_REFRESH_RATE);
@@ -78,12 +118,24 @@ const RubikTimer = () => {
                 }
             };
         };
+        if (isTimerPrepared) {
+            document.addEventListener(startTrigger, handleStart);
+        } else {
+            document.removeEventListener(startTrigger, handleStart);
+        }
+        return () => {
+            document.removeEventListener(startTrigger, handleStart);
+        }
+    }, [isAndroid, isTimerPrepared]);
+
+    useEffect(() => {
+        const stopTrigger = isAndroid ? "touchstart" : "keydown";
         const handleStop = (event) => {
-            if (isTimerRunning && (isAndroid || event.key !== "Escape")) {
+            if ((isAndroid || event.key !== "Escape")) {
                 event.preventDefault();
                 const now = performance.now(); // instant time fetch
                 clearInterval(timerInterval.current);
-                const finalTime = now - startTime;
+                const finalTime = now - startTime.current;
                 setElapsedTime(finalTime);
                 setRecentTimes((previousTimes) => [...previousTimes, finalTime]);
                 setIsTimerRunning(false);
@@ -96,6 +148,29 @@ const RubikTimer = () => {
                 setIsRestartButtonVisible(true);
             }
         };
+        if (isTimerRunning) {
+            document.addEventListener(stopTrigger, handleStop);
+        } else {
+            document.removeEventListener(stopTrigger, handleStop);
+        }
+        return () => {
+            document.removeEventListener(stopTrigger, handleStop);
+        }
+    }, [isAndroid, isTimerRunning])
+
+    useEffect(() => {
+        if (isTimerVisible || isTimerPrepared || isTimerRunning) { // small hack to screen lock after phone unlock
+            document.body.classList.add("nonSelectable");
+        } else {
+            wakeLock.current?.release();
+        }
+        return () => {
+            wakeLock.current?.release();
+        };
+    }, [isTimerPrepared, isTimerRunning, isTimerVisible])
+
+
+    useEffect(() => {
         async function requestWakeLock() {
             if (navigator.wakeLock) {
                 try {
@@ -107,58 +182,55 @@ const RubikTimer = () => {
         };
         if (isTimerVisible) {
             requestWakeLock();
-            document.addEventListener(prepareEvent, handlePrepare);
-            document.addEventListener(startEvent, handleStart);
-            document.addEventListener(abort, handleInterrupt, { passive: false });
-            document.addEventListener(stopEvent, handleStop);
             document.body.classList.add("nonSelectable");
         } else {
             wakeLock.current?.release();
-            document.removeEventListener(prepareEvent, handlePrepare);
-            document.removeEventListener(startEvent, handleStart);
-            document.removeEventListener(abort, handleInterrupt);
-            document.removeEventListener(stopEvent, handleStop);
             document.body.classList.remove("nonSelectable");
         }
         return () => {
             wakeLock.current?.release();
-            document.removeEventListener(prepareEvent, handlePrepare);
-            document.removeEventListener(startEvent, handleStart);
-            document.removeEventListener(abort, handleInterrupt);
-            document.removeEventListener(stopEvent, handleStop);
             document.body.classList.remove("nonSelectable");
         };
-    }, [isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible, startTime]);
+    }, [isTimerPrepared, isTimerRunning, isTimerVisible]) // extra dependencies to trigger the effect
 
     useEffect(() => {
+        const resizeTrigger = "resize";
         const handleOrientationChange = () => {
-            setIsHorizontal(window.matchMedia("(orientation: landscape)").matches && isAndroid);
-            if (isTimerVisible) {
-                setShouldFocusTimer(isTimerRunning ? "center" : "end");
+            setShouldFocusTimer(isTimerRunning ? "center" : "end");
+            if (!isTimerRunning) {
+                setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
             }
         }
-        window.addEventListener('resize', handleOrientationChange);
+        if (isAndroid && isTimerVisible) {
+            if (!isTimerRunning) {
+                setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
+            }
+            window.addEventListener(resizeTrigger, handleOrientationChange);
+        } else {
+            window.removeEventListener(resizeTrigger, handleOrientationChange);
+        }
         return () => {
-            window.removeEventListener('resize', handleOrientationChange);
+            window.removeEventListener(resizeTrigger, handleOrientationChange);
         }
     }, [isAndroid, isTimerRunning, isTimerVisible])
 
     useEffect(() => {
-        const handleKeyDown = (event) => {
+        const goBackTrigger = "keydown"
+        const handleGoBack = (event) => {
             if (event.key === "Escape") {
                 hideEverything();
                 restoreDefaults();
             }
         };
-        if (isTimerVisible || isFormVisible) {
-            document.addEventListener("keydown", handleKeyDown);
+        if ((isTimerVisible || isFormVisible) && !isAndroid) {
+            document.addEventListener(goBackTrigger, handleGoBack);
         } else {
-            document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener(goBackTrigger, handleGoBack);
         };
         return () => {
-            document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener(goBackTrigger, handleGoBack);
         };
-    }, [isFormVisible, isTimerVisible]);
+    }, [isAndroid, isFormVisible, isTimerVisible]);
 
     useEffect(() => {
         if (focusTimer !== "" && isAndroid) {
@@ -185,7 +257,7 @@ const RubikTimer = () => {
         let timerValue = isTimerPrepared ? "0:00:000" : formatTime(elapsedTime);
         let timerClass = isTimerRunning ? "running-timer" : isTimerPrepared ? "green-timer" : "";
         return (
-            <h3 id="timer" ref={timer} className={timerClass}>{timerValue}</h3>
+            <h3 ref={timer} className={timerClass}>{timerValue}</h3>
         );
     };
 
@@ -261,7 +333,7 @@ const RubikTimer = () => {
     const restoreDefaults = () => {
         selectedPuzzle.current = "";
         scramble.current = "";
-        setStartTime(0);
+        startTime.current = 0;
         setElapsedTime(0);
         setIsTimerRunning(false);
         setIsFormVisible(true);
@@ -278,7 +350,7 @@ const RubikTimer = () => {
                 {isFormVisible && renderForm()}
                 <div className="timerContainer">
                     {isTimerVisible && renderAverages()}
-                    {<h2 id="scramble" className={selectedPuzzle.current} style={{ display: scrambleDisplayMode }}>{scramble.current}</h2>}
+                    {<h2 className={selectedPuzzle.current} style={{ display: scrambleDisplayMode }}>{scramble.current}</h2>}
                     {isTimerVisible && renderTimer()}
                 </div>
                 {isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
