@@ -32,6 +32,11 @@
     user-select: none;
 }
 
+.app.rubikTimer h2.five {
+    font-size: 40px;
+    line-height: 40px;
+}
+
 .app.rubikTimer h2.megaminx {
     text-align: left;
     font-family: 'Courier New', Courier, monospace;
@@ -52,6 +57,11 @@
     .app.rubikTimer h2.bld {
         font-size: 68px;
         line-height: 68px;
+    }
+
+    .app.rubikTimer h2.five {
+        font-size: 37px;
+        line-height: 37px;
     }
 
     .app.rubikTimer h3 {
