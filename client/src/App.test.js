@@ -8,13 +8,15 @@ import { SCRAMBLE_LENGTH as FOUR_SCRAMBLE_LENGTH } from "./scramblers/fourScramb
 import { SCRAMBLE_LENGTH as FIVE_SCRAMBLE_LENGTH } from './scramblers/fiveScrambler';
 import { SCRAMBLE_LENGTH as BLD_SCRAMBLE_LENGTH } from "./scramblers/bldScrambler";
 
+const NUMBER_OF_RUNS = 1000;
+const LIKELINESS_RELATIVE_ERROR = 0.05
 const isTimerRunning = false;
 const isTimerPrepared = false;
 const isHorizontal = false;
 const averageDisplay = isTimerRunning || isTimerPrepared ? "none" : "grid";
 
 test("2x2", () => {
-	for (let i = 0; i < 1000; i++) {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		const scramble = Scramble(TWO);
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
 		expect(axisMoves.length).toBe(TWO_SCRAMBLE_LENGTH);
@@ -25,7 +27,7 @@ test("2x2", () => {
 });
 
 test("3x3", () => {
-	for (let i = 0; i < 1000; i++) {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		const scramble = Scramble(THREE);
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
 		expect(axisMoves.length).toBe(THREE_SCRAMBLE_LENGTH);
@@ -44,49 +46,8 @@ test("3x3", () => {
 	}
 });
 
-test("BLD", () => {
-	for (let i = 0; i < 1000; i++) {
-		const scramble = Scramble(BLD);
-		const axisMoves = scramble.replace(/[2'\sw]/g, "");
-		expect(axisMoves.length).toBe(BLD_SCRAMBLE_LENGTH);
-		const nonWideAxisMoves = axisMoves.slice(0, - 2);
-		expect(nonWideAxisMoves).not.toContain("UU");
-		expect(nonWideAxisMoves).not.toContain("DD");
-		expect(nonWideAxisMoves).not.toContain("FF");
-		expect(nonWideAxisMoves).not.toContain("BB");
-		expect(nonWideAxisMoves).not.toContain("RR");
-		expect(nonWideAxisMoves).not.toContain("LL");
-		expect(nonWideAxisMoves).not.toContain("UDU");
-		expect(nonWideAxisMoves).not.toContain("DUD");
-		expect(nonWideAxisMoves).not.toContain("FBF");
-		expect(nonWideAxisMoves).not.toContain("BFB");
-		expect(nonWideAxisMoves).not.toContain("RLR");
-		expect(nonWideAxisMoves).not.toContain("LRL");
-		const secondAndThirdLastMoves = axisMoves.slice(-3, -1);
-		expect(secondAndThirdLastMoves).not.toBe("UD");
-		expect(secondAndThirdLastMoves).not.toBe("DU");
-		expect(secondAndThirdLastMoves).not.toBe("FB");
-		expect(secondAndThirdLastMoves).not.toBe("BF");
-		expect(secondAndThirdLastMoves).not.toBe("RL");
-		expect(secondAndThirdLastMoves).not.toBe("LR");
-		const lastTwoMoves = axisMoves.slice(- 2);
-		expect(lastTwoMoves).not.toBe("UU");
-		expect(lastTwoMoves).not.toBe("UD");
-		expect(lastTwoMoves).not.toBe("DU");
-		expect(lastTwoMoves).not.toBe("DD");
-		expect(lastTwoMoves).not.toBe("FF");
-		expect(lastTwoMoves).not.toBe("FB");
-		expect(lastTwoMoves).not.toBe("BF");
-		expect(lastTwoMoves).not.toBe("BB");
-		expect(lastTwoMoves).not.toBe("RR");
-		expect(lastTwoMoves).not.toBe("RL");
-		expect(lastTwoMoves).not.toBe("LR");
-		expect(lastTwoMoves).not.toBe("LL");
-	}
-});
-
 test("4x4", () => {
-	for (let i = 0; i < 1000; i++) {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		const scramble = Scramble(FOUR);
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
 		expect(axisMoves.length).toBe(FOUR_SCRAMBLE_LENGTH);
@@ -131,7 +92,7 @@ test("4x4", () => {
 });
 
 test("5x5", () => {
-	for (let i = 0; i < 1000; i++) {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		const scramble = Scramble(FIVE);
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
 		expect(axisMoves.length).toBe(FIVE_SCRAMBLE_LENGTH);
@@ -167,6 +128,73 @@ test("5x5", () => {
 		expect(sanitizedMoves).not.toContain("Lw R Lw ");
 		expect(sanitizedMoves).not.toContain("Lw L Lw ");
 	}
+});
+
+test("BLD", () => {
+	let scramblesWIthNoWideMoves = 0;
+	let ScramblesWIthOneWideMove = 0;
+	let ScramblesWithTwoWideMoves = 0;
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
+		const scramble = Scramble(BLD);
+		const axisMoves = scramble.replace(/[2'\sw]/g, "");
+		const numberOfWideMoves = (scramble.match(/w/g) || []).length;
+		expect(numberOfWideMoves).not.toBeGreaterThan(2);
+		expect(axisMoves.length).toBe((BLD_SCRAMBLE_LENGTH - 2) + numberOfWideMoves);
+		const nonWideAxisMoves = axisMoves.slice(0, -(numberOfWideMoves));
+		expect(nonWideAxisMoves).not.toContain("UU");
+		expect(nonWideAxisMoves).not.toContain("DD");
+		expect(nonWideAxisMoves).not.toContain("FF");
+		expect(nonWideAxisMoves).not.toContain("BB");
+		expect(nonWideAxisMoves).not.toContain("RR");
+		expect(nonWideAxisMoves).not.toContain("LL");
+		expect(nonWideAxisMoves).not.toContain("UDU");
+		expect(nonWideAxisMoves).not.toContain("DUD");
+		expect(nonWideAxisMoves).not.toContain("FBF");
+		expect(nonWideAxisMoves).not.toContain("BFB");
+		expect(nonWideAxisMoves).not.toContain("RLR");
+		expect(nonWideAxisMoves).not.toContain("LRL");
+		const wideMoves = numberOfWideMoves === 0
+			? ""
+			: numberOfWideMoves === 1
+				? axisMoves.slice(-1) :
+				axisMoves.slice(-2);
+		expect(wideMoves).not.toBe("UU");
+		expect(wideMoves).not.toBe("UD");
+		expect(wideMoves).not.toBe("DU");
+		expect(wideMoves).not.toBe("DD");
+		expect(wideMoves).not.toBe("FF");
+		expect(wideMoves).not.toBe("FB");
+		expect(wideMoves).not.toBe("BF");
+		expect(wideMoves).not.toBe("BB");
+		expect(wideMoves).not.toBe("RR");
+		expect(wideMoves).not.toBe("RL");
+		expect(wideMoves).not.toBe("LR");
+		expect(wideMoves).not.toBe("LL");
+		const widthSplitMoves = numberOfWideMoves === 0
+			? ""
+			: numberOfWideMoves === 1
+				? axisMoves.slice(-2)
+				: axisMoves.slice(-3, -1);
+		expect(widthSplitMoves).not.toBe("UD");
+		expect(widthSplitMoves).not.toBe("DU");
+		expect(widthSplitMoves).not.toBe("FB");
+		expect(widthSplitMoves).not.toBe("BF");
+		expect(widthSplitMoves).not.toBe("RL");
+		expect(widthSplitMoves).not.toBe("LR");
+		if (numberOfWideMoves === 0) {
+			scramblesWIthNoWideMoves++;
+		} else if (numberOfWideMoves === 1) {
+			ScramblesWIthOneWideMove++;
+		} else if (numberOfWideMoves === 2) {
+			ScramblesWithTwoWideMoves++;
+		}
+	}
+	expect(scramblesWIthNoWideMoves / NUMBER_OF_RUNS).toBeGreaterThan((1 / 5) ** 2 - LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWIthNoWideMoves / NUMBER_OF_RUNS).toBeLessThan((1 / 5) ** 2 + LIKELINESS_RELATIVE_ERROR);
+	expect(ScramblesWIthOneWideMove / NUMBER_OF_RUNS).toBeGreaterThan(2 * (1 / 5) * (4 / 5) - LIKELINESS_RELATIVE_ERROR);
+	expect(ScramblesWIthOneWideMove / NUMBER_OF_RUNS).toBeLessThan(2 * (1 / 5) * (4 / 5) + LIKELINESS_RELATIVE_ERROR);
+	expect(ScramblesWithTwoWideMoves / NUMBER_OF_RUNS).toBeGreaterThan((4 / 5) ** 2 - LIKELINESS_RELATIVE_ERROR);
+	expect(ScramblesWithTwoWideMoves / NUMBER_OF_RUNS).toBeLessThan((4 / 5) ** 2 + LIKELINESS_RELATIVE_ERROR);
 });
 
 const renderAverages = (recentTimes) => { // mocking the function like this is an approach I can live with
