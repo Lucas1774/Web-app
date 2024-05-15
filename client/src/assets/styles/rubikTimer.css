@@ -52,20 +52,17 @@
 }
 
 @media (pointer: coarse) and (orientation: landscape) {
-    .app.rubikTimer h2.two {
-        font-size: 100px;
-        line-height: 100px;
+
+    .timerContainer {
+        position: relative;
     }
 
-    .app.rubikTimer h2.three,
-    .app.rubikTimer h2.bld {
-        font-size: 68px;
-        line-height: 68px;
-    }
-
-    .app.rubikTimer h2.five {
-        font-size: 37px;
-        line-height: 37px;
+    .background {
+        position: absolute;
+        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: 0.23fr 0.25fr 0.52fr;
+        bottom: 0px;
+        width: 100%;
     }
 
     .app.rubikTimer h3 {
@@ -81,15 +78,20 @@
         font-size: 150px;
     }
 
-    .timerContainer {
-        position: relative;
+    .app.rubikTimer h2.two,
+    .app.rubikTimer h2.pyraminx {
+        font-size: 100px;
+        line-height: 100px;
     }
 
-    .background {
-        position: absolute;
-        grid-template-rows: repeat(2, 1fr);
-        grid-template-columns: 0.23fr 0.25fr 0.52fr;
-        bottom: 0px;
-        width: 100%;
+    .app.rubikTimer h2.three,
+    .app.rubikTimer h2.bld {
+        font-size: 68px;
+        line-height: 68px;
+    }
+
+    .app.rubikTimer h2.five {
+        font-size: 37px;
+        line-height: 37px;
     }
 }
