@@ -82,8 +82,8 @@ const SecretSanta = () => {
             <Form onSubmit={handleSubmit}>
                 <Form.Label>Enter your name:</Form.Label>
                 <Form.Control type="text" value={input} onChange={handleKeyDown} />
-                <Button type="submit" variant="success">Add player</Button>
-                <Button variant="success" onClick={handleStartLottery}>Start raffle</Button>
+                <Button className="fifty-percent" type="submit" variant="success">Add player</Button>
+                <Button className="fifty-percent" variant="success" onClick={handleStartLottery}>Start raffle</Button>
             </Form>
         );
     };
@@ -93,7 +93,7 @@ const SecretSanta = () => {
             <>
                 <div>{participants[participantCounter - 1]} is the secret santa for...</div>
                 <div>
-                    <Button className="pressMeToShow" variant="success" onClick={showTarget}>
+                    <Button variant="success" onClick={showTarget}>
                         Press me to show!
                     </Button>
                 </div>
