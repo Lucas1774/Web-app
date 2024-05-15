@@ -23,6 +23,10 @@
     line-height: 20px;
 }
 
+.timerContainer {
+    width: 100%;
+}
+
 .background {
     grid-template-rows: repeat(3, 1fr);
     grid-auto-flow: column;
