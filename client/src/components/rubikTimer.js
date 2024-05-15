@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Form, Button } from 'react-bootstrap';
-import { EMPTY_TIMER, TWO, THREE, FOUR, FIVE, BLD, MEGAMINX } from "../constants";
+import { EMPTY_TIMER, TWO, THREE, FOUR, FIVE, BLD, PYRAMINX, MEGAMINX } from "../constants";
 import Scramble from "../scramblers/provider";
 import "../assets/styles/rubikTimer.css";
 
@@ -252,6 +252,7 @@ const RubikTimer = () => {
                     <Button className="fifty-percent" id={FOUR} onClick={handleSubmit}>4x4</Button>
                     <Button className="fifty-percent" id={FIVE} onClick={handleSubmit}>5X5</Button>
                     <Button className="fifty-percent" id={BLD} onClick={handleSubmit}>BLD</Button>
+                    <Button className="fifty-percent" id={PYRAMINX} onClick={handleSubmit}>Pyraminx</Button>
                     <Button className="fifty-percent" id={MEGAMINX} onClick={handleSubmit}>Megaminx</Button>
                 </Form>
             </>
