@@ -1,12 +1,13 @@
 
 import { render } from '@testing-library/react';
 import Scramble from "./scramblers/provider";
-import { EMPTY_TIMER, TWO, THREE, FOUR, FIVE, BLD } from "./constants";
+import { EMPTY_TIMER, TWO, THREE, FOUR, FIVE, BLD, PYRAMINX } from "./constants";
 import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
 import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
 import { SCRAMBLE_LENGTH as FOUR_SCRAMBLE_LENGTH } from "./scramblers/fourScrambler";
 import { SCRAMBLE_LENGTH as FIVE_SCRAMBLE_LENGTH } from './scramblers/fiveScrambler';
 import { SCRAMBLE_LENGTH as BLD_SCRAMBLE_LENGTH } from "./scramblers/bldScrambler";
+import { SCRAMBLE_LENGTH as PYRAMINX_SCRAMBLE_LENGTH } from "./scramblers/pyraScrambler";
 
 const NUMBER_OF_RUNS = 1000;
 const LIKELINESS_RELATIVE_ERROR = 0.05
@@ -195,6 +196,46 @@ test("BLD", () => {
 	expect(ScramblesWIthOneWideMove / NUMBER_OF_RUNS).toBeLessThan(2 * (1 / 5) * (4 / 5) + LIKELINESS_RELATIVE_ERROR);
 	expect(ScramblesWithTwoWideMoves / NUMBER_OF_RUNS).toBeGreaterThan((4 / 5) ** 2 - LIKELINESS_RELATIVE_ERROR);
 	expect(ScramblesWithTwoWideMoves / NUMBER_OF_RUNS).toBeLessThan((4 / 5) ** 2 + LIKELINESS_RELATIVE_ERROR);
+});
+
+test("pyra", () => {
+	let scramblesWithNoTips = 0;
+	let scramblesWithOneTip = 0;
+	let scramblesWithTwoTips = 0;
+	let scramblesWithThreeTips = 0;
+	let scramblesWithFourTips = 0;
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
+		const scramble = Scramble(PYRAMINX);
+		const axisMoves = scramble.replace(/['\s]/g, "");
+		const numberOfTipsScrambled = (scramble.match(/[ubrl]/g) || []).length;
+		expect(numberOfTipsScrambled).not.toBeGreaterThan(4);
+		expect(axisMoves.length).toBe(PYRAMINX_SCRAMBLE_LENGTH + numberOfTipsScrambled);
+		expect(axisMoves).not.toContain("UU");
+		expect(axisMoves).not.toContain("BB");
+		expect(axisMoves).not.toContain("RR");
+		expect(axisMoves).not.toContain("LL");
+		if (numberOfTipsScrambled === 0) {
+			scramblesWithNoTips++;
+		} else if (numberOfTipsScrambled === 1) {
+			scramblesWithOneTip++;
+		} else if (numberOfTipsScrambled === 2) {
+			scramblesWithTwoTips++;
+		} else if (numberOfTipsScrambled === 3) {
+			scramblesWithThreeTips++;
+		} else if (numberOfTipsScrambled === 4) {
+			scramblesWithFourTips++;
+		}
+	}
+	expect(scramblesWithNoTips / NUMBER_OF_RUNS).toBeGreaterThan((1 / 3) ** 4 - LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithNoTips / NUMBER_OF_RUNS).toBeLessThan((1 / 3) ** 4 + LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithOneTip / NUMBER_OF_RUNS).toBeGreaterThan(4 * ((2 / 3) * (1 / 3) ** 3) - LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithOneTip / NUMBER_OF_RUNS).toBeLessThan(4 * ((2 / 3) * (1 / 3) ** 3) + LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithTwoTips / NUMBER_OF_RUNS).toBeGreaterThan(4 * ((2 / 3) * (1 / 3) ** 2) - LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithTwoTips / NUMBER_OF_RUNS).toBeLessThan(4 * ((2 / 3) * (1 / 3) ** 2) + LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithThreeTips / NUMBER_OF_RUNS).toBeGreaterThan(4 * ((1 / 3) * (2 / 3) ** 3) - LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithThreeTips / NUMBER_OF_RUNS).toBeLessThan(4 * ((1 / 3) * (2 / 3) ** 3) + LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithFourTips / NUMBER_OF_RUNS).toBeGreaterThan(((2 / 3) ** 4) - LIKELINESS_RELATIVE_ERROR);
+	expect(scramblesWithFourTips / NUMBER_OF_RUNS).toBeLessThan(((2 / 3) ** 4) + LIKELINESS_RELATIVE_ERROR);
 });
 
 const renderAverages = (recentTimes) => { // mocking the function like this is an approach I can live with
