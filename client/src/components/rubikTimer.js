@@ -42,7 +42,9 @@ const RubikTimer = () => {
             }
         };
         if (isTimerVisible && !isTimerRunning && !isTimerPrepared) {
-            document.addEventListener(prepareTrigger, handlePrepare);
+            setTimeout(() => {
+                document.addEventListener(prepareTrigger, handlePrepare);
+            }, 200)
         } else {
             document.removeEventListener(prepareTrigger, handlePrepare);
         }
