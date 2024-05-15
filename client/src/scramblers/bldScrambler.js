@@ -46,22 +46,35 @@ export const Scramble = () => {
         secondToLastMoveIndex = lastMoveIndex;
         lastMoveIndex = turnLayer;
     }
+    let firstWideMove = false;
     turnLayer = Math.floor(Math.random() * 5);
-    if (turnLayer === lastMoveIndex) {
-        turnLayer++;
-    }
-    turnIterator = Math.floor(Math.random() * 3);
-    scramble += LAST_TWO[turnLayer][turnIterator];
-    lastMoveIndex = turnLayer;
-    turnLayer = Math.floor(Math.random() * 4);
-    if (parseInt(lastMoveIndex / 2) === parseInt(turnLayer / 2)) {
-        if (turnLayer % 2 === 0) {
-            turnLayer += 2;
-        } else {
+    if (turnLayer !== lastMoveIndex) {
+        if (turnLayer === lastMoveIndex) {
             turnLayer++;
         }
+        turnIterator = Math.floor(Math.random() * 3);
+        scramble += LAST_TWO[turnLayer][turnIterator];
+        lastMoveIndex = turnLayer;
+        firstWideMove = true;
     }
-    turnIterator = Math.floor(Math.random() * 3);
-    scramble += LAST_TWO[turnLayer][turnIterator];
+    turnLayer = Math.floor(Math.random() * 5);
+    if (turnLayer !== lastMoveIndex) {
+        if (firstWideMove) {
+            turnLayer = Math.floor(Math.random() * 4);
+            if (parseInt(lastMoveIndex / 2) === parseInt(turnLayer / 2)) {
+                if (turnLayer % 2 === 0) {
+                    turnLayer += 2;
+                } else {
+                    turnLayer++;
+                }
+            }
+        } else {
+            if (turnLayer === lastMoveIndex) {
+                turnLayer++;
+            }
+        }
+        turnIterator = Math.floor(Math.random() * 3);
+        scramble += LAST_TWO[turnLayer][turnIterator];
+    }
     return scramble;
 }
