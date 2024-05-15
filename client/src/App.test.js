@@ -1,10 +1,11 @@
 
 import { render } from '@testing-library/react';
 import Scramble from "./scramblers/provider";
-import { EMPTY_TIMER, TWO, THREE, FOUR, BLD } from "./constants";
+import { EMPTY_TIMER, TWO, THREE, FOUR, FIVE, BLD } from "./constants";
 import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
 import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
 import { SCRAMBLE_LENGTH as FOUR_SCRAMBLE_LENGTH } from "./scramblers/fourScrambler";
+import { SCRAMBLE_LENGTH as FIVE_SCRAMBLE_LENGTH } from './scramblers/fiveScrambler';
 import { SCRAMBLE_LENGTH as BLD_SCRAMBLE_LENGTH } from "./scramblers/bldScrambler";
 
 const isTimerRunning = false;
@@ -113,6 +114,45 @@ test("4x4", () => {
 		expect(sanitizedMoves).not.toContain("Rw Rw ");
 		expect(sanitizedMoves).not.toContain("Rw Lw ");
 		expect(sanitizedMoves).not.toContain("Lw Rw ");
+		expect(sanitizedMoves).not.toContain("Lw Lw ");
+		expect(sanitizedMoves).not.toContain("Uw D Uw ");
+		expect(sanitizedMoves).not.toContain("Uw U Uw ");
+		expect(sanitizedMoves).not.toContain("Dw D Dw ");
+		expect(sanitizedMoves).not.toContain("Dw U Dw ");
+		expect(sanitizedMoves).not.toContain("Fw B Fw ");
+		expect(sanitizedMoves).not.toContain("Fw F Fw ");
+		expect(sanitizedMoves).not.toContain("Bw F Bw ");
+		expect(sanitizedMoves).not.toContain("Bw B Bw ");
+		expect(sanitizedMoves).not.toContain("Rw L Rw ");
+		expect(sanitizedMoves).not.toContain("Rw R Rw ");
+		expect(sanitizedMoves).not.toContain("Lw R Lw ");
+		expect(sanitizedMoves).not.toContain("Lw L Lw ");
+	}
+});
+
+test("5x5", () => {
+	for (let i = 0; i < 1000; i++) {
+		const scramble = Scramble(FIVE);
+		const axisMoves = scramble.replace(/[2'\sw]/g, "");
+		expect(axisMoves.length).toBe(FIVE_SCRAMBLE_LENGTH);
+		const sanitizedMoves = scramble.replace(/[2']/g, ""); // keep spaces for easier pattern matching
+		expect(sanitizedMoves).not.toContain("U U ");
+		expect(sanitizedMoves).not.toContain("D D ");
+		expect(sanitizedMoves).not.toContain("F F ");
+		expect(sanitizedMoves).not.toContain("B B ");
+		expect(sanitizedMoves).not.toContain("R R ");
+		expect(sanitizedMoves).not.toContain("L L ");
+		expect(sanitizedMoves).not.toContain("U D U ");
+		expect(sanitizedMoves).not.toContain("D U D ");
+		expect(sanitizedMoves).not.toContain("F B F ");
+		expect(sanitizedMoves).not.toContain("B F B ");
+		expect(sanitizedMoves).not.toContain("R L R ");
+		expect(sanitizedMoves).not.toContain("L R L ");
+		expect(sanitizedMoves).not.toContain("Uw Uw ");
+		expect(sanitizedMoves).not.toContain("Dw Dw ");
+		expect(sanitizedMoves).not.toContain("Fw Fw ");
+		expect(sanitizedMoves).not.toContain("Bw Bw ");
+		expect(sanitizedMoves).not.toContain("Rw Rw ");
 		expect(sanitizedMoves).not.toContain("Lw Lw ");
 		expect(sanitizedMoves).not.toContain("Uw D Uw ");
 		expect(sanitizedMoves).not.toContain("Uw U Uw ");
