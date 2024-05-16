@@ -8,3 +8,7 @@
 
 # not front end
 /server
+
+# misc
+.vscode/
+source.json
