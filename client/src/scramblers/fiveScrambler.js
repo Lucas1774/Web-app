@@ -1,7 +1,14 @@
 import { SCRAMBLE_MOVES as THREE_SCRAMBLE_MOVES } from './threeScrambler.js';
-import { SCRAMBLE_MOVES as FOUR_SCRAMBLE_MOVES } from './fourScrambler.js';
 
 export const SCRAMBLE_LENGTH = 60;
+const FOUR_SCRAMBLE_MOVES = [
+    ["Uw ", "Uw2 ", "Uw' "],
+    ["Dw ", "Dw2 ", "Dw' "],
+    ["Fw ", "Fw2 ", "Fw' "],
+    ["Bw ", "Bw2 ", "Bw' "],
+    ["Rw ", "Rw2 ", "Rw' "],
+    ["Lw ", "Lw2 ", "Lw' "]
+]
 
 export const Scramble = () => {
     let scramble = "";
