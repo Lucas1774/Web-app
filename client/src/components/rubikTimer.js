@@ -20,6 +20,7 @@ const RubikTimer = () => {
     const [isSelectMultiLengthVisible, setIsSelectMultiLengthVisible] = useState(false);
     const [isMultiQuantityInvalidVisible, setIsMultiQuantityInvalidVisible] = useState(false);
     const [focusTimer, setShouldFocusTimer] = useState("");
+    const [focusFormLabel, setShouldFocusFormLabel] = useState("");
     const [recentTimes, setRecentTimes] = useState([]);
     const [isHorizontal, setIsHorizontal] = useState(window.matchMedia("(orientation: landscape)").matches && isAndroid);
 
@@ -31,6 +32,7 @@ const RubikTimer = () => {
     const isTouched = useRef(null);
     const newScramble = useRef(true);
     const multiQuantity = useRef(0);
+    const formLabel = useRef(null);
 
     useEffect(() => {
         const prepareTrigger = isAndroid ? "touchstart" : "keydown";
@@ -151,7 +153,11 @@ const RubikTimer = () => {
                 setScrambleDisplaymode("block");
                 if (isAndroid) {
                     isTouched.current = true;
-                    setShouldFocusTimer("end");
+                    if (MULTI !== selectedPuzzle.current) {
+                        setTimeout(() => {
+                            setShouldFocusTimer("end");
+                        })
+                    }
                 }
                 setIsRestartButtonVisible(true);
             }
@@ -204,13 +210,18 @@ const RubikTimer = () => {
     useEffect(() => {
         const resizeTrigger = "resize";
         const handleOrientationChange = () => {
-            setShouldFocusTimer(isTimerRunning ? "center" : "end");
-            if (!isTimerRunning) {
-                setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
+            if (isTimerVisible) {
+                setShouldFocusTimer(isTimerRunning ? "center" : MULTI !== selectedPuzzle.current ? "end" : "");
+                if (!isTimerRunning) {
+                    setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
+                }
+            }
+            if (isSelectMultiLengthVisible) {
+                setShouldFocusFormLabel("start");
             }
         }
-        if (isAndroid && isTimerVisible) {
-            if (!isTimerRunning) {
+        if (isAndroid) {
+            if (isTimerVisible && !isTimerRunning) {
                 setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
             }
             window.addEventListener(resizeTrigger, handleOrientationChange);
@@ -220,7 +231,7 @@ const RubikTimer = () => {
         return () => {
             window.removeEventListener(resizeTrigger, handleOrientationChange);
         }
-    }, [isAndroid, isTimerRunning, isTimerVisible])
+    }, [isAndroid, isSelectMultiLengthVisible, isTimerRunning, isTimerVisible])
 
     useEffect(() => {
         const goBackTrigger = "keydown"
@@ -241,13 +252,22 @@ const RubikTimer = () => {
     }, [isAndroid, isFormVisible, isTimerVisible]);
 
     useEffect(() => {
-        if (focusTimer !== "" && isAndroid) {
+        if (focusTimer !== "") {
             timer.current.scrollIntoView({
                 block: focusTimer
             })
             setShouldFocusTimer("");
         }
-    }, [isAndroid, focusTimer]);
+    }, [focusTimer]);
+
+    useEffect(() => {
+        if (focusFormLabel !== "") {
+            formLabel.current.scrollIntoView({
+                block: focusFormLabel
+            })
+            setShouldFocusFormLabel("");
+        }
+    }, [isAndroid, focusFormLabel]);
 
     const renderForm = () => {
         return (
@@ -319,7 +339,7 @@ const RubikTimer = () => {
         return (
             <>
                 <Form id={MULTI} onSubmit={handleSubmit}>
-                    <Form.Label>Number of scrambles:</Form.Label>
+                    <Form.Label ref={formLabel}>Number of scrambles:</Form.Label>
                     <Form.Control inputMode="numeric" onChange={(event) => multiQuantity.current = event.target.value} />
                     <Button type="submit" variant="success">Generate</Button>
                 </Form>
@@ -341,6 +361,9 @@ const RubikTimer = () => {
             hideEverything();
             setIsSelectMultiLengthVisible(true);
             setIsRestartButtonVisible(true);
+            if (isAndroid) {
+                setShouldFocusFormLabel("start");
+            }
         } else {
             if (MULTI === puzzle && (isNaN(multiQuantity.current) || multiQuantity.current < 1 || multiQuantity.current > 200)) {
                 hideEverything();
@@ -349,6 +372,9 @@ const RubikTimer = () => {
                     setIsMultiQuantityInvalidVisible(false);
                     setIsSelectMultiLengthVisible(true);
                     setIsRestartButtonVisible(true);
+                    if (isAndroid) {
+                        setShouldFocusFormLabel("start");
+                    }
                 }, 1000)
                 return;
             }
@@ -357,7 +383,11 @@ const RubikTimer = () => {
             setScrambleDisplaymode("block");
             setIsTimerVisible(true);
             if (isAndroid) {
-                setShouldFocusTimer("end");
+                if (MULTI !== puzzle) {
+                    setTimeout(() => {
+                        setShouldFocusTimer("end");
+                    })
+                }
             }
             setIsRestartButtonVisible(true);
         }
