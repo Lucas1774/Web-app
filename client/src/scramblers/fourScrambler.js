@@ -5,13 +5,10 @@ import {
 } from './threeScrambler.js';
 
 export const SCRAMBLE_LENGTH = 45;
-export const SCRAMBLE_MOVES = [
+const SCRAMBLE_MOVES = [
     ["Uw ", "Uw2 ", "Uw' "],
-    ["Dw ", "Dw2 ", "Dw' "],
     ["Fw ", "Fw2 ", "Fw' "],
-    ["Bw ", "Bw2 ", "Bw' "],
-    ["Rw ", "Rw2 ", "Rw' "],
-    ["Lw ", "Lw2 ", "Lw' "],
+    ["Rw ", "Rw2 ", "Rw' "]
 ];
 
 export const Scramble = () => {
@@ -23,33 +20,44 @@ export const Scramble = () => {
     let turnLayer, turnIterator, turnWidth;
     for (let i = 0; i < SCRAMBLE_LENGTH - THREE_SCRAMBLE_LENGTH; i++) {
         turnWidth = Math.floor(Math.random() * 2);
-        let axisHasBeenBroken = turnWidth !== lastTurnWidth
-            ? parseInt(lastDoubleMoveLayer / 2) !== parseInt(lastSimpleMoveLayer / 2)
-            : turnWidth === 0
-                ? parseInt(lastSimpleMoveLayer / 2) !== parseInt(secondToLastSimpleMoveLayer / 2)
-                : false; // no consecutive same-axis wide moves
-        if (axisHasBeenBroken) {
-            if (turnWidth !== lastTurnWidth  || turnWidth) {
-                turnLayer = Math.floor(Math.random() * 6);
+        if (turnWidth === 1) {
+            let axisHasBeenBroken = lastTurnWidth === 0
+                ? parseInt(lastDoubleMoveLayer) !== parseInt(lastSimpleMoveLayer / 2)
+                : false;
+            if (axisHasBeenBroken) {
+                turnLayer = Math.floor(Math.random() * 3);
             } else {
-                turnLayer = Math.floor(Math.random() * 5);
-                let layerIsTheSame = lastTurnWidth === 0
-                    ? lastSimpleMoveLayer === turnLayer
-                    : lastDoubleMoveLayer === turnLayer;
-                if (layerIsTheSame) {
+                turnLayer = Math.floor(Math.random() * 2);
+                let axisIsTheSame = lastDoubleMoveLayer === turnLayer;
+                if (axisIsTheSame) {
                     turnLayer++;
                 }
             }
         } else {
-            turnLayer = Math.floor(Math.random() * 4);
-            let axisIsTheSame = lastTurnWidth === 0
-                ? parseInt(turnLayer / 2) === parseInt(lastSimpleMoveLayer / 2)
-                : parseInt(turnLayer / 2) === parseInt(lastDoubleMoveLayer / 2);
-            if (axisIsTheSame) {
-                if (turnLayer % 2 === 0) {
-                    turnLayer += 2;
+            let axisHasBeenBroken = lastTurnWidth === 1
+                ? parseInt(lastDoubleMoveLayer) !== parseInt(lastSimpleMoveLayer / 2)
+                : parseInt(lastSimpleMoveLayer / 2) !== parseInt(secondToLastSimpleMoveLayer / 2);
+            if (axisHasBeenBroken) {
+                if (lastTurnWidth === 1) {
+                    turnLayer = Math.floor(Math.random() * 6);
                 } else {
-                    turnLayer++;
+                    turnLayer = Math.floor(Math.random() * 5);
+                    let layerIsTheSame = lastSimpleMoveLayer === turnLayer;
+                    if (layerIsTheSame) {
+                        turnLayer++;
+                    }
+                }
+            } else {
+                turnLayer = Math.floor(Math.random() * 4);
+                let axisIsTheSame = lastTurnWidth === 0
+                    ? parseInt(turnLayer / 2) === parseInt(lastSimpleMoveLayer / 2)
+                    : parseInt(turnLayer / 2) === parseInt(lastDoubleMoveLayer);
+                if (axisIsTheSame) {
+                    if (turnLayer % 2 === 0) {
+                        turnLayer += 2;
+                    } else {
+                        turnLayer++;
+                    }
                 }
             }
         }
