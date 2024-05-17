@@ -79,13 +79,17 @@
     }
 
     .app.rubikTimer h2.two,
-    .app.rubikTimer h2.pyraminx {
+    .app.rubikTimer h2.pyraminx,
+    .app.rubikTimer h2.skewb {
         font-size: 85px;
         line-height: 85px;
     }
 
     .app.rubikTimer h2.three,
-    .app.rubikTimer h2.bld {
+    .app.rubikTimer h2.bld,
+    .app.rubikTimer h2.fmc,
+    .app.rubikTimer h2.oh,
+    .app.rubikTimer h2.clock {
         font-size: 65px;
         line-height: 65px;
     }
