@@ -1,13 +1,15 @@
 
 import { render, screen, within } from '@testing-library/react';
 import Scramble from "./scramblers/provider";
-import { EMPTY_TIMER, TWO, THREE, FOUR, FIVE, BLD, PYRAMINX, MEGAMINX, MULTI } from "./constants";
-import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
+import * as constants from "./constants";
 import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
+import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
 import { SCRAMBLE_LENGTH as FOUR_SCRAMBLE_LENGTH } from "./scramblers/fourScrambler";
 import { SCRAMBLE_LENGTH as FIVE_SCRAMBLE_LENGTH } from './scramblers/fiveScrambler';
-import { SCRAMBLE_LENGTH as PYRAMINX_SCRAMBLE_LENGTH } from "./scramblers/pyraScrambler";
+import { SCRAMBLE_LENGTH as FMC_SCRAMBLE_LENGTH, FMC_PREFIX } from "./scramblers/fmcScrambler";
 import { SCRAMBLE_LENGTH as MEGAMINX_SCRAMBLE_LENGTH } from "./scramblers/megaScrambler";
+import { SCRAMBLE_LENGTH as PYRAMINX_SCRAMBLE_LENGTH } from "./scramblers/pyraScrambler";
+import { SCRAMBLE_LENGTH as SKEWB_SCRAMBLE_LENGTH } from "./scramblers/skewbScrambler";
 
 const NUMBER_OF_RUNS = 1000;
 const LIKELINESS_RELATIVE_ERROR = 0.05
@@ -15,9 +17,36 @@ const isTimerRunning = false;
 const isTimerPrepared = false;
 const isHorizontal = false;
 const averageDisplay = isTimerRunning || isTimerPrepared ? "none" : "grid";
+
+const checkThreeScramble = (axisMoves) => {
+	expect(axisMoves).not.toContain("UU");
+	expect(axisMoves).not.toContain("DD");
+	expect(axisMoves).not.toContain("FF");
+	expect(axisMoves).not.toContain("BB");
+	expect(axisMoves).not.toContain("RR");
+	expect(axisMoves).not.toContain("LL");
+	expect(axisMoves).not.toContain("UDU");
+	expect(axisMoves).not.toContain("DUD");
+	expect(axisMoves).not.toContain("FBF");
+	expect(axisMoves).not.toContain("BFB");
+	expect(axisMoves).not.toContain("RLR");
+	expect(axisMoves).not.toContain("LRL");
+}
+
+test("3x3", () => {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
+		render(<Scramble puzzle={constants.THREE} display="block" new={true} quantity={0} ></Scramble>)
+	}
+	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+		const axisMoves = scramble.replace(/[2'\s]/g, "");
+		expect(axisMoves.length).toBe(THREE_SCRAMBLE_LENGTH);
+		checkThreeScramble(axisMoves);
+	}
+});
+
 test("2x2", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={TWO} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble puzzle={constants.TWO} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
@@ -28,119 +57,73 @@ test("2x2", () => {
 	}
 });
 
-test("3x3", () => {
-	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={THREE} display="block" new={true} quantity={0} ></Scramble>)
-	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
-		const axisMoves = scramble.replace(/[2'\s]/g, "");
-		expect(axisMoves.length).toBe(THREE_SCRAMBLE_LENGTH);
-		expect(axisMoves).not.toContain("UU");
-		expect(axisMoves).not.toContain("DD");
-		expect(axisMoves).not.toContain("FF");
-		expect(axisMoves).not.toContain("BB");
-		expect(axisMoves).not.toContain("RR");
-		expect(axisMoves).not.toContain("LL");
-		expect(axisMoves).not.toContain("UDU");
-		expect(axisMoves).not.toContain("DUD");
-		expect(axisMoves).not.toContain("FBF");
-		expect(axisMoves).not.toContain("BFB");
-		expect(axisMoves).not.toContain("RLR");
-		expect(axisMoves).not.toContain("LRL");
-	}
-});
+const checkFourScramble = (sanitizedMoves) => {
+	expect(sanitizedMoves).not.toContain("U U ");
+	expect(sanitizedMoves).not.toContain("D D ");
+	expect(sanitizedMoves).not.toContain("F F ");
+	expect(sanitizedMoves).not.toContain("B B ");
+	expect(sanitizedMoves).not.toContain("R R ");
+	expect(sanitizedMoves).not.toContain("L L ");
+	expect(sanitizedMoves).not.toContain("U D U ");
+	expect(sanitizedMoves).not.toContain("D U D ");
+	expect(sanitizedMoves).not.toContain("F B F ");
+	expect(sanitizedMoves).not.toContain("B F B ");
+	expect(sanitizedMoves).not.toContain("R L R ");
+	expect(sanitizedMoves).not.toContain("L R L ");
+	expect(sanitizedMoves).not.toContain("Uw Uw ");
+	expect(sanitizedMoves).not.toContain("Dw Dw ");
+	expect(sanitizedMoves).not.toContain("Fw Fw ");
+	expect(sanitizedMoves).not.toContain("Bw Bw ");
+	expect(sanitizedMoves).not.toContain("Rw Rw ");
+	expect(sanitizedMoves).not.toContain("Lw Lw ");
+	expect(sanitizedMoves).not.toContain("Uw D Uw ");
+	expect(sanitizedMoves).not.toContain("Uw U Uw ");
+	expect(sanitizedMoves).not.toContain("Dw D Dw ");
+	expect(sanitizedMoves).not.toContain("Dw U Dw ");
+	expect(sanitizedMoves).not.toContain("Fw B Fw ");
+	expect(sanitizedMoves).not.toContain("Fw F Fw ");
+	expect(sanitizedMoves).not.toContain("Bw F Bw ");
+	expect(sanitizedMoves).not.toContain("Bw B Bw ");
+	expect(sanitizedMoves).not.toContain("Rw L Rw ");
+	expect(sanitizedMoves).not.toContain("Rw R Rw ");
+	expect(sanitizedMoves).not.toContain("Lw R Lw ");
+	expect(sanitizedMoves).not.toContain("Lw L Lw ");
+
+}
 
 test("4x4", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={FOUR} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble puzzle={constants.FOUR} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
 		expect(axisMoves.length).toBe(FOUR_SCRAMBLE_LENGTH);
 		const numberOfWideMoves = scramble.match(/w/g).length;
 		expect(numberOfWideMoves).toBe(TWO_SCRAMBLE_LENGTH);
-		const sanitizedMoves = scramble.replace(/[2']/g, ""); // keep spaces for easier pattern matching
-		expect(sanitizedMoves).not.toContain("U U ");
-		expect(sanitizedMoves).not.toContain("D D ");
-		expect(sanitizedMoves).not.toContain("F F ");
-		expect(sanitizedMoves).not.toContain("B B ");
-		expect(sanitizedMoves).not.toContain("R R ");
-		expect(sanitizedMoves).not.toContain("L L ");
-		expect(sanitizedMoves).not.toContain("U D U ");
-		expect(sanitizedMoves).not.toContain("D U D ");
-		expect(sanitizedMoves).not.toContain("F B F ");
-		expect(sanitizedMoves).not.toContain("B F B ");
-		expect(sanitizedMoves).not.toContain("R L R ");
-		expect(sanitizedMoves).not.toContain("L R L ");
-		expect(sanitizedMoves).not.toContain("Uw Uw ");
+		const sanitizedMoves = scramble.replace(/[2']/g, "");
+		checkFourScramble(sanitizedMoves);
 		expect(sanitizedMoves).not.toContain("Uw Dw ");
 		expect(sanitizedMoves).not.toContain("Dw Uw ");
-		expect(sanitizedMoves).not.toContain("Dw Dw ");
-		expect(sanitizedMoves).not.toContain("Fw Fw ");
 		expect(sanitizedMoves).not.toContain("Fw Bw ");
 		expect(sanitizedMoves).not.toContain("Bw Fw ");
-		expect(sanitizedMoves).not.toContain("Bw Bw ");
-		expect(sanitizedMoves).not.toContain("Rw Rw ");
 		expect(sanitizedMoves).not.toContain("Rw Lw ");
 		expect(sanitizedMoves).not.toContain("Lw Rw ");
-		expect(sanitizedMoves).not.toContain("Lw Lw ");
-		expect(sanitizedMoves).not.toContain("Uw D Uw ");
-		expect(sanitizedMoves).not.toContain("Uw U Uw ");
-		expect(sanitizedMoves).not.toContain("Dw D Dw ");
-		expect(sanitizedMoves).not.toContain("Dw U Dw ");
-		expect(sanitizedMoves).not.toContain("Fw B Fw ");
-		expect(sanitizedMoves).not.toContain("Fw F Fw ");
-		expect(sanitizedMoves).not.toContain("Bw F Bw ");
-		expect(sanitizedMoves).not.toContain("Bw B Bw ");
-		expect(sanitizedMoves).not.toContain("Rw L Rw ");
-		expect(sanitizedMoves).not.toContain("Rw R Rw ");
-		expect(sanitizedMoves).not.toContain("Lw R Lw ");
-		expect(sanitizedMoves).not.toContain("Lw L Lw ");
 	}
 });
 
 test("5x5", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={FIVE} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble puzzle={constants.FIVE} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
 		expect(axisMoves.length).toBe(FIVE_SCRAMBLE_LENGTH);
-		const sanitizedMoves = scramble.replace(/[2']/g, ""); // keep spaces for easier pattern matching
-		expect(sanitizedMoves).not.toContain("U U ");
-		expect(sanitizedMoves).not.toContain("D D ");
-		expect(sanitizedMoves).not.toContain("F F ");
-		expect(sanitizedMoves).not.toContain("B B ");
-		expect(sanitizedMoves).not.toContain("R R ");
-		expect(sanitizedMoves).not.toContain("L L ");
-		expect(sanitizedMoves).not.toContain("U D U ");
-		expect(sanitizedMoves).not.toContain("D U D ");
-		expect(sanitizedMoves).not.toContain("F B F ");
-		expect(sanitizedMoves).not.toContain("B F B ");
-		expect(sanitizedMoves).not.toContain("R L R ");
-		expect(sanitizedMoves).not.toContain("L R L ");
-		expect(sanitizedMoves).not.toContain("Uw Uw ");
-		expect(sanitizedMoves).not.toContain("Dw Dw ");
-		expect(sanitizedMoves).not.toContain("Fw Fw ");
-		expect(sanitizedMoves).not.toContain("Bw Bw ");
-		expect(sanitizedMoves).not.toContain("Rw Rw ");
-		expect(sanitizedMoves).not.toContain("Lw Lw ");
-		expect(sanitizedMoves).not.toContain("Uw D Uw ");
-		expect(sanitizedMoves).not.toContain("Uw U Uw ");
-		expect(sanitizedMoves).not.toContain("Dw D Dw ");
-		expect(sanitizedMoves).not.toContain("Dw U Dw ");
-		expect(sanitizedMoves).not.toContain("Fw B Fw ");
-		expect(sanitizedMoves).not.toContain("Fw F Fw ");
-		expect(sanitizedMoves).not.toContain("Bw F Bw ");
-		expect(sanitizedMoves).not.toContain("Bw B Bw ");
-		expect(sanitizedMoves).not.toContain("Rw L Rw ");
-		expect(sanitizedMoves).not.toContain("Rw R Rw ");
-		expect(sanitizedMoves).not.toContain("Lw R Lw ");
-		expect(sanitizedMoves).not.toContain("Lw L Lw ");
+		const sanitizedMoves = scramble.replace(/[2']/g, "");
+		checkFourScramble(sanitizedMoves);
 	}
 });
 
-const checkBLDScramble = (scramble, numberOfWideMoves) => {
+const checkBldScramble = (scramble, numberOfWideMoves) => {
 	const axisMoves = scramble.replace(/[2'\sw]/g, "");
 	const nonWideAxisMoves = axisMoves.slice(0, -(numberOfWideMoves));
 	const wideMoves = numberOfWideMoves === 0
@@ -155,18 +138,7 @@ const checkBLDScramble = (scramble, numberOfWideMoves) => {
 			: axisMoves.slice(-3, -1);
 	expect(numberOfWideMoves).not.toBeGreaterThan(2);
 	expect(axisMoves.length).toBe((THREE_SCRAMBLE_LENGTH) + numberOfWideMoves);
-	expect(nonWideAxisMoves).not.toContain("UU");
-	expect(nonWideAxisMoves).not.toContain("DD");
-	expect(nonWideAxisMoves).not.toContain("FF");
-	expect(nonWideAxisMoves).not.toContain("BB");
-	expect(nonWideAxisMoves).not.toContain("RR");
-	expect(nonWideAxisMoves).not.toContain("LL");
-	expect(nonWideAxisMoves).not.toContain("UDU");
-	expect(nonWideAxisMoves).not.toContain("DUD");
-	expect(nonWideAxisMoves).not.toContain("FBF");
-	expect(nonWideAxisMoves).not.toContain("BFB");
-	expect(nonWideAxisMoves).not.toContain("RLR");
-	expect(nonWideAxisMoves).not.toContain("LRL");
+	checkThreeScramble(nonWideAxisMoves);
 	expect(wideMoves).not.toBe("UU");
 	expect(wideMoves).not.toBe("UD");
 	expect(wideMoves).not.toBe("DU");
@@ -193,11 +165,11 @@ test("BLD", () => {
 	let ScramblesWIthOneWideMove = 0;
 	let ScramblesWithTwoWideMoves = 0;
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={BLD} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble puzzle={constants.BLD} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const numberOfWideMoves = (scramble.match(/w/g) || []).length;
-		checkBLDScramble(scramble, numberOfWideMoves);
+		checkBldScramble(scramble, numberOfWideMoves);
 		if (numberOfWideMoves === 0) {
 			scramblesWIthNoWideMoves++;
 		} else if (numberOfWideMoves === 1) {
@@ -214,24 +186,56 @@ test("BLD", () => {
 	expect(ScramblesWithTwoWideMoves / NUMBER_OF_RUNS).toBeLessThan((5 / 6) * (3 / 4) + LIKELINESS_RELATIVE_ERROR);
 });
 
-test("pyra", () => {
+test("fmc", () => {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
+		render(<Scramble puzzle={constants.FMC} display="block" new={true} quantity={0} ></Scramble>)
+	}
+	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+		expect(scramble.startsWith(FMC_PREFIX)).toBe(true);
+		expect(scramble.endsWith(FMC_PREFIX.trim())).toBe(true);
+		const axisMoves = scramble.replace(/[2'\s]/g, "");
+		expect(axisMoves.length).toBe(FMC_SCRAMBLE_LENGTH);
+
+		checkThreeScramble(axisMoves);
+	}
+});
+
+test("megaminx", () => {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
+		render(<Scramble puzzle={constants.MEGAMINX} display="block" new={true} quantity={0} ></Scramble>)
+	}
+	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+		const axisMoves = scramble.replace(/[-+'\s]/g, "");
+		expect(axisMoves.length).toBe(MEGAMINX_SCRAMBLE_LENGTH);
+		expect(axisMoves.startsWith("R")).toBe(true);
+		expect(axisMoves).not.toContain("UU");
+		expect(axisMoves).not.toContain("RR");
+		expect(axisMoves).not.toContain("DD");
+	}
+});
+
+const checkSkewbScramble = (axisMoves) => {
+	expect(axisMoves).not.toContain("UU");
+	expect(axisMoves).not.toContain("BB");
+	expect(axisMoves).not.toContain("RR");
+	expect(axisMoves).not.toContain("LL");
+}
+
+test("pyraminx", () => {
 	let scramblesWithNoTips = 0;
 	let scramblesWithOneTip = 0;
 	let scramblesWithTwoTips = 0;
 	let scramblesWithThreeTips = 0;
 	let scramblesWithFourTips = 0;
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={PYRAMINX} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble puzzle={constants.PYRAMINX} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/['\s]/g, "");
 		const numberOfTipsScrambled = (scramble.match(/[ubrl]/g) || []).length;
 		expect(numberOfTipsScrambled).not.toBeGreaterThan(4);
 		expect(axisMoves.length).toBe(PYRAMINX_SCRAMBLE_LENGTH + numberOfTipsScrambled);
-		expect(axisMoves).not.toContain("UU");
-		expect(axisMoves).not.toContain("BB");
-		expect(axisMoves).not.toContain("RR");
-		expect(axisMoves).not.toContain("LL");
+		checkSkewbScramble(axisMoves);
 		if (numberOfTipsScrambled === 0) {
 			scramblesWithNoTips++;
 		} else if (numberOfTipsScrambled === 1) {
@@ -256,20 +260,16 @@ test("pyra", () => {
 	expect(scramblesWithFourTips / NUMBER_OF_RUNS).toBeLessThan(((2 / 3) ** 4) + LIKELINESS_RELATIVE_ERROR);
 });
 
-test("mega", () => {
+test("skewb", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={MEGAMINX} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble puzzle={constants.SKEWB} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
-		const axisMoves = scramble.replace(/[-+'\s]/g, "");
-		expect(axisMoves.length).toBe(MEGAMINX_SCRAMBLE_LENGTH);
-		expect(axisMoves.startsWith("R")).toBe(true);
-		expect(axisMoves).not.toContain("UU");
-		expect(axisMoves).not.toContain("RR");
-		expect(axisMoves).not.toContain("DD");
+		const axisMoves = scramble.replace(/['\s]/g, "");
+		expect(axisMoves.length).toBe(SKEWB_SCRAMBLE_LENGTH);
+		checkSkewbScramble(axisMoves);
 	}
 });
-
 
 test("multi", () => {
 	let scramblesWIthNoWideMoves = 0;
@@ -277,7 +277,7 @@ test("multi", () => {
 	let ScramblesWithTwoWideMoves = 0;
 	const SCRAMBLES_PER_BATCH = 5
 	for (let i = 0; i < NUMBER_OF_RUNS / SCRAMBLES_PER_BATCH; i++) {
-		render(<Scramble puzzle={MULTI} display="block" new={true} quantity={SCRAMBLES_PER_BATCH} ></Scramble>)
+		render(<Scramble puzzle={constants.MULTI} display="block" new={true} quantity={SCRAMBLES_PER_BATCH} ></Scramble>)
 	}
 	for (let scrambles of screen.getAllByTestId('scramble')) {
 		const specificScrambles = within(scrambles).getAllByText(text => text.includes(")")).map(scramble => scramble.textContent);
@@ -287,7 +287,7 @@ test("multi", () => {
 			expect(specificScrambles[i]).toContain(header);
 			const specificScramble = specificScrambles[i].replace(header, "");
 			const numberOfWideMoves = (specificScramble.match(/w/g) || []).length;
-			checkBLDScramble(specificScramble, numberOfWideMoves);
+			checkBldScramble(specificScramble, numberOfWideMoves);
 			if (numberOfWideMoves === 0) {
 				scramblesWIthNoWideMoves++;
 			} else if (numberOfWideMoves === 1) {
@@ -317,7 +317,7 @@ const renderAverages = (recentTimes) => { // mocking the function like this is a
 	return (
 		<div className="background" style={{ display: averageDisplay }}>
 			{params.map(({ label, length, removeBestAndWorst, align }) => {
-				let displayTime = EMPTY_TIMER;
+				let displayTime = constants.EMPTY_TIMER;
 				if (removeBestAndWorst) {
 					if (recentTimes.length === length - 1) { // 4/5, 11/12 -> make average without best
 						displayTime = formatTime(recentTimes.sort((a, b) => a - b)
@@ -358,8 +358,8 @@ test("Render Averages", () => {
 	expect(container.innerHTML).toContain('mo3 0:19:117');
 	expect(container.innerHTML).toContain('avg5 1:22:183');
 	expect(container.innerHTML).toContain('2:55:636 avg12');
-	expect(container.innerHTML).toContain(EMPTY_TIMER + ' mo50');
-	expect(container.innerHTML).toContain(EMPTY_TIMER + ' mo100');
+	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' mo50');
+	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' mo100');
 });
 
 test("Render incomplete averages", () => {
@@ -368,7 +368,7 @@ test("Render incomplete averages", () => {
 	expect(container.innerHTML).toContain('best 0:00:484');
 	expect(container.innerHTML).toContain('mo3 0:22:401');
 	expect(container.innerHTML).toContain('avg5 1:11:762');
-	expect(container.innerHTML).toContain(EMPTY_TIMER + ' avg12');
-	expect(container.innerHTML).toContain(EMPTY_TIMER + ' mo50');
-	expect(container.innerHTML).toContain(EMPTY_TIMER + ' mo100');
+	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' avg12');
+	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' mo50');
+	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' mo100');
 });

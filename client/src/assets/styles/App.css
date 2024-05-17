@@ -47,8 +47,8 @@ h1 {
     width: 49%;
 }
 
-.app button.fifty-percent:last-child:nth-child(odd) {
-    width: 100%;
+.app button.thirty-percent {
+    width: 32%;
 }
 
 .app button.restart {
