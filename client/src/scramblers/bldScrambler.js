@@ -1,5 +1,5 @@
 import {
-    Scramble as ThreeScramble,
+    Scramble as threeScramble,
     SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH
 } from './threeScrambler.js';
 
@@ -13,8 +13,8 @@ const LAST_TWO = [
 ];
 
 export const Scramble = () => {
-    let scramble = ThreeScramble();
-    let lastMoveIndex = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble.split(" ")[THREE_SCRAMBLE_LENGTH - 1][0]];
+    let scramble = threeScramble();
+    let lastMoveIndex = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble.trim().split(" ")[THREE_SCRAMBLE_LENGTH - 1].charAt(0)];
     let turnLayer, turnIterator;
     let firstWideMove = false;
     if (0 !== Math.floor(Math.random() * 6)) {
