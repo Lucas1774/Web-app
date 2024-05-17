@@ -1,12 +1,8 @@
-export const SCRAMBLE_LENGTH = 20;
-const SCRAMBLE_MOVES = [
-    ["U ", "U2 ", "U' "],
-    ["D ", "D2 ", "D' "],
-    ["F ", "F2 ", "F' "],
-    ["B ", "B2 ", "B' "],
-    ["R ", "R2 ", "R' "],
-    ["L ", "L2 ", "L' "],
-];
+import {
+    Scramble as ThreeScramble,
+    SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH
+} from './threeScrambler.js';
+
 const LAST_TWO = [
     ["Dw ", "Dw2 ", "Dw' "],
     ["Uw ", "Uw2 ", "Uw' "],
@@ -17,38 +13,12 @@ const LAST_TWO = [
 ];
 
 export const Scramble = () => {
-    let scramble = "";
-    let lastMoveIndex = -2;
-    let secondToLastMoveIndex = -2;
+    let scramble = ThreeScramble();
+    let lastMoveIndex = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble.split(" ")[THREE_SCRAMBLE_LENGTH - 1][0]];
     let turnLayer, turnIterator;
-    for (let i = 0; i < SCRAMBLE_LENGTH - 2; i++) {
-        if (0 === i) {
-            turnLayer = Math.floor(Math.random() * 6);
-        }
-        else if (parseInt(lastMoveIndex / 2) !== parseInt(secondToLastMoveIndex / 2)) {
-            turnLayer = Math.floor(Math.random() * 5);
-            if (turnLayer === lastMoveIndex) {
-                turnLayer++;
-            }
-        }
-        else {
-            turnLayer = Math.floor(Math.random() * 4);
-            if (turnLayer === lastMoveIndex || turnLayer === secondToLastMoveIndex) {
-                if (turnLayer % 2 === 0) {
-                    turnLayer += 2;
-                } else {
-                    turnLayer++;
-                }
-            }
-        }
-        turnIterator = Math.floor(Math.random() * 3);
-        scramble += SCRAMBLE_MOVES[turnLayer][turnIterator];
-        secondToLastMoveIndex = lastMoveIndex;
-        lastMoveIndex = turnLayer;
-    }
     let firstWideMove = false;
-    turnLayer = Math.floor(Math.random() * 5);
-    if (turnLayer !== lastMoveIndex) {
+    if (0 !== Math.floor(Math.random() * 6)) {
+        turnLayer = Math.floor(Math.random() * 5);
         if (turnLayer === lastMoveIndex) {
             turnLayer++;
         }
@@ -57,8 +27,7 @@ export const Scramble = () => {
         lastMoveIndex = turnLayer;
         firstWideMove = true;
     }
-    turnLayer = Math.floor(Math.random() * 5);
-    if (turnLayer !== lastMoveIndex) {
+    if (0 !== Math.floor(Math.random() * 4)) {
         if (firstWideMove) {
             turnLayer = Math.floor(Math.random() * 4);
             if (parseInt(lastMoveIndex / 2) === parseInt(turnLayer / 2)) {
@@ -69,6 +38,7 @@ export const Scramble = () => {
                 }
             }
         } else {
+            turnLayer = Math.floor(Math.random() * 5);
             if (turnLayer === lastMoveIndex) {
                 turnLayer++;
             }
