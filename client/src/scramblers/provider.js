@@ -49,7 +49,7 @@ const Scramble = (props) => {
     }, [props.new, props.display, props.puzzle, props.quantity]);
 
     return (
-        <h2 className={props.puzzle} style={{ display: props.display }}>{scramble}</h2>
+        <h2 data-testid="scramble" className={props.puzzle} style={{ display: props.display }}>{scramble}</h2>
     );
 };
 
