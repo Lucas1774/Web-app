@@ -1,12 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Form, Button } from 'react-bootstrap';
-import { EMPTY_TIMER, TWO, THREE, FOUR, FIVE, BLD, MULTI, PYRAMINX, MEGAMINX } from "../constants";
+import * as constants from "../constants";
 import Scramble from "../scramblers/provider";
 import "../assets/styles/rubikTimer.css";
-
-const TIMER_REFRESH_RATE = 50;
-const MULTI_UNPROCESSED = "MULTI_UNPROCESSED";
-
 const RubikTimer = () => {
     const isAndroid = /Android/i.test(navigator.userAgent);
 
@@ -120,7 +116,7 @@ const RubikTimer = () => {
                 startTime.current = now;
                 timerInterval.current = setInterval(() => {
                     setElapsedTime(performance.now() - now);
-                }, TIMER_REFRESH_RATE);
+                }, constants.TIMER_REFRESH_RATE);
                 setIsTimerPrepared(false);
                 setIsTimerRunning(true);
                 if (isAndroid) {
@@ -153,7 +149,7 @@ const RubikTimer = () => {
                 setScrambleDisplaymode("block");
                 if (isAndroid) {
                     isTouched.current = true;
-                    if (MULTI !== selectedPuzzle.current) {
+                    if (constants.MULTI !== selectedPuzzle.current) {
                         setTimeout(() => {
                             setShouldFocusTimer("end");
                         })
@@ -211,7 +207,7 @@ const RubikTimer = () => {
         const resizeTrigger = "resize";
         const handleOrientationChange = () => {
             if (isTimerVisible) {
-                setShouldFocusTimer(isTimerRunning ? "center" : MULTI !== selectedPuzzle.current ? "end" : "");
+                setShouldFocusTimer(isTimerRunning ? "center" : constants.MULTI !== selectedPuzzle.current ? "end" : "");
                 if (!isTimerRunning) {
                     setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
                 }
@@ -273,14 +269,23 @@ const RubikTimer = () => {
         return (
             <>
                 <Form>
-                    <Button className="fifty-percent" id={TWO} onClick={handleSubmit}>2x2</Button>
-                    <Button className="fifty-percent" id={THREE} onClick={handleSubmit}>3x3</Button>
-                    <Button className="fifty-percent" id={FOUR} onClick={handleSubmit}>4x4</Button>
-                    <Button className="fifty-percent" id={FIVE} onClick={handleSubmit}>5X5</Button>
-                    <Button className="fifty-percent" id={BLD} onClick={handleSubmit}>BLD</Button>
-                    <Button className="fifty-percent" id={MULTI_UNPROCESSED} onClick={handleSubmit}>MultiBLD</Button>
-                    <Button className="fifty-percent" id={PYRAMINX} onClick={handleSubmit}>Pyraminx</Button>
-                    <Button className="fifty-percent" id={MEGAMINX} onClick={handleSubmit}>Megaminx</Button>
+                    <Button className="thirty-percent" id={constants.THREE} onClick={handleSubmit}>3x3</Button>
+                    <Button className="thirty-percent" id={constants.TWO} onClick={handleSubmit}>2x2</Button>
+                    <Button className="thirty-percent" id={constants.FOUR} onClick={handleSubmit}>4x4</Button>
+                    <Button className="thirty-percent" id={constants.FIVE} onClick={handleSubmit}>5X5</Button>
+                    <Button className="thirty-percent" id={constants.SEVEN} onClick={handleSubmit}>7X7</Button>
+                    <Button className="thirty-percent" id={constants.SIX} onClick={handleSubmit}>6X6</Button>
+                    <Button className="thirty-percent" id={constants.BLD} onClick={handleSubmit}>BLD</Button>
+                    <Button className="thirty-percent" id={constants.FMC} onClick={handleSubmit}>FMC</Button>
+                    <Button className="thirty-percent" id={constants.OH} onClick={handleSubmit}>OH</Button>
+                    <Button className="thirty-percent" id={constants.CLOCK} onClick={handleSubmit}>Clock</Button>
+                    <Button className="thirty-percent" id={constants.MEGAMINX} onClick={handleSubmit}>Mega</Button>
+                    <Button className="thirty-percent" id={constants.PYRAMINX} onClick={handleSubmit}>Pyra</Button>
+                    <Button className="thirty-percent" id={constants.SKEWB} onClick={handleSubmit}>Skewb</Button>
+                    <Button className="thirty-percent" id={constants.SQUARE} onClick={handleSubmit}>Sq-1</Button>
+                    <Button className="thirty-percent" id={constants.FOUR_BLD} onClick={handleSubmit}>4BLD</Button>
+                    <Button className="fifty-percent" id={constants.FIVE_BLD} onClick={handleSubmit}>5BLD</Button>
+                    <Button className="fifty-percent" id={constants.MULTI_UNPROCESSED} onClick={handleSubmit}>Multi</Button>
                 </Form>
             </>
         );
@@ -307,7 +312,7 @@ const RubikTimer = () => {
         return (
             <div className="background" style={{ display: averageDisplay }}>
                 {params.map(({ label, length, removeBestAndWorst, align }) => {
-                    let displayTime = EMPTY_TIMER;
+                    let displayTime = constants.EMPTY_TIMER;
                     if (removeBestAndWorst) {
                         if (recentTimes.length === length - 1) { // 4/5, 11/12 -> make average without best
                             displayTime = formatTime(recentTimes.sort((a, b) => a - b)
@@ -338,7 +343,7 @@ const RubikTimer = () => {
     const renderSelectMultiLength = () => {
         return (
             <>
-                <Form id={MULTI} onSubmit={handleSubmit}>
+                <Form id={constants.MULTI} onSubmit={handleSubmit}>
                     <Form.Label ref={formLabel}>Number of scrambles:</Form.Label>
                     <Form.Control inputMode="numeric" onChange={(event) => multiQuantity.current = event.target.value} />
                     <Button type="submit" variant="success">Generate</Button>
@@ -357,7 +362,7 @@ const RubikTimer = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         let puzzle = event.target.id;
-        if (puzzle === MULTI_UNPROCESSED) {
+        if (puzzle === constants.MULTI_UNPROCESSED) {
             hideEverything();
             setIsSelectMultiLengthVisible(true);
             setIsRestartButtonVisible(true);
@@ -365,7 +370,7 @@ const RubikTimer = () => {
                 setShouldFocusFormLabel("start");
             }
         } else {
-            if (MULTI === puzzle && (isNaN(multiQuantity.current) || multiQuantity.current < 1 || multiQuantity.current > 200)) {
+            if (constants.MULTI === puzzle && (isNaN(multiQuantity.current) || multiQuantity.current < 1 || multiQuantity.current > 200)) {
                 hideEverything();
                 setIsMultiQuantityInvalidVisible(true);
                 setTimeout(() => {
@@ -383,7 +388,7 @@ const RubikTimer = () => {
             setScrambleDisplaymode("block");
             setIsTimerVisible(true);
             if (isAndroid) {
-                if (MULTI !== puzzle) {
+                if (constants.MULTI !== puzzle) {
                     setTimeout(() => {
                         setShouldFocusTimer("end");
                     })

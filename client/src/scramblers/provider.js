@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Scramble as twoScrambler } from "../scramblers/twoScrambler";
 import { Scramble as threeScrambler } from "../scramblers/threeScrambler";
+import { Scramble as twoScrambler } from "../scramblers/twoScrambler";
 import { Scramble as fourScrambler } from "../scramblers/fourScrambler";
 import { Scramble as fiveScrambler } from "./fiveScrambler";
 import { Scramble as bldScrambler } from "../scramblers/bldScrambler";
-import { Scramble as pyraminxScrambler } from "../scramblers/pyraScrambler";
+import { Scramble as fmcScrambler } from "../scramblers/fmcScrambler";
+import { Scramble as clockScrambler } from "../scramblers/clockScrambler";
 import { Scramble as megaScrambler } from "../scramblers/megaScrambler";
-import { TWO, THREE, FOUR, FIVE, BLD, MULTI, PYRAMINX, MEGAMINX } from "../constants";
+import { Scramble as pyraminxScrambler } from "../scramblers/pyraScrambler";
+import { Scramble as skewbScrambler } from "../scramblers/skewbScrambler";
+import * as constants from "../constants";
 
 const Scramble = (props) => {
     const [scramble, setScramble] = useState("");
@@ -14,33 +17,60 @@ const Scramble = (props) => {
     useEffect(() => {
         if (props.new && props.display === "block") {
             switch (props.puzzle) {
-                case TWO:
-                    setScramble(twoScrambler());
+                case constants.THREE:
+                    setScramble(threeScrambler().trim());
                     break;
-                case THREE:
-                    setScramble(threeScrambler());
+                case constants.TWO:
+                    setScramble(twoScrambler().trim());
                     break;
-                case FOUR:
-                    setScramble(fourScrambler());
+                case constants.FOUR:
+                    setScramble(fourScrambler().trim());
                     break;
-                case FIVE:
-                    setScramble(fiveScrambler());
+                case constants.FIVE:
+                    setScramble(fiveScrambler().trim());
                     break;
-                case BLD:
-                    setScramble(bldScrambler());
+                case constants.SEVEN:
+                    setScramble("not implemented");
                     break;
-                case MULTI:
+                case constants.SIX:
+                    setScramble("not implemented");
+                    break;
+                case constants.BLD:
+                    setScramble(bldScrambler().trim());
+                    break;
+                case constants.FMC:
+                    setScramble(fmcScrambler().trim());
+                    break;
+                case constants.OH:
+                    setScramble(threeScrambler().trim());
+                    break;
+                case constants.CLOCK:
+                    setScramble(clockScrambler().trim());
+                    break;
+                case constants.MEGAMINX:
+                    setScramble(megaScrambler().trim());
+                    break;
+                case constants.PYRAMINX:
+                    setScramble(pyraminxScrambler().trim());
+                    break;
+                case constants.SKEWB:
+                    setScramble(skewbScrambler().trim());
+                    break;
+                case constants.SQUARE:
+                    setScramble("not implemented");
+                    break;
+                case constants.FOUR_BLD:
+                    setScramble("not implemented");
+                    break;
+                case constants.FIVE_BLD:
+                    setScramble("not implemented");
+                    break;
+                case constants.MULTI:
                     let multiScrambles = [];
                     for (let i = 0; i < props.quantity; i++) {
                         multiScrambles.push(bldScrambler());
                     }
-                    setScramble(multiScrambles.map((scramble, index) => <p key={index}>{index + 1}{")"} {scramble}</p>));
-                    break;
-                case PYRAMINX:
-                    setScramble(pyraminxScrambler());
-                    break;
-                case MEGAMINX:
-                    setScramble(megaScrambler());
+                    setScramble(multiScrambles.map((scramble, index) => <p key={index}>{index + 1}{")"} {scramble.trim()}</p>));
                     break;
                 default:
                     setScramble("");
