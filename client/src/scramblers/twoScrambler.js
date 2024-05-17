@@ -1,4 +1,4 @@
-export const SCRAMBLE_LENGTH = 10;
+export const SCRAMBLE_LENGTH = 11;
 const SCRAMBLE_MOVES = [
     ["U ", "U2 ", "U' "],
     ["F ", "F2 ", "F' "],

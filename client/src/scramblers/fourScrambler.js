@@ -3,23 +3,30 @@ import {
     SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH,
     SCRAMBLE_MOVES as THREE_SCRAMBLE_MOVES
 } from './threeScrambler.js';
+import { SCRAMBLE_LENGTH as TWO_SCRAMBLER_LENGTH } from './twoScrambler.js';
 
-export const SCRAMBLE_LENGTH = 45;
+export const SCRAMBLE_LENGTH = 48;
 const SCRAMBLE_MOVES = [
     ["Uw ", "Uw2 ", "Uw' "],
     ["Fw ", "Fw2 ", "Fw' "],
     ["Rw ", "Rw2 ", "Rw' "]
 ];
+const MOVES_TO_REMOVE = 3
 
 export const Scramble = () => {
-    let scramble = ThreeScramble();
-    let lastSimpleMoveLayer = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble.split(" ")[THREE_SCRAMBLE_LENGTH - 1][0]];
-    let secondToLastSimpleMoveLayer = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble.split(" ")[THREE_SCRAMBLE_LENGTH - 2][0]];
+    let scramble = ThreeScramble().split(" ").slice(0, -(MOVES_TO_REMOVE + 1)); // remove the last three moves of the generated 3x3 scramble
+    let lastSimpleMoveLayer = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble[scramble.length - 1][0]];
+    let secondToLastSimpleMoveLayer = { 'U': 0, 'D': 1, 'F': 2, 'B': 3, 'R': 4, 'L': 5 }[scramble[scramble.length - 2][0]];
+    scramble = scramble.join(" ").concat(" ");
     let lastDoubleMoveLayer = -2;
     let lastTurnWidth = 0;
-    let turnLayer, turnIterator, turnWidth;
-    for (let i = 0; i < SCRAMBLE_LENGTH - THREE_SCRAMBLE_LENGTH; i++) {
-        turnWidth = Math.floor(Math.random() * 2);
+    let turnLayer, turnIterator;
+    let widths = Array(SCRAMBLE_LENGTH - ((THREE_SCRAMBLE_LENGTH - MOVES_TO_REMOVE) + TWO_SCRAMBLER_LENGTH)).fill(0).concat(Array(TWO_SCRAMBLER_LENGTH).fill(1));
+    for (let i = widths.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [widths[i], widths[j]] = [widths[j], widths[i]];
+    }
+    for (let turnWidth of widths) {
         if (turnWidth === 1) {
             let axisHasBeenBroken = lastTurnWidth === 0
                 ? parseInt(lastDoubleMoveLayer) !== parseInt(lastSimpleMoveLayer / 2)
