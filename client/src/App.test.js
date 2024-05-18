@@ -32,7 +32,7 @@ const checkThreeScramble = (axisMoves) => {
 
 test("3x3", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.THREE} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.THREE} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
@@ -43,7 +43,7 @@ test("3x3", () => {
 
 test("2x2", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.TWO} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.TWO} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
@@ -89,7 +89,7 @@ const checkFourScramble = (sanitizedMoves) => {
 
 test("4x4", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.FOUR} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.FOUR} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
@@ -109,7 +109,7 @@ test("4x4", () => {
 
 test("5x5", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.FIVE} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.FIVE} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
@@ -160,7 +160,7 @@ test("BLD", () => {
 	let ScramblesWIthOneWideMove = 0;
 	let ScramblesWithTwoWideMoves = 0;
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.BLD} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.BLD} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const numberOfWideMoves = (scramble.match(/w/g) || []).length;
@@ -183,7 +183,7 @@ test("BLD", () => {
 
 test("fmc", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.FMC} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.FMC} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		expect(scramble.startsWith(FMC_PREFIX)).toBe(true);
@@ -196,7 +196,7 @@ test("fmc", () => {
 
 test("megaminx", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.MEGAMINX} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.MEGAMINX} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[-+'\s]/g, "");
@@ -222,7 +222,7 @@ test("pyraminx", () => {
 	let scramblesWithThreeTips = 0;
 	let scramblesWithFourTips = 0;
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.PYRAMINX} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.PYRAMINX} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/['\s]/g, "");
@@ -256,7 +256,7 @@ test("pyraminx", () => {
 
 test("skewb", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.SKEWB} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.SKEWB} display="block" quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/['\s]/g, "");
@@ -271,7 +271,7 @@ test("multi", () => {
 	let ScramblesWithTwoWideMoves = 0;
 	const SCRAMBLES_PER_BATCH = 5
 	for (let i = 0; i < NUMBER_OF_RUNS / SCRAMBLES_PER_BATCH; i++) {
-		render(<Scramble onScrambleChange={() => { }} puzzle={constants.MULTI} display="block" new={true} quantity={SCRAMBLES_PER_BATCH} ></Scramble>)
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.MULTI} display="block" quantity={SCRAMBLES_PER_BATCH} ></Scramble>)
 	}
 	for (let scrambles of screen.getAllByTestId('scramble')) {
 		const specificScrambles = within(scrambles).getAllByText(text => text.includes(")")).map(scramble => scramble.textContent);
