@@ -1,6 +1,7 @@
 
 import { render, screen, within } from '@testing-library/react';
 import Scramble from "./scramblers/provider";
+import { renderStats } from "./components/statsHelper";
 import * as constants from "./constants";
 import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
 import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
@@ -13,10 +14,6 @@ import { SCRAMBLE_LENGTH as SKEWB_SCRAMBLE_LENGTH } from "./scramblers/skewbScra
 
 const NUMBER_OF_RUNS = 1000;
 const LIKELINESS_RELATIVE_ERROR = 0.05
-const isTimerRunning = false;
-const isTimerPrepared = false;
-const isHorizontal = false;
-const averageDisplay = isTimerRunning || isTimerPrepared ? "none" : "grid";
 
 const checkThreeScramble = (axisMoves) => {
 	expect(axisMoves).not.toContain("UU");
@@ -35,7 +32,7 @@ const checkThreeScramble = (axisMoves) => {
 
 test("3x3", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.THREE} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.THREE} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
@@ -46,7 +43,7 @@ test("3x3", () => {
 
 test("2x2", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.TWO} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.TWO} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
@@ -93,7 +90,7 @@ const checkFourScramble = (sanitizedMoves) => {
 
 test("4x4", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.FOUR} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.FOUR} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
@@ -113,7 +110,7 @@ test("4x4", () => {
 
 test("5x5", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.FIVE} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.FIVE} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
@@ -165,7 +162,7 @@ test("BLD", () => {
 	let ScramblesWIthOneWideMove = 0;
 	let ScramblesWithTwoWideMoves = 0;
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.BLD} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.BLD} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const numberOfWideMoves = (scramble.match(/w/g) || []).length;
@@ -188,7 +185,7 @@ test("BLD", () => {
 
 test("fmc", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.FMC} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.FMC} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		expect(scramble.startsWith(FMC_PREFIX)).toBe(true);
@@ -202,7 +199,7 @@ test("fmc", () => {
 
 test("megaminx", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.MEGAMINX} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.MEGAMINX} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[-+'\s]/g, "");
@@ -228,7 +225,7 @@ test("pyraminx", () => {
 	let scramblesWithThreeTips = 0;
 	let scramblesWithFourTips = 0;
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.PYRAMINX} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.PYRAMINX} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/['\s]/g, "");
@@ -262,7 +259,7 @@ test("pyraminx", () => {
 
 test("skewb", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
-		render(<Scramble puzzle={constants.SKEWB} display="block" new={true} quantity={0} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.SKEWB} display="block" new={true} quantity={0} ></Scramble>)
 	}
 	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/['\s]/g, "");
@@ -277,7 +274,7 @@ test("multi", () => {
 	let ScramblesWithTwoWideMoves = 0;
 	const SCRAMBLES_PER_BATCH = 5
 	for (let i = 0; i < NUMBER_OF_RUNS / SCRAMBLES_PER_BATCH; i++) {
-		render(<Scramble puzzle={constants.MULTI} display="block" new={true} quantity={SCRAMBLES_PER_BATCH} ></Scramble>)
+		render(<Scramble onScrambleChange={() => { }} puzzle={constants.MULTI} display="block" new={true} quantity={SCRAMBLES_PER_BATCH} ></Scramble>)
 	}
 	for (let scrambles of screen.getAllByTestId('scramble')) {
 		const specificScrambles = within(scrambles).getAllByText(text => text.includes(")")).map(scramble => scramble.textContent);
@@ -305,70 +302,43 @@ test("multi", () => {
 	expect(ScramblesWithTwoWideMoves / NUMBER_OF_RUNS).toBeLessThan((5 / 6) * (3 / 4) + LIKELINESS_RELATIVE_ERROR);
 });
 
-const renderAverages = (recentTimes) => { // mocking the function like this is an approach I can live with
-	const params = [
-		{ label: "best", length: 1, removeBestAndWorst: false, align: "left" },
-		{ label: "mo3", length: 3, removeBestAndWorst: false, align: "left" },
-		{ label: "avg5", length: 5, removeBestAndWorst: true, align: "left" },
-		{ label: "avg12", length: 12, removeBestAndWorst: true, align: isHorizontal ? "left" : "right" },
-		{ label: "mo50", length: 50, removeBestAndWorst: false, align: "right" },
-		{ label: "mo100", length: 100, removeBestAndWorst: false, align: "right" },
-	];
-	return (
-		<div className="background" style={{ display: averageDisplay }}>
-			{params.map(({ label, length, removeBestAndWorst, align }) => {
-				let displayTime = constants.EMPTY_TIMER;
-				if (removeBestAndWorst) {
-					if (recentTimes.length === length - 1) { // 4/5, 11/12 -> make average without best
-						displayTime = formatTime(recentTimes.sort((a, b) => a - b)
-							.slice(1)
-							.reduce((sum, time) => sum + time, 0) / (length - 2));
-					} else if (recentTimes.length >= length) { // otherwise -> make average without best and worst
-						displayTime = formatTime(recentTimes.slice(-length)
-							.sort((a, b) => a - b)
-							.slice(1, -1)
-							.reduce((sum, time) => sum + time, 0) / (length - 2));
-					}
-				} else if (recentTimes.length >= length) {
-					if (length === 1) { // best -> pick
-						displayTime = formatTime(Math.min(...recentTimes));
-					} else { // otherwise -> make mean
-						displayTime = formatTime(recentTimes.slice(-length)
-							.reduce((sum, time) => sum + time, 0) / length);
-					}
-				}
-				return (
-					<h4 key={label} style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
-				);
-			})}
-		</div>
-	);
-}
-const formatTime = (time) => {
-	const minutes = parseInt(Math.floor(time / 60000)).toString();
-	const seconds = parseInt(Math.floor((time % 60000) / 1000)).toString().padStart(2, '0');
-	const milliseconds = parseInt((time % 1000)).toString().padStart(3, '0');
-	return `${minutes}:${seconds}:${milliseconds}`;
-}
-
 test("Render Averages", () => {
-	let recentTimes = [484, 148567, 4847, 61874, 848975, 1877894, 157, 87974, 4876, 15879, 189687, 489751, 48976, 487, 7888];
-	const { container } = render(renderAverages(recentTimes));
+	const times = [484, 148567, 4847, 61874, 848975, 1877894, 157, 87974, 4876, 15879, 189687, 489751, 48976, 487, 7888];
+	const { container } = render(renderStats({ times }));
 	expect(container.innerHTML).toContain('best 0:00:157');
 	expect(container.innerHTML).toContain('mo3 0:19:117');
 	expect(container.innerHTML).toContain('avg5 1:22:183');
-	expect(container.innerHTML).toContain('2:55:636 avg12');
-	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' mo50');
-	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' mo100');
+	expect(container.innerHTML).toContain('avg12 2:55:636');
+	expect(container.innerHTML).toContain('mo50 ' + constants.EMPTY_TIMER);
+	expect(container.innerHTML).toContain('mo100 ' + constants.EMPTY_TIMER);
 });
 
 test("Render incomplete averages", () => {
-	const recentTimes = [148567, 484, 4847, 61874];
-	const { container } = render(renderAverages(recentTimes));
+	const times = [148567, 484, 4847, 61874];
+	const { container } = render(renderStats({ times }));
+	expect(container.innerHTML).toContain('mean 0:53:943');
+	expect(container.innerHTML).toContain('median 0:33:360');
+	expect(container.innerHTML).toContain('last 1:01:874');
 	expect(container.innerHTML).toContain('best 0:00:484');
-	expect(container.innerHTML).toContain('mo3 0:22:401');
-	expect(container.innerHTML).toContain('avg5 1:11:762');
-	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' avg12');
-	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' mo50');
-	expect(container.innerHTML).toContain(constants.EMPTY_TIMER + ' mo100');
+	expect(container.innerHTML).toContain('worst 2:28:567');
+	expect(container.innerHTML).toContain('current mo3 0:22:401');
+	expect(container.innerHTML).toContain('best mo3 0:22:401');
+	expect(container.innerHTML).toContain('worst mo3 0:51:299');
+	expect(container.innerHTML).toContain('current avg5 1:11:762');
+	expect(container.innerHTML).toContain('best avg5 1:11:762');
+	expect(container.innerHTML).toContain('worst avg5 1:11:762');
+	expect(container.innerHTML).toContain('avg12 ' + constants.EMPTY_TIMER);
+	expect(container.innerHTML).toContain('mo50 ' + constants.EMPTY_TIMER);
+	expect(container.innerHTML).toContain('mo100 ' + constants.EMPTY_TIMER);
+});
+
+test("Render worst best and current averages", () => {
+	const times = [6000, 7000, 5, 4, 6, 5000, 4000, 3000, 11, 5];
+	const { container } = render(renderStats({ times }));
+	expect(container.innerHTML).toContain('current mo3 0:01:005');
+	expect(container.innerHTML).toContain('best mo3 0:00:005');
+	expect(container.innerHTML).toContain('worst mo3 0:04:335');
+	expect(container.innerHTML).toContain('current avg5 0:02:337');
+	expect(container.innerHTML).toContain('best avg5 0:01:337');
+	expect(container.innerHTML).toContain('worst avg5 0:02:337');
 });
