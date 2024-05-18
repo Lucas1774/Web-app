@@ -28,7 +28,7 @@ const checkThreeScramble = (axisMoves) => {
 	expect(axisMoves).not.toContain("BFB");
 	expect(axisMoves).not.toContain("RLR");
 	expect(axisMoves).not.toContain("LRL");
-}
+};
 
 test("3x3", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
@@ -85,8 +85,7 @@ const checkFourScramble = (sanitizedMoves) => {
 	expect(sanitizedMoves).not.toContain("Rw R Rw ");
 	expect(sanitizedMoves).not.toContain("Lw R Lw ");
 	expect(sanitizedMoves).not.toContain("Lw L Lw ");
-
-}
+};
 
 test("4x4", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
@@ -154,8 +153,7 @@ const checkBldScramble = (scramble, numberOfWideMoves) => {
 	expect(widthSplitMoves).not.toBe("BF");
 	expect(widthSplitMoves).not.toBe("RL");
 	expect(widthSplitMoves).not.toBe("LR");
-
-}
+};
 
 test("BLD", () => {
 	let scramblesWIthNoWideMoves = 0;
@@ -192,7 +190,6 @@ test("fmc", () => {
 		expect(scramble.endsWith(FMC_PREFIX.trim())).toBe(true);
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
 		expect(axisMoves.length).toBe(FMC_SCRAMBLE_LENGTH);
-
 		checkThreeScramble(axisMoves);
 	}
 });
@@ -216,7 +213,7 @@ const checkSkewbScramble = (axisMoves) => {
 	expect(axisMoves).not.toContain("BB");
 	expect(axisMoves).not.toContain("RR");
 	expect(axisMoves).not.toContain("LL");
-}
+};
 
 test("pyraminx", () => {
 	let scramblesWithNoTips = 0;

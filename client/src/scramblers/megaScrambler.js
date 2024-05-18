@@ -19,4 +19,4 @@ export const Scramble = () => {
         }
     }
     return scramble;
-}
+};

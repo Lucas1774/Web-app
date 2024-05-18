@@ -5,7 +5,7 @@ export const formatTime = (elapsedTime) => {
     const seconds = parseInt(Math.floor((elapsedTime % 60000) / 1000)).toString().padStart(2, '0');
     const milliseconds = parseInt((elapsedTime % 1000)).toString().padStart(3, '0');
     return `${minutes}:${seconds}:${milliseconds}`;
-}
+};
 
 export const renderAllTimes = ({ recentTimes, recentScrambles }) => {
     return recentTimes.map((time, index) => (
@@ -13,7 +13,7 @@ export const renderAllTimes = ({ recentTimes, recentScrambles }) => {
             {index + 1}{")"} {formatTime(time)} {recentScrambles[index]}
         </h4>
     ));
-}
+};
 
 export const renderStats = ({ times, formatter = formatTime, averageDisplay = "grid", className = "", params = [
     { label: "mean", length: 0, what: "mean", removeBestAndWorst: false, align: "left" },
@@ -147,4 +147,4 @@ export const renderStats = ({ times, formatter = formatTime, averageDisplay = "g
             })}
         </div>
     );
-}
+};
