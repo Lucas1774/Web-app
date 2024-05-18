@@ -24,4 +24,4 @@ export const Scramble = () => {
         lastMoveIndex = turnLayer;
     }
     return scramble;
-}
+};
