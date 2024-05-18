@@ -1,4 +1,3 @@
-
 import { render, screen, within } from '@testing-library/react';
 import Scramble from "./scramblers/provider";
 import { renderStats } from "./components/statsHelper";
@@ -6,7 +5,9 @@ import * as constants from "./constants";
 import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
 import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
 import { SCRAMBLE_LENGTH as FOUR_SCRAMBLE_LENGTH } from "./scramblers/fourScrambler";
-import { SCRAMBLE_LENGTH as FIVE_SCRAMBLE_LENGTH } from './scramblers/fiveScrambler';
+import { SCRAMBLE_LENGTH as FIVE_SCRAMBLE_LENGTH } from "./scramblers/fiveScrambler";
+import { SCRAMBLE_LENGTH as SEVEN_SCRAMBLE_LENGTH } from "./scramblers/sevenScrambler";
+import { SCRAMBLE_LENGTH as SIX_SCRAMBLE_LENGTH } from "./scramblers/sixScrambler";
 import { SCRAMBLE_LENGTH as FMC_SCRAMBLE_LENGTH, FMC_PREFIX } from "./scramblers/fmcScrambler";
 import { SCRAMBLE_LENGTH as MEGAMINX_SCRAMBLE_LENGTH } from "./scramblers/megaScrambler";
 import { SCRAMBLE_LENGTH as PYRAMINX_SCRAMBLE_LENGTH } from "./scramblers/pyraScrambler";
@@ -55,36 +56,48 @@ test("2x2", () => {
 });
 
 const checkFourScramble = (sanitizedMoves) => {
-	expect(sanitizedMoves).not.toContain("U U ");
-	expect(sanitizedMoves).not.toContain("D D ");
-	expect(sanitizedMoves).not.toContain("F F ");
-	expect(sanitizedMoves).not.toContain("B B ");
-	expect(sanitizedMoves).not.toContain("R R ");
-	expect(sanitizedMoves).not.toContain("L L ");
-	expect(sanitizedMoves).not.toContain("U D U ");
-	expect(sanitizedMoves).not.toContain("D U D ");
-	expect(sanitizedMoves).not.toContain("F B F ");
-	expect(sanitizedMoves).not.toContain("B F B ");
-	expect(sanitizedMoves).not.toContain("R L R ");
-	expect(sanitizedMoves).not.toContain("L R L ");
-	expect(sanitizedMoves).not.toContain("Uw Uw ");
-	expect(sanitizedMoves).not.toContain("Dw Dw ");
-	expect(sanitizedMoves).not.toContain("Fw Fw ");
-	expect(sanitizedMoves).not.toContain("Bw Bw ");
-	expect(sanitizedMoves).not.toContain("Rw Rw ");
-	expect(sanitizedMoves).not.toContain("Lw Lw ");
-	expect(sanitizedMoves).not.toContain("Uw D Uw ");
-	expect(sanitizedMoves).not.toContain("Uw U Uw ");
-	expect(sanitizedMoves).not.toContain("Dw D Dw ");
-	expect(sanitizedMoves).not.toContain("Dw U Dw ");
-	expect(sanitizedMoves).not.toContain("Fw B Fw ");
-	expect(sanitizedMoves).not.toContain("Fw F Fw ");
-	expect(sanitizedMoves).not.toContain("Bw F Bw ");
-	expect(sanitizedMoves).not.toContain("Bw B Bw ");
-	expect(sanitizedMoves).not.toContain("Rw L Rw ");
-	expect(sanitizedMoves).not.toContain("Rw R Rw ");
-	expect(sanitizedMoves).not.toContain("Lw R Lw ");
-	expect(sanitizedMoves).not.toContain("Lw L Lw ");
+	expect(sanitizedMoves).not.toContain(" U U ");
+	expect(sanitizedMoves).not.toContain(" D D ");
+	expect(sanitizedMoves).not.toContain(" F F ");
+	expect(sanitizedMoves).not.toContain(" B B ");
+	expect(sanitizedMoves).not.toContain(" R R ");
+	expect(sanitizedMoves).not.toContain(" L L ");
+	expect(sanitizedMoves).not.toContain(" U D U ");
+	expect(sanitizedMoves).not.toContain(" D U D ");
+	expect(sanitizedMoves).not.toContain(" F B F ");
+	expect(sanitizedMoves).not.toContain(" B F B ");
+	expect(sanitizedMoves).not.toContain(" R L R ");
+	expect(sanitizedMoves).not.toContain(" L R L ");
+	expect(sanitizedMoves).not.toContain(" Uw Uw ");
+	expect(sanitizedMoves).not.toContain(" Dw Dw ");
+	expect(sanitizedMoves).not.toContain(" Fw Fw ");
+	expect(sanitizedMoves).not.toContain(" Bw Bw ");
+	expect(sanitizedMoves).not.toContain(" Rw Rw ");
+	expect(sanitizedMoves).not.toContain(" Lw Lw ");
+	expect(sanitizedMoves).not.toContain(" U Dw U ");
+	expect(sanitizedMoves).not.toContain(" U Uw U ");
+	expect(sanitizedMoves).not.toContain(" D Dw D ");
+	expect(sanitizedMoves).not.toContain(" D Uw D ");
+	expect(sanitizedMoves).not.toContain(" F Bw F ");
+	expect(sanitizedMoves).not.toContain(" F Fw F ");
+	expect(sanitizedMoves).not.toContain(" B Fw B ");
+	expect(sanitizedMoves).not.toContain(" B Bw B ");
+	expect(sanitizedMoves).not.toContain(" R Lw R ");
+	expect(sanitizedMoves).not.toContain(" R Rw R ");
+	expect(sanitizedMoves).not.toContain(" L Rw L ");
+	expect(sanitizedMoves).not.toContain(" L Lw L ");
+	expect(sanitizedMoves).not.toContain(" Uw D Uw ");
+	expect(sanitizedMoves).not.toContain(" Uw U Uw ");
+	expect(sanitizedMoves).not.toContain(" Dw D Dw ");
+	expect(sanitizedMoves).not.toContain(" Dw U Dw ");
+	expect(sanitizedMoves).not.toContain(" Fw B Fw ");
+	expect(sanitizedMoves).not.toContain(" Fw F Fw ");
+	expect(sanitizedMoves).not.toContain(" Bw F Bw ");
+	expect(sanitizedMoves).not.toContain(" Bw B Bw ");
+	expect(sanitizedMoves).not.toContain(" Rw L Rw ");
+	expect(sanitizedMoves).not.toContain(" Rw R Rw ");
+	expect(sanitizedMoves).not.toContain(" Lw R Lw ");
+	expect(sanitizedMoves).not.toContain(" Lw L Lw ");
 };
 
 test("4x4", () => {
@@ -98,12 +111,12 @@ test("4x4", () => {
 		expect(numberOfWideMoves).toBe(TWO_SCRAMBLE_LENGTH);
 		const sanitizedMoves = scramble.replace(/[2']/g, "");
 		checkFourScramble(sanitizedMoves);
-		expect(sanitizedMoves).not.toContain("Uw Dw ");
-		expect(sanitizedMoves).not.toContain("Dw Uw ");
-		expect(sanitizedMoves).not.toContain("Fw Bw ");
-		expect(sanitizedMoves).not.toContain("Bw Fw ");
-		expect(sanitizedMoves).not.toContain("Rw Lw ");
-		expect(sanitizedMoves).not.toContain("Lw Rw ");
+		expect(sanitizedMoves).not.toContain(" Uw Dw ");
+		expect(sanitizedMoves).not.toContain(" Dw Uw ");
+		expect(sanitizedMoves).not.toContain(" Fw Bw ");
+		expect(sanitizedMoves).not.toContain(" Bw Fw ");
+		expect(sanitizedMoves).not.toContain(" Rw Lw ");
+		expect(sanitizedMoves).not.toContain(" Lw Rw ");
 	}
 });
 
@@ -117,6 +130,88 @@ test("5x5", () => {
 		const sanitizedMoves = scramble.replace(/[2']/g, "");
 		checkFourScramble(sanitizedMoves);
 	}
+});
+
+const checkSixScramble = (sanitizedMoves) => {
+	checkFourScramble(sanitizedMoves);
+	expect(sanitizedMoves).not.toContain(" 3Uw 3UW ");
+	expect(sanitizedMoves).not.toContain(" 3Dw 3DW ");
+	expect(sanitizedMoves).not.toContain(" 3Fw 3FW ");
+	expect(sanitizedMoves).not.toContain(" 3Bw 3BW ");
+	expect(sanitizedMoves).not.toContain(" 3Rw 3RW ");
+	expect(sanitizedMoves).not.toContain(" 3Lw 3LW ");
+	expect(sanitizedMoves).not.toContain(" 3Uw U 3Uw ");
+	expect(sanitizedMoves).not.toContain(" 3Uw Uw 3Uw ");
+	expect(sanitizedMoves).not.toContain(" 3Uw D 3Uw ");
+	expect(sanitizedMoves).not.toContain(" 3Uw Dw 3Uw ");
+	expect(sanitizedMoves).not.toContain(" 3Uw 3Dw 3Uw ");
+	expect(sanitizedMoves).not.toContain(" U Uw 3Uw U ");
+	expect(sanitizedMoves).not.toContain(" U 3Uw Uw U");
+	expect(sanitizedMoves).not.toContain(" U D Dw U ");
+	expect(sanitizedMoves).not.toContain(" U D 3Dw U ");
+	expect(sanitizedMoves).not.toContain(" U D 3Uw U ");
+	expect(sanitizedMoves).not.toContain(" U D Uw U ");
+	expect(sanitizedMoves).not.toContain(" U Dw D U ");
+	expect(sanitizedMoves).not.toContain(" U Dw 3Dw U ");
+	expect(sanitizedMoves).not.toContain(" U Dw 3Uw U ");
+	expect(sanitizedMoves).not.toContain(" U Dw Uw U ");
+	expect(sanitizedMoves).not.toContain(" U 3Dw D U ");
+	expect(sanitizedMoves).not.toContain(" U 3Dw Dw U ");
+	expect(sanitizedMoves).not.toContain(" U 3Dw 3Uw U ");
+	expect(sanitizedMoves).not.toContain(" U 3Dw Uw U ");
+	expect(sanitizedMoves).not.toContain(" U 3Uw D U ");
+	expect(sanitizedMoves).not.toContain(" U 3Uw Dw U ");
+	expect(sanitizedMoves).not.toContain(" U 3Uw 3Dw U ");
+	expect(sanitizedMoves).not.toContain(" U 3Uw Uw U ");
+	expect(sanitizedMoves).not.toContain(" U Uw D U ");
+	expect(sanitizedMoves).not.toContain(" U Uw Dw U ");
+	expect(sanitizedMoves).not.toContain(" U Uw 3Dw U ");
+	expect(sanitizedMoves).not.toContain(" U Uw 3Uw U ");
+};
+
+test("7X7", () => {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.SEVEN} display="block" quantity={0} ></Scramble>)
+	}
+	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+		const axisMoves = scramble.replace(/[32'\sw]/g, "");
+		expect(axisMoves.length).toBe(SEVEN_SCRAMBLE_LENGTH);
+		const sanitizedMoves = scramble.replace(/[2']/g, "");
+		checkSixScramble(sanitizedMoves);
+	}
+});
+
+test("6x6", () => {
+	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
+		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.SIX} display="block" quantity={0} ></Scramble>)
+	}
+	let simpleMoves = 0;
+	let doubleMoves = 0;
+	let tripleMoves = 0;
+	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+		const axisMoves = scramble.replace(/[32'\sw]/g, "");
+		expect(axisMoves.length).toBe(SIX_SCRAMBLE_LENGTH);
+		const sanitizedMoves = scramble.replace(/[2']/g, "");
+		checkSixScramble(sanitizedMoves);
+		expect(sanitizedMoves).not.toContain(" 3Uw 3Dw ");
+		expect(sanitizedMoves).not.toContain(" 3Dw 3Uw ");
+		expect(sanitizedMoves).not.toContain(" 3Fw 3Bw ");
+		expect(sanitizedMoves).not.toContain(" 3Bw 3Fw ");
+		expect(sanitizedMoves).not.toContain(" 3Rw 3Lw ");
+		expect(sanitizedMoves).not.toContain(" 3Lw 3Rw ");
+		const tripleMovesInstance = scramble.match(/3/g).length;
+		const doubleMovesInstance = scramble.match(/w/g).length - tripleMovesInstance;
+		const simpleMovesInstance = SIX_SCRAMBLE_LENGTH - (tripleMovesInstance + doubleMovesInstance);
+		simpleMoves += simpleMovesInstance;
+		doubleMoves += doubleMovesInstance;
+		tripleMoves += tripleMovesInstance;
+	}
+	expect(simpleMoves / NUMBER_OF_RUNS).toBeGreaterThan(SIX_SCRAMBLE_LENGTH * (2 / 5) - LIKELINESS_RELATIVE_ERROR * (200 / 5));
+	expect(simpleMoves / NUMBER_OF_RUNS).toBeLessThan(SIX_SCRAMBLE_LENGTH * (2 / 5) + LIKELINESS_RELATIVE_ERROR * (200 / 5));
+	expect(doubleMoves / NUMBER_OF_RUNS).toBeGreaterThan(SIX_SCRAMBLE_LENGTH * (2 / 5) - LIKELINESS_RELATIVE_ERROR * (200 / 5));
+	expect(doubleMoves / NUMBER_OF_RUNS).toBeLessThan(SIX_SCRAMBLE_LENGTH * (2 / 5) + LIKELINESS_RELATIVE_ERROR * (200 / 5));
+	expect(tripleMoves / NUMBER_OF_RUNS).toBeGreaterThan(SIX_SCRAMBLE_LENGTH * (1 / 5) - LIKELINESS_RELATIVE_ERROR * (100 / 5));
+	expect(tripleMoves / NUMBER_OF_RUNS).toBeLessThan(SIX_SCRAMBLE_LENGTH * (1 / 5) + LIKELINESS_RELATIVE_ERROR * (100 / 5));
 });
 
 const checkBldScramble = (scramble, numberOfWideMoves) => {
