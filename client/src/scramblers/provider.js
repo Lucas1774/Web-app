@@ -16,67 +16,72 @@ const Scramble = (props) => {
 
     useEffect(() => {
         if (props.new && props.display === "block") {
+            let newScramble;
             switch (props.puzzle) {
                 case constants.THREE:
-                    setScramble(threeScrambler().trim());
+                    newScramble = threeScrambler().trim();
                     break;
                 case constants.TWO:
-                    setScramble(twoScrambler().trim());
+                    newScramble = twoScrambler().trim();
                     break;
                 case constants.FOUR:
-                    setScramble(fourScrambler().trim());
+                    newScramble = fourScrambler().trim();
                     break;
                 case constants.FIVE:
-                    setScramble(fiveScrambler().trim());
+                    newScramble = fiveScrambler().trim();
                     break;
                 case constants.SEVEN:
-                    setScramble("not implemented");
+                    newScramble = "not implemented";
                     break;
                 case constants.SIX:
-                    setScramble("not implemented");
+                    newScramble = "not implemented";
                     break;
                 case constants.BLD:
-                    setScramble(bldScrambler().trim());
+                    newScramble = bldScrambler().trim();
                     break;
                 case constants.FMC:
-                    setScramble(fmcScrambler().trim());
+                    newScramble = fmcScrambler().trim();
                     break;
                 case constants.OH:
-                    setScramble(threeScrambler().trim());
+                    newScramble = threeScrambler().trim();
                     break;
                 case constants.CLOCK:
-                    setScramble(clockScrambler().trim());
+                    newScramble = clockScrambler().trim();
                     break;
                 case constants.MEGAMINX:
-                    setScramble(megaScrambler().trim());
+                    newScramble = megaScrambler().trim();
                     break;
                 case constants.PYRAMINX:
-                    setScramble(pyraminxScrambler().trim());
+                    newScramble = pyraminxScrambler().trim();
                     break;
                 case constants.SKEWB:
-                    setScramble(skewbScrambler().trim());
+                    newScramble = skewbScrambler().trim();
                     break;
                 case constants.SQUARE:
-                    setScramble("not implemented");
+                    newScramble = "not implemented";
                     break;
                 case constants.FOUR_BLD:
-                    setScramble("not implemented");
+                    newScramble = "not implemented";
                     break;
                 case constants.FIVE_BLD:
-                    setScramble("not implemented");
+                    newScramble = "not implemented";
                     break;
                 case constants.MULTI:
                     let multiScrambles = [];
                     for (let i = 0; i < props.quantity; i++) {
-                        multiScrambles.push(bldScrambler());
+                        multiScrambles.push(bldScrambler().trim());
                     }
-                    setScramble(multiScrambles.map((scramble, index) => <p key={index}>{index + 1}{")"} {scramble.trim()}</p>));
+                    newScramble = multiScrambles.map((scramble, index) => (
+                        <p key={index}>{index + 1}{")"} {scramble}</p>
+                    ));
                     break;
                 default:
-                    setScramble("");
+                    newScramble = "";
             }
+            setScramble(newScramble);
+            props.onScrambleChange(newScramble);
         }
-    }, [props.new, props.display, props.puzzle, props.quantity]);
+    }, [props]);
 
     return (
         <h2 data-testid="scramble" className={props.puzzle} style={{ display: props.display }}>{scramble}</h2>

@@ -36,6 +36,16 @@
     user-select: none;
 }
 
+.app.rubikTimer button.popup-icon {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 75%;
+    font-size: 20px;
+    padding: 0px 5px;
+}
+
 .app.rubikTimer h2.five {
     font-size: 40px;
     line-height: 40px;

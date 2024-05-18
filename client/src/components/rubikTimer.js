@@ -2,11 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { Form, Button } from 'react-bootstrap';
 import * as constants from "../constants";
 import Scramble from "../scramblers/provider";
+import { renderStats, formatTime } from "./statsHelper";
+import Popup from "./popup";
 import "../assets/styles/rubikTimer.css";
 const RubikTimer = () => {
     const isAndroid = /Android/i.test(navigator.userAgent);
 
     const [elapsedTime, setElapsedTime] = useState(0);
+    const [scramble, setScramble] = useState("");
     const [isTimerPrepared, setIsTimerPrepared] = useState(false);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [isFormVisible, setIsFormVisible] = useState(true);
@@ -15,9 +18,12 @@ const RubikTimer = () => {
     const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
     const [isSelectMultiLengthVisible, setIsSelectMultiLengthVisible] = useState(false);
     const [isMultiQuantityInvalidVisible, setIsMultiQuantityInvalidVisible] = useState(false);
+    const [isShowMoreStatsVisible, setIsShowMoreStatsVisible] = useState(false);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [focusTimer, setShouldFocusTimer] = useState("");
     const [focusFormLabel, setShouldFocusFormLabel] = useState("");
     const [recentTimes, setRecentTimes] = useState([]);
+    const [recentScrambles, setRecentScrambles] = useState([]);
     const [isHorizontal, setIsHorizontal] = useState(window.matchMedia("(orientation: landscape)").matches && isAndroid);
 
     const startTime = useRef(0);
@@ -39,6 +45,7 @@ const RubikTimer = () => {
                     isTouched.current = true;
                 }
                 setIsTimerPrepared(true);
+                setIsShowMoreStatsVisible(false);
                 setIsRestartButtonVisible(false);
                 setScrambleDisplaymode("none");
             }
@@ -65,6 +72,7 @@ const RubikTimer = () => {
                         newScramble.current = false;
                         setIsTimerPrepared(false);
                         setScrambleDisplaymode("block");
+                        setIsShowMoreStatsVisible(true);
                         setIsRestartButtonVisible(true);
                     }
                 }, 100)
@@ -73,6 +81,7 @@ const RubikTimer = () => {
                 event.preventDefault();
                 setIsTimerPrepared(false);
                 setScrambleDisplaymode("block");
+                setIsShowMoreStatsVisible(true);
                 setIsRestartButtonVisible(true);
             }
         }
@@ -144,6 +153,7 @@ const RubikTimer = () => {
                 const finalTime = now - startTime.current;
                 setElapsedTime(finalTime);
                 setRecentTimes((previousTimes) => [...previousTimes, finalTime]);
+                setRecentScrambles((previousScrambles) => [...previousScrambles, scramble]);
                 setIsTimerRunning(false);
                 newScramble.current = true;
                 setScrambleDisplaymode("block");
@@ -155,6 +165,7 @@ const RubikTimer = () => {
                         })
                     }
                 }
+                setIsShowMoreStatsVisible(true);
                 setIsRestartButtonVisible(true);
             }
         };
@@ -166,7 +177,7 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(stopTrigger, handleStop);
         }
-    }, [isAndroid, isTimerRunning])
+    }, [isAndroid, isTimerRunning, scramble])
 
     useEffect(() => {
         if (isTimerVisible || isTimerPrepared || isTimerRunning) { // small hack to screen lock after phone unlock
@@ -302,42 +313,14 @@ const RubikTimer = () => {
     const renderAverages = () => {
         const averageDisplay = isTimerRunning || isTimerPrepared ? "none" : "grid";
         const params = [
-            { label: "best", length: 1, removeBestAndWorst: false, align: "left" },
-            { label: "mo3", length: 3, removeBestAndWorst: false, align: "left" },
-            { label: "avg5", length: 5, removeBestAndWorst: true, align: "left" },
-            { label: "avg12", length: 12, removeBestAndWorst: true, align: isHorizontal ? "left" : "right" },
-            { label: "mo50", length: 50, removeBestAndWorst: false, align: "right" },
-            { label: "mo100", length: 100, removeBestAndWorst: false, align: "right" },
+            { label: "best", length: 1, what: "best", removeBestAndWorst: false, align: "left" },
+            { label: "mo3", length: 3, what: "last", removeBestAndWorst: false, align: "left" },
+            { label: "avg5", length: 5, what: "last", removeBestAndWorst: true, align: "left" },
+            { label: "avg12", length: 12, what: "last", removeBestAndWorst: true, align: isHorizontal ? "left" : "right" },
+            { label: "mo50", length: 50, what: "last", removeBestAndWorst: false, align: "right" },
+            { label: "mo100", length: 100, what: "last", removeBestAndWorst: false, align: "right" },
         ];
-        return (
-            <div className="background" style={{ display: averageDisplay }}>
-                {params.map(({ label, length, removeBestAndWorst, align }) => {
-                    let displayTime = constants.EMPTY_TIMER;
-                    if (removeBestAndWorst) {
-                        if (recentTimes.length === length - 1) { // 4/5, 11/12 -> make average without best
-                            displayTime = formatTime(recentTimes.sort((a, b) => a - b)
-                                .slice(1)
-                                .reduce((sum, time) => sum + time, 0) / (length - 2));
-                        } else if (recentTimes.length >= length) { // otherwise -> make average without best and worst
-                            displayTime = formatTime(recentTimes.slice(-length)
-                                .sort((a, b) => a - b)
-                                .slice(1, -1)
-                                .reduce((sum, time) => sum + time, 0) / (length - 2));
-                        }
-                    } else if (recentTimes.length >= length) {
-                        if (length === 1) { // best -> pick
-                            displayTime = formatTime(Math.min(...recentTimes));
-                        } else { // otherwise -> make mean
-                            displayTime = formatTime(recentTimes.slice(-length)
-                                .reduce((sum, time) => sum + time, 0) / length);
-                        }
-                    }
-                    return (
-                        <h4 key={label} style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
-                    );
-                })}
-            </div>
-        );
+        return renderStats({ times: recentTimes, averageDisplay: averageDisplay, className: "background", params: params });
     }
 
     const renderSelectMultiLength = () => {
@@ -350,13 +333,6 @@ const RubikTimer = () => {
                 </Form>
             </>
         );
-    }
-
-    const formatTime = (elapsedTime) => {
-        const minutes = parseInt(Math.floor(elapsedTime / 60000)).toString();
-        const seconds = parseInt(Math.floor((elapsedTime % 60000) / 1000)).toString().padStart(2, '0');
-        const milliseconds = parseInt((elapsedTime % 1000)).toString().padStart(3, '0');
-        return `${minutes}:${seconds}:${milliseconds}`;
     }
 
     const handleSubmit = (event) => {
@@ -394,6 +370,7 @@ const RubikTimer = () => {
                     })
                 }
             }
+            setIsShowMoreStatsVisible(true);
             setIsRestartButtonVisible(true);
         }
     };
@@ -404,20 +381,31 @@ const RubikTimer = () => {
         setIsTimerVisible(false);
         setIsRestartButtonVisible(false);
         setIsSelectMultiLengthVisible(false);
+        setIsMultiQuantityInvalidVisible(false);
+        setIsShowMoreStatsVisible(false);
+        setIsPopupVisible(false);
     };
 
     const restoreDefaults = () => {
-        selectedPuzzle.current = "";
-        startTime.current = 0;
-        newScramble.current = true;
         setElapsedTime(0);
+        setScramble("");
+        setIsTimerPrepared(false);
         setIsTimerRunning(false);
         setIsFormVisible(true);
         setScrambleDisplaymode("none");
         setIsTimerVisible(false);
         setIsRestartButtonVisible(true);
         setIsSelectMultiLengthVisible(false);
+        setIsMultiQuantityInvalidVisible(false);
+        setIsShowMoreStatsVisible(false);
+        setIsPopupVisible(false);
         setRecentTimes([]);
+        setRecentScrambles([]);
+        startTime.current = 0;
+        selectedPuzzle.current = "";
+        isTouched.current = false;
+        newScramble.current = true;
+        multiQuantity.current = 0;
     };
 
     return (
@@ -428,10 +416,42 @@ const RubikTimer = () => {
                 {isSelectMultiLengthVisible && renderSelectMultiLength()}
                 {isMultiQuantityInvalidVisible && <h2>Enter a number between 1 and 200</h2>}
                 <div className="timerContainer">
-                    {isTimerVisible && renderAverages()}
-                    <Scramble puzzle={selectedPuzzle.current} display={scrambleDisplayMode} new={newScramble.current} quantity={multiQuantity.current} />
-                    {isTimerVisible && renderTimer()}
+                    {isPopupVisible
+                        ? <><Popup
+                            content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }}
+                            onPopupClose={() => {
+                                setIsPopupVisible(false);
+                                setScrambleDisplaymode("block");
+                                setIsTimerVisible(true);
+                                setIsShowMoreStatsVisible(true);
+                            }}>
+                        </Popup>
+                            <Scramble
+                                onScrambleChange={(s) => { setScramble(s); newScramble.current = false; }}
+                                puzzle={selectedPuzzle.current}
+                                display={scrambleDisplayMode}
+                                new={newScramble.current}
+                                quantity={multiQuantity.current}>
+                            </Scramble></>
+                        : <>
+                            {(isTimerVisible && renderAverages())}
+                            <Scramble
+                                onScrambleChange={(s) => { setScramble(s); newScramble.current = false }}
+                                puzzle={selectedPuzzle.current}
+                                display={scrambleDisplayMode}
+                                new={newScramble.current}
+                                quantity={multiQuantity.current}>
+                            </Scramble>
+                            {(isTimerVisible && renderTimer())}
+                        </>
+                    }
                 </div>
+                {isShowMoreStatsVisible && <Button variant="success" onClick={() => {
+                    setIsShowMoreStatsVisible(false);
+                    setIsTimerVisible(false);
+                    setScrambleDisplaymode("none");
+                    setIsPopupVisible(true);
+                }}>Session stats</Button>}
                 {isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}
                 >Restart</Button>}
             </div>
