@@ -3,6 +3,8 @@ import { Scramble as threeScrambler } from "../scramblers/threeScrambler";
 import { Scramble as twoScrambler } from "../scramblers/twoScrambler";
 import { Scramble as fourScrambler } from "../scramblers/fourScrambler";
 import { Scramble as fiveScrambler } from "./fiveScrambler";
+import { Scramble as sevenScrambler } from "../scramblers/sevenScrambler";
+import { Scramble as sixScrambler } from "../scramblers/sixScrambler";
 import { Scramble as bldScrambler } from "../scramblers/bldScrambler";
 import { Scramble as fmcScrambler } from "../scramblers/fmcScrambler";
 import { Scramble as clockScrambler } from "../scramblers/clockScrambler";
@@ -31,10 +33,10 @@ const Scramble = (props) => {
                     newScramble = fiveScrambler().trim();
                     break;
                 case constants.SEVEN:
-                    newScramble = "not implemented";
+                    newScramble = sevenScrambler().trim();
                     break;
                 case constants.SIX:
-                    newScramble = "not implemented";
+                    newScramble = sixScrambler().trim();
                     break;
                 case constants.BLD:
                     newScramble = bldScrambler().trim();
