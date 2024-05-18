@@ -17,4 +17,5 @@ export const FIVE_BLD = "five_bld";
 export const MULTI = "multi";
 export const MULTI_UNPROCESSED = "MULTI_UNPROCESSED";
 export const EMPTY_TIMER = "-:--:---";
+export const DNF = "DNF";
 export const TIMER_REFRESH_RATE = 50;

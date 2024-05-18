@@ -15,7 +15,7 @@ const Scramble = (props) => {
     const [scramble, setScramble] = useState("");
 
     useEffect(() => {
-        if (props.new && props.display === "block") {
+        if (props.isNewScramble && props.display === "block") {
             let newScramble;
             switch (props.puzzle) {
                 case constants.THREE:

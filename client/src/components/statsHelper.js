@@ -1,21 +1,25 @@
-import { EMPTY_TIMER } from "../constants";
+import { EMPTY_TIMER, DNF } from "../constants";
 
-export const formatTime = (elapsedTime) => {
-    const minutes = parseInt(Math.floor(elapsedTime / 60000)).toString();
-    const seconds = parseInt(Math.floor((elapsedTime % 60000) / 1000)).toString().padStart(2, '0');
-    const milliseconds = parseInt((elapsedTime % 1000)).toString().padStart(3, '0');
+export const formatTime = (time) => {
+    if (time === Infinity) {
+        return DNF;
+    }
+    const minutes = parseInt(Math.floor(time / 60000)).toString();
+    const seconds = parseInt(Math.floor((time % 60000) / 1000)).toString().padStart(2, '0');
+    const milliseconds = parseInt((time % 1000)).toString().padStart(3, '0');
     return `${minutes}:${seconds}:${milliseconds}`;
 };
 
-export const renderAllTimes = ({ recentTimes, recentScrambles }) => {
+export const renderAllTimes = ({ recentTimes, recentScrambles, onClickEffect }) => {
     return recentTimes.map((time, index) => (
-        <h4 key={index + 1}>
+        <h4 key={index + 1} onClick={() => onClickEffect(index)}>
             {index + 1}{")"} {formatTime(time)} {recentScrambles[index]}
         </h4>
     ));
 };
 
 export const renderStats = ({ times, formatter = formatTime, averageDisplay = "grid", className = "", params = [
+    { label: "session", align: "left" },
     { label: "mean", length: 0, what: "mean", removeBestAndWorst: false, align: "left" },
     { label: "median", length: 0, what: "median", removeBestAndWorst: false, align: "left" },
     { label: "1", length: -1 },
@@ -43,56 +47,36 @@ export const renderStats = ({ times, formatter = formatTime, averageDisplay = "g
     { label: "worst mo100", length: 100, what: "worst", removeBestAndWorst: false, align: "left" },
     { label: "current mo100", length: 100, what: "last", removeBestAndWorst: false, align: "left" },
 ] }) => {
+    const getAverage = (times) => {
+        return times.reduce((sum, time) => sum + time, 0) / times.length;
+    };
+    const getMedian = (times) => {
+        let sortedTimes = [...times].sort((a, b) => a - b);
+        let middle = Math.floor(sortedTimes.length / 2);
+        return sortedTimes.length % 2 === 0 ? (sortedTimes[middle - 1] + sortedTimes[middle]) / 2 : sortedTimes[middle];
+    };
     return (
         <div className={className} style={{ display: averageDisplay }}>
             {params.map(({ label, length, what, removeBestAndWorst, align }) => {
+                if ("session" === label) {
+                    return (<h4 key={label} style={{ textAlign: align }}>{label} {"(" + times.filter(time => time !== Infinity).length} / {times.length + ")"}</h4>)
+                }
                 if (length === - 1) {
                     return (<h4 key={label}> </h4>)
                 }
                 let displayTime = EMPTY_TIMER;
                 let aux = [...times];
                 if (removeBestAndWorst) {
-                    if ("last" === what) {
-                        if (aux.length === length - 1) {
-                            displayTime = formatter(aux.sort((a, b) => a - b)
-                                .slice(1)
-                                .reduce((sum, time) => sum + time, 0) / (length - 2));
-                        } else if (aux.length >= length) {
-                            displayTime = formatter(aux.slice(-length)
-                                .sort((a, b) => a - b)
-                                .slice(1, -1)
-                                .reduce((sum, time) => sum + time, 0) / (length - 2));
-                        }
-                    } else if ("best" === what) {
-                        if (aux.length === length - 1) {
-                            displayTime = formatter(aux.sort((a, b) => a - b)
-                                .slice(1)
-                                .reduce((sum, time) => sum + time, 0) / (length - 2));
-                        } else if (aux.length >= length) {
+                    if (aux.length === length - 1) {
+                        displayTime = formatter(getAverage(aux.sort((a, b) => a - b).slice(1)));
+                    } else if (aux.length >= length) {
+                        if ("last" === what) {
+                            displayTime = formatter(getAverage(aux.slice(-length).sort((a, b) => a - b).slice(1, -1)));
+                        } else if ("best" === what || "worst" === what) {
                             for (let i = 0; i <= times.length - length; i++) {
                                 let aux2 = [...aux];
-                                let newAverage = aux2.slice(0, length)
-                                    .sort((a, b) => a - b)
-                                    .slice(1, -1)
-                                    .reduce((sum, time) => sum + time, 0) / (length - 2)
-                                displayTime = i === 0 || newAverage < displayTime ? newAverage : displayTime;
-                                aux.shift();
-                            }
-                            displayTime = formatter(displayTime);
-                        }
-                    } else if ("worst" === what) {
-                        if (aux.length === length - 1) {
-                            displayTime = formatter(aux.sort((a, b) => a - b)
-                                .slice(1)
-                                .reduce((sum, time) => sum + time, 0) / (length - 2));
-                        } else if (aux.length >= length) {
-                            for (let i = 0; i <= times.length - length; i++) {
-                                let aux2 = [...aux];
-                                let newAverage = aux2.slice(0, length)
-                                    .sort((a, b) => a - b)
-                                    .slice(1, -1)
-                                    .reduce((sum, time) => sum + time, 0) / (length - 2)
-                                displayTime = i === 0 || newAverage > displayTime ? newAverage : displayTime;
+                                let newAverage = getAverage(aux2.slice(0, length).sort((a, b) => a - b).slice(1, -1));
+                                displayTime = i === 0 || (what === "best" ? newAverage < displayTime : newAverage > displayTime) ? newAverage : displayTime;
                                 aux.shift();
                             }
                             displayTime = formatter(displayTime);
@@ -101,12 +85,9 @@ export const renderStats = ({ times, formatter = formatTime, averageDisplay = "g
                 } else if (aux.length >= length) {
                     if (length === 0 && aux.length > 0) {
                         if (what === "mean") {
-                            displayTime = formatter(aux.reduce((sum, time) => sum + time, 0) / aux.length);
+                            displayTime = formatter(getAverage(aux));
                         } else if (what === "median") {
-                            let sorted = aux.sort((a, b) => a - b);
-                            displayTime = sorted.length % 2 !== 0
-                                ? formatTime(sorted[Math.floor(sorted.length / 2)])
-                                : formatTime((sorted[Math.floor(sorted.length / 2) - 1] + sorted[Math.floor(sorted.length / 2)]) / 2);
+                            displayTime = formatter(getMedian(aux));
                         }
                     } else if (length === 1) {
                         if (what === "last") {
@@ -118,23 +99,12 @@ export const renderStats = ({ times, formatter = formatTime, averageDisplay = "g
                         }
                     } else {
                         if (what === "last") {
-                            displayTime = formatter(aux.slice(-length)
-                                .reduce((sum, time) => sum + time, 0) / length);
-                        } else if (what === "best") {
+                            displayTime = formatter(getAverage(aux.slice(-length)));
+                        } else if (what === "best" || what === "worst") {
                             for (let i = 0; i <= times.length - length; i++) {
                                 let aux2 = [...aux];
-                                let newAverage = aux2.slice(0, length)
-                                    .reduce((sum, time) => sum + time, 0) / length
-                                displayTime = i === 0 || newAverage < displayTime ? newAverage : displayTime;
-                                aux.shift();
-                            }
-                            displayTime = formatter(displayTime);
-                        } else if (what === "worst") {
-                            for (let i = 0; i <= times.length - length; i++) {
-                                let aux2 = [...aux];
-                                let newAverage = aux2.slice(0, length)
-                                    .reduce((sum, time) => sum + time, 0) / length
-                                displayTime = i === 0 || newAverage > displayTime ? newAverage : displayTime;
+                                let newAverage = getAverage(aux2.slice(0, length));
+                                displayTime = i === 0 || (what === "best" ? newAverage < displayTime : newAverage > displayTime) ? newAverage : displayTime;
                                 aux.shift();
                             }
                             displayTime = formatter(displayTime);
