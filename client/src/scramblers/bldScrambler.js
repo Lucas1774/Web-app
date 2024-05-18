@@ -47,4 +47,4 @@ export const Scramble = () => {
         scramble += LAST_TWO[turnLayer][turnIterator];
     }
     return scramble;
-}
+};

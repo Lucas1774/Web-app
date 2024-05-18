@@ -47,4 +47,4 @@ export const Scramble = () => {
     scramble += SCRAMBLE_MOVES[turnLayer][turnIterator];
     scramble += FMC_PREFIX;
     return scramble;
-}
+};

@@ -79,4 +79,4 @@ export const Scramble = () => {
         lastTurnWidth = turnWidth;
     }
     return scramble;
-}
+};
