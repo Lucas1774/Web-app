@@ -8,7 +8,7 @@ const FOUR_SCRAMBLE_MOVES = [
     ["Bw ", "Bw2 ", "Bw' "],
     ["Rw ", "Rw2 ", "Rw' "],
     ["Lw ", "Lw2 ", "Lw' "]
-]
+];
 
 export const Scramble = () => {
     let scramble = "";
@@ -58,9 +58,8 @@ export const Scramble = () => {
         } else {
             secondToLastDoubleMoveLayer = lastDoubleMoveLayer;
             lastDoubleMoveLayer = turnLayer;
-
         }
         lastTurnWidth = turnWidth;
     }
     return scramble;
-}
+};

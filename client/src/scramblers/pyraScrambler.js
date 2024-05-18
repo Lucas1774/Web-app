@@ -17,4 +17,4 @@ export const Scramble = () => {
         scramble += TIP_SCRAMBLE_MOVES[i][Math.floor(Math.random() * 3)];
     }
     return scramble;
-}
+};

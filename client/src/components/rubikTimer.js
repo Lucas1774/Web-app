@@ -60,7 +60,7 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(prepareTrigger, handlePrepare);
         }
-    }, [isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible])
+    }, [isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible]);
 
     useEffect(() => {
         const abortTrigger = isAndroid ? "touchmove" : "keydown";
@@ -93,7 +93,7 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(abortTrigger, handleInterrupt);
         }
-    }, [isAndroid, isTimerPrepared])
+    }, [isAndroid, isTimerPrepared]);
 
     useEffect(() => {
         const dragAfterStopTrigger = "touchmove";
@@ -177,7 +177,7 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(stopTrigger, handleStop);
         }
-    }, [isAndroid, isTimerRunning, scramble])
+    }, [isAndroid, isTimerRunning, scramble]);
 
     useEffect(() => {
         if (isTimerVisible || isTimerPrepared || isTimerRunning) { // small hack to screen lock after phone unlock
@@ -188,7 +188,7 @@ const RubikTimer = () => {
         return () => {
             wakeLock.current?.release();
         };
-    }, [isTimerPrepared, isTimerRunning, isTimerVisible])
+    }, [isTimerPrepared, isTimerRunning, isTimerVisible]);
 
 
     useEffect(() => {
@@ -212,7 +212,7 @@ const RubikTimer = () => {
             wakeLock.current?.release();
             document.body.classList.remove("nonSelectable");
         };
-    }, [isTimerPrepared, isTimerRunning, isTimerVisible]) // extra dependencies to trigger the effect
+    }, [isTimerPrepared, isTimerRunning, isTimerVisible]); // extra dependencies to trigger the effect
 
     useEffect(() => {
         const resizeTrigger = "resize";
@@ -238,7 +238,7 @@ const RubikTimer = () => {
         return () => {
             window.removeEventListener(resizeTrigger, handleOrientationChange);
         }
-    }, [isAndroid, isSelectMultiLengthVisible, isTimerRunning, isTimerVisible])
+    }, [isAndroid, isSelectMultiLengthVisible, isTimerRunning, isTimerVisible]);
 
     useEffect(() => {
         const goBackTrigger = "keydown"
@@ -321,7 +321,7 @@ const RubikTimer = () => {
             { label: "mo100", length: 100, what: "last", removeBestAndWorst: false, align: "right" },
         ];
         return renderStats({ times: recentTimes, averageDisplay: averageDisplay, className: "background", params: params });
-    }
+    };
 
     const renderSelectMultiLength = () => {
         return (
@@ -333,7 +333,7 @@ const RubikTimer = () => {
                 </Form>
             </>
         );
-    }
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
