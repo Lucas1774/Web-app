@@ -32,7 +32,7 @@ const RubikTimer = () => {
     const timer = useRef(null);
     const timerInterval = useRef(null)
     const isTouched = useRef(null);
-    const newScramble = useRef(true);
+    const isNewScramble = useRef(true);
     const multiQuantity = useRef(0);
     const formLabel = useRef(null);
 
@@ -69,7 +69,7 @@ const RubikTimer = () => {
                 event.preventDefault();
                 setTimeout(() => {
                     if (isTouched.current) {
-                        newScramble.current = false;
+                        isNewScramble.current = false;
                         setIsTimerPrepared(false);
                         setScrambleDisplaymode("block");
                         setIsShowMoreStatsVisible(true);
@@ -77,7 +77,7 @@ const RubikTimer = () => {
                     }
                 }, 100)
             } else if (event.key !== " ") {
-                newScramble.current = false;
+                isNewScramble.current = false;
                 event.preventDefault();
                 setIsTimerPrepared(false);
                 setScrambleDisplaymode("block");
@@ -155,7 +155,7 @@ const RubikTimer = () => {
                 setRecentTimes((previousTimes) => [...previousTimes, finalTime]);
                 setRecentScrambles((previousScrambles) => [...previousScrambles, scramble]);
                 setIsTimerRunning(false);
-                newScramble.current = true;
+                isNewScramble.current = true;
                 setScrambleDisplaymode("block");
                 if (isAndroid) {
                     isTouched.current = true;
@@ -335,6 +335,20 @@ const RubikTimer = () => {
         );
     };
 
+    const renderScramble = () => {
+        return (
+            <>
+                <Scramble
+                    isNewScramble={isNewScramble.current}
+                    onScrambleChange={(s) => {setScramble(s); isNewScramble.current = false}}
+                    puzzle={selectedPuzzle.current}
+                    display={scrambleDisplayMode}
+                    quantity={multiQuantity.current}>
+                </Scramble>
+            </>
+        );
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         let puzzle = event.target.id;
@@ -404,7 +418,7 @@ const RubikTimer = () => {
         startTime.current = 0;
         selectedPuzzle.current = "";
         isTouched.current = false;
-        newScramble.current = true;
+        isNewScramble.current = true;
         multiQuantity.current = 0;
     };
 
@@ -417,31 +431,21 @@ const RubikTimer = () => {
                 {isMultiQuantityInvalidVisible && <h2>Enter a number between 1 and 200</h2>}
                 <div className="timerContainer">
                     {isPopupVisible
-                        ? <><Popup
-                            content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }}
-                            onPopupClose={() => {
-                                setIsPopupVisible(false);
-                                setScrambleDisplaymode("block");
-                                setIsTimerVisible(true);
-                                setIsShowMoreStatsVisible(true);
-                            }}>
-                        </Popup>
-                            <Scramble
-                                onScrambleChange={(s) => { setScramble(s); newScramble.current = false; }}
-                                puzzle={selectedPuzzle.current}
-                                display={scrambleDisplayMode}
-                                new={newScramble.current}
-                                quantity={multiQuantity.current}>
-                            </Scramble></>
+                        ? <>
+                            <Popup
+                                content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }}
+                                onPopupClose={() => {
+                                    setIsPopupVisible(false);
+                                    setScrambleDisplaymode("block");
+                                    setIsTimerVisible(true);
+                                    setIsShowMoreStatsVisible(true);
+                                }}>
+                            </Popup>
+                            {renderScramble()}
+                        </>
                         : <>
                             {(isTimerVisible && renderAverages())}
-                            <Scramble
-                                onScrambleChange={(s) => { setScramble(s); newScramble.current = false }}
-                                puzzle={selectedPuzzle.current}
-                                display={scrambleDisplayMode}
-                                new={newScramble.current}
-                                quantity={multiQuantity.current}>
-                            </Scramble>
+                            {renderScramble()}
                             {(isTimerVisible && renderTimer())}
                         </>
                     }
