@@ -37,13 +37,13 @@
 }
 
 .app.rubikTimer button.popup-icon {
-    width: fit-content;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 75%;
     font-size: 20px;
-    padding: 0px 5px;
 }
 
 .app.rubikTimer h2.five {
