@@ -96,7 +96,7 @@ export const Scramble = () => {
         }
         lastTurnWidth = turnWidth;
         secondTolastMoveIndex = lastMoveIndex;
-        lastMoveIndex = turnLayer;
+        lastMoveIndex =  turnWidth !== 2 ? turnLayer : turnLayer * 2;
     }
     return scramble;
 };
