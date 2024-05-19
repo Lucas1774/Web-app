@@ -19,6 +19,7 @@ export const renderAllTimes = ({ recentTimes, recentScrambles, onClickEffect }) 
 };
 
 export const renderStats = ({ times, formatter = formatTime, averageDisplay = "grid", className = "", params = [
+    { label: "0", length: -1 },
     { label: "session", align: "left" },
     { label: "mean", length: 0, what: "mean", removeBestAndWorst: false, align: "left" },
     { label: "median", length: 0, what: "median", removeBestAndWorst: false, align: "left" },
