@@ -10,6 +10,7 @@ client/.env.local
 
 # production
 client/build
+client/cordova_env
 
 target/
 !server/.mvn/wrapper/maven-wrapper.jar
