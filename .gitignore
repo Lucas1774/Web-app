@@ -9,6 +9,11 @@
 # not front end
 /server
 
+# production
+client/build
+client/cordova_env
+client/build-android.sh
+
 # misc
 .vscode/
 source.json
