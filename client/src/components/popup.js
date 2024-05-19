@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 import { renderStats, renderAllTimes } from './statsHelper';
+import icon from '../assets/images/copy.png'
 
 const Popup = (props) => {
     const recentTimes = props.content.recentTimes;
@@ -13,11 +14,16 @@ const Popup = (props) => {
 
     const selectContent = () => {
         if (popupContent.current) {
-            const selection = window.getSelection();
             const range = document.createRange();
             range.selectNodeContents(popupContent.current);
+            const selection = window.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.log(err);
+            }
         }
     };
 
@@ -40,12 +46,13 @@ const Popup = (props) => {
         selectedTime.current = null;
         setIsEditTimeVisible(false);
     };
-
     return (
         <div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 {!isEditTimeVisible
-                    ? <Button className="popup-icon" onClick={selectContent}>S</Button>
+                    ? <Button className="popup-icon" onClick={selectContent}>
+                        <img src={icon} alt="" width={"20x"} height={"20px"}></img>
+                    </Button>
                     : <div></div>
                 }
                 <Button className="restart popup-icon"
