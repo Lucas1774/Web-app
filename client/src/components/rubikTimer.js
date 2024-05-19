@@ -53,7 +53,7 @@ const RubikTimer = () => {
         if (isTimerVisible && !isTimerRunning && !isTimerPrepared) {
             setTimeout(() => {
                 document.addEventListener(prepareTrigger, handlePrepare);
-            }, 200)
+            }, 300)
         } else {
             document.removeEventListener(prepareTrigger, handlePrepare);
         }
@@ -162,11 +162,16 @@ const RubikTimer = () => {
                     if (constants.MULTI !== selectedPuzzle.current) {
                         setTimeout(() => {
                             setShouldFocusTimer("end");
-                        })
+                        });
+                        setTimeout(() => {
+                            setIsShowMoreStatsVisible(true);
+                            setIsRestartButtonVisible(true);
+                        }, 300);
+                    } else {
+                        setIsShowMoreStatsVisible(true);
+                        setIsRestartButtonVisible(true);
                     }
                 }
-                setIsShowMoreStatsVisible(true);
-                setIsRestartButtonVisible(true);
             }
         };
         if (isTimerRunning) {
@@ -259,7 +264,7 @@ const RubikTimer = () => {
     }, [isAndroid, isFormVisible, isTimerVisible]);
 
     useEffect(() => {
-        if (focusTimer !== "") {
+        if (focusTimer !== "" && timer.current) {
             timer.current.scrollIntoView({
                 block: focusTimer
             })
@@ -340,7 +345,7 @@ const RubikTimer = () => {
             <>
                 <Scramble
                     isNewScramble={isNewScramble.current}
-                    onScrambleChange={(s) => {setScramble(s); isNewScramble.current = false}}
+                    onScrambleChange={(s) => { setScramble(s); isNewScramble.current = false }}
                     puzzle={selectedPuzzle.current}
                     display={scrambleDisplayMode}
                     quantity={multiQuantity.current}>
