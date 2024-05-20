@@ -10,3 +10,4 @@ fi
 npm run default-build
 cp -r build/* ..
 rm -r build
+rm -r ../android_icons

@@ -16,6 +16,10 @@ h1 {
     padding: 50px 0;
 }
 
+.col:last-child {
+    padding: 0 0;
+}
+
 .app {
     width: 360px;
 }
