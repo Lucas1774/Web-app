@@ -22,10 +22,7 @@ public class Config {
     public CorsConfigurationSource corsConfigurationSource() throws IOException {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000", "https://localhost:3000",
-                "http://" + privateAddress + ":3000", "https://" + privateAddress + ":3000",
-                "http://" + publicAddress + ":3000", "https://" + publicAddress + ":3000"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
