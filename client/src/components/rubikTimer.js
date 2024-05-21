@@ -167,10 +167,10 @@ const RubikTimer = () => {
                             setIsShowMoreStatsVisible(true);
                             setIsRestartButtonVisible(true);
                         }, 300);
-                    } else {
-                        setIsShowMoreStatsVisible(true);
-                        setIsRestartButtonVisible(true);
                     }
+                } else {
+                    setIsShowMoreStatsVisible(true);
+                    setIsRestartButtonVisible(true);
                 }
             }
         };
