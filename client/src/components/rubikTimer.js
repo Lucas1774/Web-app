@@ -127,6 +127,7 @@ const RubikTimer = () => {
         }
     }, [isAndroid, scramble]);
 
+    // Set up prepare event listener
     useEffect(() => {
         const prepareTrigger = isAndroid ? "touchstart" : "keydown";
         if (isTimerVisible && !isTimerRunning && !isTimerPrepared && (selectedPuzzle.current !== constants.MULTI || !isAndroid)) {
@@ -141,6 +142,7 @@ const RubikTimer = () => {
         }
     }, [handlePrepare, isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible]);
 
+    // Set up interrupt event listener
     useEffect(() => {
         const abortTrigger = isAndroid ? "touchmove" : "keydown";
         if (isTimerPrepared) {
@@ -153,6 +155,7 @@ const RubikTimer = () => {
         }
     }, [handleInterrupt, isAndroid, isTimerPrepared]);
 
+    // Set up drag after stop event listener
     useEffect(() => {
         const dragAfterStopTrigger = "touchmove";
         if (isTimerVisible && isAndroid) {
@@ -165,6 +168,7 @@ const RubikTimer = () => {
         }
     }, [handleTouchAfterStop, isAndroid, isTimerVisible]);
 
+    // Set up start event listener
     useEffect(() => {
         const startTrigger = isAndroid ? "touchend" : "keyup";
         if (isTimerPrepared) {
@@ -177,6 +181,7 @@ const RubikTimer = () => {
         }
     }, [handleStart, isAndroid, isTimerPrepared]);
 
+    // Set up stop event listener
     useEffect(() => {
         const stopTrigger = isAndroid ? "touchstart" : "keydown";
         if (isTimerRunning) {
@@ -189,18 +194,19 @@ const RubikTimer = () => {
         }
     }, [handleStop, isAndroid, isTimerRunning, scramble]);
 
+    // Set up non-selectable document
     useEffect(() => {
-        if (isTimerVisible || isTimerPrepared || isTimerRunning) { // small hack to screen lock after phone unlock
+        if (isTimerVisible) {
             document.body.classList.add("nonSelectable");
         } else {
-            wakeLock.current?.release();
+            document.body.classList.remove("nonSelectable");
         }
         return () => {
-            wakeLock.current?.release();
+            document.body.classList.remove("nonSelectable");
         };
-    }, [isTimerPrepared, isTimerRunning, isTimerVisible]);
+    }, [isTimerVisible]);
 
-
+    // Set up screen lock
     useEffect(() => {
         async function requestWakeLock() {
             if (navigator.wakeLock) {
@@ -211,36 +217,29 @@ const RubikTimer = () => {
                 }
             }
         };
-        if (isTimerVisible) {
+        if (isTimerVisible || isTimerPrepared || isTimerRunning) { // small hack to screen lock after phone unlock
             requestWakeLock();
-            document.body.classList.add("nonSelectable");
         } else {
             wakeLock.current?.release();
-            document.body.classList.remove("nonSelectable");
         }
         return () => {
             wakeLock.current?.release();
-            document.body.classList.remove("nonSelectable");
         };
     }, [isTimerPrepared, isTimerRunning, isTimerVisible]); // extra dependencies to trigger the effect
 
+    // Set up orientation change event listener
     useEffect(() => {
         const resizeTrigger = "resize";
         const handleOrientationChange = () => {
             if (isTimerVisible) {
                 setShouldFocusTimer(isTimerRunning ? "center" : "end");
-                if (!isTimerRunning) {
-                    setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
-                }
+                setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
             }
             if (isSelectMultiLengthVisible) {
                 setShouldFocusFormLabel("start");
             }
         }
         if (isAndroid) {
-            if (isTimerVisible && !isTimerRunning) {
-                setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
-            }
             window.addEventListener(resizeTrigger, handleOrientationChange);
         } else {
             window.removeEventListener(resizeTrigger, handleOrientationChange);
@@ -250,6 +249,7 @@ const RubikTimer = () => {
         }
     }, [isAndroid, isSelectMultiLengthVisible, isTimerRunning, isTimerVisible]);
 
+    // Set up escape press event listener
     useEffect(() => {
         const goBackTrigger = "keydown"
         const handleGoBack = (event) => {
@@ -277,6 +277,7 @@ const RubikTimer = () => {
         }
     }, [focusTimer]);
 
+    // Auto-scroll effect
     useEffect(() => {
         if (focusFormLabel !== "") {
             formLabel.current.scrollIntoView({
