@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Form, Button } from 'react-bootstrap';
 import * as constants from "../constants";
 import Scramble from "../scramblers/provider";
@@ -36,21 +36,100 @@ const RubikTimer = () => {
     const multiQuantity = useRef(0);
     const formLabel = useRef(null);
 
-    useEffect(() => {
-        const prepareTrigger = isAndroid ? "touchstart" : "keydown";
-        const handlePrepare = (event) => {
-            if ((isAndroid && event.target.tagName !== "BUTTON" && event.target.tagName !== "INPUT") || event.key === " ") {
-                event.preventDefault();
-                if (isAndroid) {
-                    isTouched.current = true;
+    const handlePrepare = useCallback((event) => {
+        if ((isAndroid && event.target.tagName !== "BUTTON" && event.target.tagName !== "INPUT")
+            || (selectedPuzzle.current === constants.MULTI)
+            || event.key === " ") {
+            event.preventDefault();
+            if (isAndroid) {
+                isTouched.current = true;
+            }
+            setIsTimerPrepared(true);
+            setIsShowMoreStatsVisible(false);
+            setIsRestartButtonVisible(false);
+            setScrambleDisplaymode("none");
+        }
+    }, [isAndroid]);
+
+    const handleInterrupt = useCallback((event) => {
+        if (isAndroid && isTouched.current) {
+            event.preventDefault();
+            setTimeout(() => {
+                if (isTouched.current) {
+                    isNewScramble.current = false;
+                    setIsTimerPrepared(false);
+                    setScrambleDisplaymode("block");
+                    setIsShowMoreStatsVisible(true);
+                    setIsRestartButtonVisible(true);
                 }
-                setIsTimerPrepared(true);
-                setIsShowMoreStatsVisible(false);
-                setIsRestartButtonVisible(false);
-                setScrambleDisplaymode("none");
+            }, 100)
+        } else if (event.key !== " ") {
+            isNewScramble.current = false;
+            event.preventDefault();
+            setIsTimerPrepared(false);
+            setScrambleDisplaymode("block");
+            setIsShowMoreStatsVisible(true);
+            setIsRestartButtonVisible(true);
+        }
+    }, [isAndroid]);
+
+    const handleTouchAfterStop = useCallback((event) => {
+        if (isTouched.current) {
+            event.preventDefault();
+            setTimeout(() => {
+                isTouched.current = false;
+            }, 100)
+        }
+    }, []);
+
+    const handleStart = useCallback((event) => {
+        if (isAndroid || event.key === " ") {
+            event.preventDefault();
+            isTouched.current = false;
+            const now = performance.now(); // instant time fetch
+            startTime.current = now;
+            timerInterval.current = setInterval(() => {
+                setElapsedTime(performance.now() - now);
+            }, constants.TIMER_REFRESH_RATE);
+            setIsTimerPrepared(false);
+            setIsTimerRunning(true);
+            if (isAndroid) {
+                setShouldFocusTimer("center");
             }
         };
-        if (isTimerVisible && !isTimerRunning && !isTimerPrepared) {
+    }, [isAndroid]);
+
+    const handleStop = useCallback((event) => {
+        if ((isAndroid || event.key !== "Escape")) {
+            event.preventDefault();
+            const now = performance.now(); // instant time fetch
+            clearInterval(timerInterval.current);
+            const finalTime = now - startTime.current;
+            setElapsedTime(finalTime);
+            setRecentTimes((previousTimes) => [...previousTimes, finalTime]);
+            setRecentScrambles((previousScrambles) => [...previousScrambles, scramble]);
+            setIsTimerRunning(false);
+            isNewScramble.current = true;
+            setScrambleDisplaymode("block");
+            if (isAndroid) {
+                isTouched.current = true;
+                setTimeout(() => {
+                    setShouldFocusTimer("end");
+                });
+                setTimeout(() => {
+                    setIsShowMoreStatsVisible(true);
+                    setIsRestartButtonVisible(true);
+                }, 300);
+            } else {
+                setIsShowMoreStatsVisible(true);
+                setIsRestartButtonVisible(true);
+            }
+        }
+    }, [isAndroid, scramble]);
+
+    useEffect(() => {
+        const prepareTrigger = isAndroid ? "touchstart" : "keydown";
+        if (isTimerVisible && !isTimerRunning && !isTimerPrepared && (selectedPuzzle.current !== constants.MULTI || !isAndroid)) {
             setTimeout(() => {
                 document.addEventListener(prepareTrigger, handlePrepare);
             }, 300)
@@ -60,31 +139,10 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(prepareTrigger, handlePrepare);
         }
-    }, [isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible]);
+    }, [handlePrepare, isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible]);
 
     useEffect(() => {
         const abortTrigger = isAndroid ? "touchmove" : "keydown";
-        const handleInterrupt = (event) => {
-            if (isAndroid && isTouched.current) {
-                event.preventDefault();
-                setTimeout(() => {
-                    if (isTouched.current) {
-                        isNewScramble.current = false;
-                        setIsTimerPrepared(false);
-                        setScrambleDisplaymode("block");
-                        setIsShowMoreStatsVisible(true);
-                        setIsRestartButtonVisible(true);
-                    }
-                }, 100)
-            } else if (event.key !== " ") {
-                isNewScramble.current = false;
-                event.preventDefault();
-                setIsTimerPrepared(false);
-                setScrambleDisplaymode("block");
-                setIsShowMoreStatsVisible(true);
-                setIsRestartButtonVisible(true);
-            }
-        }
         if (isTimerPrepared) {
             document.addEventListener(abortTrigger, handleInterrupt, { passive: false });
         } else {
@@ -93,18 +151,10 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(abortTrigger, handleInterrupt);
         }
-    }, [isAndroid, isTimerPrepared]);
+    }, [handleInterrupt, isAndroid, isTimerPrepared]);
 
     useEffect(() => {
         const dragAfterStopTrigger = "touchmove";
-        const handleTouchAfterStop = (event) => {
-            if (isTouched.current) {
-                event.preventDefault();
-                setTimeout(() => {
-                    isTouched.current = false;
-                }, 100)
-            }
-        }
         if (isTimerVisible && isAndroid) {
             document.addEventListener(dragAfterStopTrigger, handleTouchAfterStop, { passive: false });
         } else {
@@ -113,26 +163,10 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(dragAfterStopTrigger, handleTouchAfterStop);
         }
-    }, [isAndroid, isTimerVisible]);
+    }, [handleTouchAfterStop, isAndroid, isTimerVisible]);
 
     useEffect(() => {
         const startTrigger = isAndroid ? "touchend" : "keyup";
-        const handleStart = (event) => {
-            if (isAndroid || event.key === " ") {
-                event.preventDefault();
-                isTouched.current = false;
-                const now = performance.now(); // instant time fetch
-                startTime.current = now;
-                timerInterval.current = setInterval(() => {
-                    setElapsedTime(performance.now() - now);
-                }, constants.TIMER_REFRESH_RATE);
-                setIsTimerPrepared(false);
-                setIsTimerRunning(true);
-                if (isAndroid) {
-                    setShouldFocusTimer("center");
-                }
-            };
-        };
         if (isTimerPrepared) {
             document.addEventListener(startTrigger, handleStart);
         } else {
@@ -141,39 +175,10 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(startTrigger, handleStart);
         }
-    }, [isAndroid, isTimerPrepared]);
+    }, [handleStart, isAndroid, isTimerPrepared]);
 
     useEffect(() => {
         const stopTrigger = isAndroid ? "touchstart" : "keydown";
-        const handleStop = (event) => {
-            if ((isAndroid || event.key !== "Escape")) {
-                event.preventDefault();
-                const now = performance.now(); // instant time fetch
-                clearInterval(timerInterval.current);
-                const finalTime = now - startTime.current;
-                setElapsedTime(finalTime);
-                setRecentTimes((previousTimes) => [...previousTimes, finalTime]);
-                setRecentScrambles((previousScrambles) => [...previousScrambles, scramble]);
-                setIsTimerRunning(false);
-                isNewScramble.current = true;
-                setScrambleDisplaymode("block");
-                if (isAndroid) {
-                    isTouched.current = true;
-                    if (constants.MULTI !== selectedPuzzle.current) {
-                        setTimeout(() => {
-                            setShouldFocusTimer("end");
-                        });
-                        setTimeout(() => {
-                            setIsShowMoreStatsVisible(true);
-                            setIsRestartButtonVisible(true);
-                        }, 300);
-                    }
-                } else {
-                    setIsShowMoreStatsVisible(true);
-                    setIsRestartButtonVisible(true);
-                }
-            }
-        };
         if (isTimerRunning) {
             document.addEventListener(stopTrigger, handleStop);
         } else {
@@ -182,7 +187,7 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(stopTrigger, handleStop);
         }
-    }, [isAndroid, isTimerRunning, scramble]);
+    }, [handleStop, isAndroid, isTimerRunning, scramble]);
 
     useEffect(() => {
         if (isTimerVisible || isTimerPrepared || isTimerRunning) { // small hack to screen lock after phone unlock
@@ -223,7 +228,7 @@ const RubikTimer = () => {
         const resizeTrigger = "resize";
         const handleOrientationChange = () => {
             if (isTimerVisible) {
-                setShouldFocusTimer(isTimerRunning ? "center" : constants.MULTI !== selectedPuzzle.current ? "end" : "");
+                setShouldFocusTimer(isTimerRunning ? "center" : "end");
                 if (!isTimerRunning) {
                     setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
                 }
@@ -383,11 +388,9 @@ const RubikTimer = () => {
             setScrambleDisplaymode("block");
             setIsTimerVisible(true);
             if (isAndroid) {
-                if (constants.MULTI !== puzzle) {
-                    setTimeout(() => {
-                        setShouldFocusTimer("end");
-                    })
-                }
+                setTimeout(() => {
+                    setShouldFocusTimer("end");
+                });
             }
             setIsShowMoreStatsVisible(true);
             setIsRestartButtonVisible(true);
@@ -455,7 +458,8 @@ const RubikTimer = () => {
                         </>
                     }
                 </div>
-                {isShowMoreStatsVisible && <Button variant="success" onClick={() => {
+                <Button style={{ display: isShowMoreStatsVisible && isAndroid && selectedPuzzle.current === constants.MULTI ? "block" : "none" }} variant="success" onTouchStart={handlePrepare}>Start</Button>
+                {isShowMoreStatsVisible && <Button onClick={() => {
                     setIsShowMoreStatsVisible(false);
                     setIsTimerVisible(false);
                     setScrambleDisplaymode("none");
