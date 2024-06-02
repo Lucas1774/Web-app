@@ -10,15 +10,21 @@ export const formatTime = (time) => {
     return `${minutes}:${seconds}:${milliseconds}`;
 };
 
-export const renderAllTimes = ({ recentTimes, recentScrambles, onClickEffect }) => {
-    return recentTimes.map((time, index) => (
-        <h4 key={index + 1} onClick={() => onClickEffect(index)}>
-            {index + 1}{")"} {formatTime(time)} {recentScrambles[index]}
-        </h4>
-    ));
+export const renderAllTimes = ({ recentTimes, recentScrambles, firstIndex = 0, lastIndex = recentTimes.length - 1, onClickEffect = () => { } }) => {
+    return recentTimes.map((time, index) => {
+        if (index >= firstIndex && index <= lastIndex) {
+            return (
+                <h4 key={index + 1} onClick={() => onClickEffect(index)}>
+                    {index + 1}{")"} {formatTime(time)} {recentScrambles[index]}
+                </h4>
+            );
+        } else {
+            return null;
+        }
+    });
 };
 
-export const renderStats = ({ times, formatter = formatTime, averageDisplay = "grid", className = "", params = [
+export const renderStats = ({ times, formatter = formatTime, onClickEffect = () => { }, averageDisplay = "grid", className = "", params = [
     { label: "0", length: -1 },
     { label: "session", align: "left" },
     { label: "mean", length: 0, what: "mean", removeBestAndWorst: false, align: "left" },
@@ -66,18 +72,24 @@ export const renderStats = ({ times, formatter = formatTime, averageDisplay = "g
                     return (<h4 key={label}> </h4>)
                 }
                 let displayTime = EMPTY_TIMER;
+                let indexes = [];
                 let aux = [...times];
                 if (removeBestAndWorst) {
                     if (aux.length === length - 1) {
                         displayTime = formatter(getAverage(aux.sort((a, b) => a - b).slice(1)));
+                        indexes = ({ start: 0, end: aux.length - 1 });
                     } else if (aux.length >= length) {
                         if ("last" === what) {
                             displayTime = formatter(getAverage(aux.slice(-length).sort((a, b) => a - b).slice(1, -1)));
+                            indexes = ({ start: aux.length - length, end: aux.length - 1 });
                         } else if ("best" === what || "worst" === what) {
                             for (let i = 0; i <= times.length - length; i++) {
                                 let aux2 = [...aux];
                                 let newAverage = getAverage(aux2.slice(0, length).sort((a, b) => a - b).slice(1, -1));
-                                displayTime = i === 0 || (what === "best" ? newAverage < displayTime : newAverage > displayTime) ? newAverage : displayTime;
+                                if (i === 0 || (what === "best" ? newAverage < displayTime : newAverage > displayTime)) {
+                                    displayTime = newAverage;
+                                    indexes = ({ start: i, end: (i + length) - 1 });
+                                }
                                 aux.shift();
                             }
                             displayTime = formatter(displayTime);
@@ -101,11 +113,15 @@ export const renderStats = ({ times, formatter = formatTime, averageDisplay = "g
                     } else {
                         if (what === "last") {
                             displayTime = formatter(getAverage(aux.slice(-length)));
+                            indexes = ({ start: aux.length - length, end: aux.length - 1 });
                         } else if (what === "best" || what === "worst") {
                             for (let i = 0; i <= times.length - length; i++) {
                                 let aux2 = [...aux];
                                 let newAverage = getAverage(aux2.slice(0, length));
-                                displayTime = i === 0 || (what === "best" ? newAverage < displayTime : newAverage > displayTime) ? newAverage : displayTime;
+                                if (i === 0 || (what === "best" ? newAverage < displayTime : newAverage > displayTime)) {
+                                    displayTime = newAverage;
+                                    indexes = ({ start: i, end: (i + length) - 1 });
+                                }
                                 aux.shift();
                             }
                             displayTime = formatter(displayTime);
@@ -113,7 +129,7 @@ export const renderStats = ({ times, formatter = formatTime, averageDisplay = "g
                     }
                 }
                 return (
-                    <h4 key={label} style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
+                    <h4 key={label} onClick={() => onClickEffect(indexes)} style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
                 );
             })}
         </div>
