@@ -8,9 +8,11 @@ const Popup = (props) => {
     const recentScrambles = props.content.recentScrambles;
 
     const [isEditTimeVisible, setIsEditTimeVisible] = useState(false);
+    const [isStatisticSelected, setIsStatisticSelected] = useState(false);
 
     const popupContent = useRef(null);
     const selectedTime = useRef(null);
+    const selectionIndexes = useRef(null);
 
     const selectContent = () => {
         if (popupContent.current) {
@@ -32,6 +34,13 @@ const Popup = (props) => {
         selectedTime.current = key;
     };
 
+    const handleStatClick = (indexes) => {
+        if (indexes.length !== 0) {
+            selectionIndexes.current = indexes;
+            setIsStatisticSelected(true);
+        }
+    }
+
     const setToEmpty = () => {
         let timeToRemove = selectedTime.current;
         recentTimes[timeToRemove] = Infinity;
@@ -49,7 +58,7 @@ const Popup = (props) => {
     return (
         <div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                {!isEditTimeVisible
+                {!isEditTimeVisible && !isStatisticSelected
                     ? <Button className="popup-icon" onClick={selectContent}>
                         <img src={icon} alt="" width={"20x"} height={"20px"}></img>
                     </Button>
@@ -58,23 +67,32 @@ const Popup = (props) => {
                 <Button className="restart popup-icon"
                     onClick={isEditTimeVisible
                         ? () => { selectedTime.current = null; setIsEditTimeVisible(false) }
-                        : props.onPopupClose}>X
+                        : isStatisticSelected
+                            ? () => { selectionIndexes.current = null; setIsStatisticSelected(false) }
+                            : props.onPopupClose}>X
                 </Button>
             </div>
             {
-                !isEditTimeVisible
+                !isEditTimeVisible && !isStatisticSelected
                     ? <div ref={popupContent}>{
                         <>
-                            {renderStats({ times: recentTimes })}
+                            {renderStats({ times: recentTimes, onClickEffect: (indexes) => handleStatClick(indexes) })}
                             <br></br>
                             {renderAllTimes({ recentTimes, recentScrambles, onClickEffect: (key) => handleTimeClick(key) })}
                         </>
                     }
                     </div>
-                    : <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <Button className="fifty-percent" onClick={setToEmpty}>DNF</Button>
-                        <Button className="fifty-percent restart" onClick={deleteTime}>Delete</Button>
-                    </div>
+                    : isEditTimeVisible
+                        ? <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <Button className="fifty-percent" onClick={setToEmpty}>DNF</Button>
+                            <Button className="fifty-percent restart" onClick={deleteTime}>Delete</Button>
+                        </div>
+                        : renderAllTimes({
+                            recentTimes,
+                            recentScrambles,
+                            firstIndex: selectionIndexes.current["start"],
+                            lastIndex: selectionIndexes.current["end"]
+                        })
             }
         </div >
     );
