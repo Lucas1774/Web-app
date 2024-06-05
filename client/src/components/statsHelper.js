@@ -4,17 +4,20 @@ export const formatTime = (time) => {
     if (time === Infinity) {
         return DNF;
     }
+    if (time === EMPTY_TIMER) {
+        return EMPTY_TIMER;
+    }
     const minutes = parseInt(Math.floor(time / 60000)).toString();
     const seconds = parseInt(Math.floor((time % 60000) / 1000)).toString().padStart(2, '0');
     const milliseconds = parseInt((time % 1000)).toString().padStart(3, '0');
     return `${minutes}:${seconds}:${milliseconds}`;
 };
 
-export const renderAllTimes = ({ recentTimes, recentScrambles, firstIndex = 0, lastIndex = recentTimes.length - 1, onClickEffect = () => { } }) => {
+export const renderAllTimes = ({ recentTimes, recentScrambles, firstIndex = 0, lastIndex = recentTimes.length - 1, onClickEffect = noAction }) => {
     return recentTimes.map((time, index) => {
         if (index >= firstIndex && index <= lastIndex) {
             return (
-                <h4 key={index + 1} onClick={() => onClickEffect(index)}>
+                <h4 key={index + 1} onClick={() => onClickEffect(index)} style={{ cursor: onClickEffect === noAction ? "default" : "pointer" }}>
                     {index + 1}{")"} {formatTime(time)} {recentScrambles[index]}
                 </h4>
             );
@@ -24,7 +27,9 @@ export const renderAllTimes = ({ recentTimes, recentScrambles, firstIndex = 0, l
     });
 };
 
-export const renderStats = ({ times, formatter = formatTime, onClickEffect = () => { }, averageDisplay = "grid", className = "", params = [
+const noAction = () => { };
+
+export const renderStats = ({ times, formatter = formatTime, onClickEffect = noAction, averageDisplay = "grid", className = "", params = [
     { label: "0", length: -1 },
     { label: "session", align: "left" },
     { label: "mean", length: 0, what: "mean", removeBestAndWorst: false, align: "left" },
@@ -76,11 +81,11 @@ export const renderStats = ({ times, formatter = formatTime, onClickEffect = () 
                 let aux = [...times];
                 if (removeBestAndWorst) {
                     if (aux.length === length - 1) {
-                        displayTime = formatter(getAverage(aux.sort((a, b) => a - b).slice(1)));
+                        displayTime = getAverage(aux.sort((a, b) => a - b).slice(1));
                         indexes = ({ start: 0, end: aux.length - 1 });
                     } else if (aux.length >= length) {
                         if ("last" === what) {
-                            displayTime = formatter(getAverage(aux.slice(-length).sort((a, b) => a - b).slice(1, -1)));
+                            displayTime = getAverage(aux.slice(-length).sort((a, b) => a - b).slice(1, -1));
                             indexes = ({ start: aux.length - length, end: aux.length - 1 });
                         } else if ("best" === what || "worst" === what) {
                             for (let i = 0; i <= times.length - length; i++) {
@@ -92,27 +97,30 @@ export const renderStats = ({ times, formatter = formatTime, onClickEffect = () 
                                 }
                                 aux.shift();
                             }
-                            displayTime = formatter(displayTime);
                         }
                     }
                 } else if (aux.length >= length) {
                     if (length === 0 && aux.length > 0) {
                         if (what === "mean") {
-                            displayTime = formatter(getAverage(aux));
+                            displayTime = getAverage(aux);
                         } else if (what === "median") {
-                            displayTime = formatter(getMedian(aux));
+                            displayTime = getMedian(aux);
+                            let indexOfDisplayTime = aux.indexOf(displayTime);
+                            indexes = ({ start: indexOfDisplayTime, end: indexOfDisplayTime });
                         }
                     } else if (length === 1) {
                         if (what === "last") {
-                            displayTime = formatter(aux[aux.length - 1]);
+                            displayTime = aux[aux.length - 1];
                         } else if (what === "best") {
-                            displayTime = formatter(Math.min(...aux));
+                            displayTime = Math.min(...aux);
                         } else if (what === "worst") {
-                            displayTime = formatter(Math.max(...aux));
+                            displayTime = Math.max(...aux);
                         }
+                        let indexOfDisplayTime = aux.indexOf(displayTime);
+                        indexes = ({ start: indexOfDisplayTime, end: indexOfDisplayTime });
                     } else {
                         if (what === "last") {
-                            displayTime = formatter(getAverage(aux.slice(-length)));
+                            displayTime = getAverage(aux.slice(-length));
                             indexes = ({ start: aux.length - length, end: aux.length - 1 });
                         } else if (what === "best" || what === "worst") {
                             for (let i = 0; i <= times.length - length; i++) {
@@ -124,12 +132,12 @@ export const renderStats = ({ times, formatter = formatTime, onClickEffect = () 
                                 }
                                 aux.shift();
                             }
-                            displayTime = formatter(displayTime);
                         }
                     }
                 }
+                displayTime = formatter(displayTime);
                 return (
-                    <h4 key={label} onClick={() => onClickEffect(indexes)} style={{ textAlign: align }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
+                    <h4 key={label} onClick={() => onClickEffect(indexes)} style={{ textAlign: align, cursor: onClickEffect === noAction || indexes.length === 0 ? "default" : "pointer" }}>{align === "left" ? label + " " + displayTime : displayTime + " " + label}</h4>
                 );
             })}
         </div>
