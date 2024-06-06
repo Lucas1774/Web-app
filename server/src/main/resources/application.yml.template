@@ -13,10 +13,3 @@ spring:
 
 server:
   port: <8443, 8080>
-  ssl:
-    enabled: true
-    key-store: <classpath:certificates/fileName.p12>
-    key-store-password: <password>
-    key-alias: <name>
-    key-store-type: PKCS12
-
