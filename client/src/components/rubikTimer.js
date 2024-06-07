@@ -457,6 +457,12 @@ const RubikTimer = () => {
                             {renderScramble()}
                         </>
                         : <>
+                            {renderStats({
+                                times: recentTimes,
+                                averageDisplay: !isTimerVisible || isTimerRunning || isTimerPrepared ? "none" : "grid",
+                                params: [
+                                    { label: "session", align: "left" }]
+                            })}
                             {(isTimerVisible && renderAverages())}
                             {renderScramble()}
                             {(isTimerVisible && renderTimer())}
