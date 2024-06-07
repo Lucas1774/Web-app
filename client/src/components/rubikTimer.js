@@ -24,7 +24,7 @@ const RubikTimer = () => {
     const [focusFormLabel, setShouldFocusFormLabel] = useState("");
     const [recentTimes, setRecentTimes] = useState([]);
     const [recentScrambles, setRecentScrambles] = useState([]);
-    const [isHorizontal, setIsHorizontal] = useState(window.matchMedia("(orientation: landscape)").matches && isAndroid);
+    const [isHorizontal, setIsHorizontal] = useState(window.innerWidth > window.innerHeight && isAndroid);
 
     const startTime = useRef(0);
     const wakeLock = useRef(null);
@@ -127,6 +127,33 @@ const RubikTimer = () => {
         }
     }, [isAndroid, scramble]);
 
+    const handleGoBack = useCallback((event) => {
+        if (event.key === "Escape") {
+            hideEverything();
+            restoreDefaults();
+        }
+    }, []);
+
+    const handleOrientationChange = useCallback(() => {
+        setIsHorizontal(window.innerWidth > window.innerHeight);
+        if (isTimerVisible) {
+            setShouldFocusTimer(isTimerRunning ? "center" : "end");
+        }
+        if (isSelectMultiLengthVisible) {
+            setShouldFocusFormLabel("start");
+        }
+    }, [isSelectMultiLengthVisible, isTimerRunning, isTimerVisible]);
+
+    const requestWakeLock = useCallback(async () => {
+        if (navigator.wakeLock) {
+            try {
+                wakeLock.current = await navigator.wakeLock.request('screen');
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }, []);
+
     // Set up prepare event listener
     useEffect(() => {
         const prepareTrigger = isAndroid ? "touchstart" : "keydown";
@@ -192,7 +219,45 @@ const RubikTimer = () => {
         return () => {
             document.removeEventListener(stopTrigger, handleStop);
         }
-    }, [handleStop, isAndroid, isTimerRunning, scramble]);
+    }, [handleStop, isAndroid, isTimerRunning]);
+
+    // Set up escape press event listener
+    useEffect(() => {
+        const goBackTrigger = "keydown"
+        if ((isTimerVisible || isPopupVisible) && !isAndroid) {
+            document.addEventListener(goBackTrigger, handleGoBack);
+        } else {
+            document.removeEventListener(goBackTrigger, handleGoBack);
+        };
+        return () => {
+            document.removeEventListener(goBackTrigger, handleGoBack);
+        };
+    }, [handleGoBack, isAndroid, isPopupVisible, isTimerVisible]);
+
+    // Set up orientation change event listener
+    useEffect(() => {
+        const resizeTrigger = "resize";
+        if (isAndroid) {
+            window.addEventListener(resizeTrigger, handleOrientationChange);
+        } else {
+            window.removeEventListener(resizeTrigger, handleOrientationChange);
+        }
+        return () => {
+            window.removeEventListener(resizeTrigger, handleOrientationChange);
+        }
+    }, [handleOrientationChange, isAndroid]);
+
+    // Set up screen lock
+    useEffect(() => {
+        if (isTimerVisible || isTimerPrepared || isTimerRunning) { // small hack to screen lock after phone unlock
+            requestWakeLock();
+        } else {
+            wakeLock.current?.release();
+        }
+        return () => {
+            wakeLock.current?.release();
+        };
+    }, [requestWakeLock, isTimerPrepared, isTimerRunning, isTimerVisible]); // extra dependencies to trigger the effect
 
     // Set up non-selectable document
     useEffect(() => {
@@ -206,68 +271,7 @@ const RubikTimer = () => {
         };
     }, [isTimerVisible]);
 
-    // Set up screen lock
-    useEffect(() => {
-        async function requestWakeLock() {
-            if (navigator.wakeLock) {
-                try {
-                    wakeLock.current = await navigator.wakeLock.request('screen');
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-        };
-        if (isTimerVisible || isTimerPrepared || isTimerRunning) { // small hack to screen lock after phone unlock
-            requestWakeLock();
-        } else {
-            wakeLock.current?.release();
-        }
-        return () => {
-            wakeLock.current?.release();
-        };
-    }, [isTimerPrepared, isTimerRunning, isTimerVisible]); // extra dependencies to trigger the effect
-
-    // Set up orientation change event listener
-    useEffect(() => {
-        const resizeTrigger = "resize";
-        const handleOrientationChange = () => {
-            if (isTimerVisible) {
-                setShouldFocusTimer(isTimerRunning ? "center" : "end");
-                setIsHorizontal(window.matchMedia("(orientation: landscape)").matches);
-            }
-            if (isSelectMultiLengthVisible) {
-                setShouldFocusFormLabel("start");
-            }
-        }
-        if (isAndroid) {
-            window.addEventListener(resizeTrigger, handleOrientationChange);
-        } else {
-            window.removeEventListener(resizeTrigger, handleOrientationChange);
-        }
-        return () => {
-            window.removeEventListener(resizeTrigger, handleOrientationChange);
-        }
-    }, [isAndroid, isSelectMultiLengthVisible, isTimerRunning, isTimerVisible]);
-
-    // Set up escape press event listener
-    useEffect(() => {
-        const goBackTrigger = "keydown"
-        const handleGoBack = (event) => {
-            if (event.key === "Escape") {
-                hideEverything();
-                restoreDefaults();
-            }
-        };
-        if ((isTimerVisible || isFormVisible) && !isAndroid) {
-            document.addEventListener(goBackTrigger, handleGoBack);
-        } else {
-            document.removeEventListener(goBackTrigger, handleGoBack);
-        };
-        return () => {
-            document.removeEventListener(goBackTrigger, handleGoBack);
-        };
-    }, [isAndroid, isFormVisible, isTimerVisible]);
-
+    // Auto-scroll effect
     useEffect(() => {
         if (focusTimer !== "" && timer.current) {
             timer.current.scrollIntoView({
@@ -285,7 +289,7 @@ const RubikTimer = () => {
             })
             setShouldFocusFormLabel("");
         }
-    }, [isAndroid, focusFormLabel]);
+    }, [focusFormLabel]);
 
     const renderForm = () => {
         return (
