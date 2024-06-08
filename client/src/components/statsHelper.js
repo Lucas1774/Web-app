@@ -81,7 +81,7 @@ export const renderStats = ({ times, formatter = formatTime, onClickEffect = noA
                 let aux = [...times];
                 if (removeBestAndWorst) {
                     if (aux.length === length - 1) {
-                        displayTime = getAverage(aux.sort((a, b) => a - b).slice(1));
+                        displayTime = getAverage(aux.toSorted((a, b) => a - b).slice(1));
                         indexes = ({ start: 0, end: aux.length - 1 });
                     } else if (aux.length >= length) {
                         if ("last" === what) {
@@ -118,20 +118,18 @@ export const renderStats = ({ times, formatter = formatTime, onClickEffect = noA
                         }
                         let indexOfDisplayTime = aux.indexOf(displayTime);
                         indexes = ({ start: indexOfDisplayTime, end: indexOfDisplayTime });
-                    } else {
-                        if (what === "last") {
-                            displayTime = getAverage(aux.slice(-length));
-                            indexes = ({ start: aux.length - length, end: aux.length - 1 });
-                        } else if (what === "best" || what === "worst") {
-                            for (let i = 0; i <= times.length - length; i++) {
-                                let aux2 = [...aux];
-                                let newAverage = getAverage(aux2.slice(0, length));
-                                if (i === 0 || (what === "best" ? newAverage < displayTime : newAverage > displayTime)) {
-                                    displayTime = newAverage;
-                                    indexes = ({ start: i, end: (i + length) - 1 });
-                                }
-                                aux.shift();
+                    } else if (what === "last") {
+                        displayTime = getAverage(aux.slice(-length));
+                        indexes = ({ start: aux.length - length, end: aux.length - 1 });
+                    } else if (what === "best" || what === "worst") {
+                        for (let i = 0; i <= times.length - length; i++) {
+                            let aux2 = [...aux];
+                            let newAverage = getAverage(aux2.slice(0, length));
+                            if (i === 0 || (what === "best" ? newAverage < displayTime : newAverage > displayTime)) {
+                                displayTime = newAverage;
+                                indexes = ({ start: i, end: (i + length) - 1 });
                             }
+                            aux.shift();
                         }
                     }
                 }

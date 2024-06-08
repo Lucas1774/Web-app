@@ -10,11 +10,12 @@ const Sudoku = () => {
     const [initialSudoku, setInitialSudoku] = useState("");
     const [difficulty, setDifficulty] = useState(1);
     const [isGenerateOrImportVisible, setIsGenerateOrImportVisible] = useState(true);
-    const [isSuccessfullyUploadedVisible, setIsSuccessfullyUploadedVisible] = useState(false);
+    const [isUploadResponseVisible, setIsUploadResponseVisible] = useState(false);
     const [isPickDifficultyVisible, setIsPickDifficultyVisible] = useState(false);
     const [isSudokuVisible, setIsSudokuVisible] = useState(false);
     const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
 
+    const responseMessage = useRef("");
     const formRef = useRef(null);
 
     useEffect(() => {
@@ -86,7 +87,7 @@ const Sudoku = () => {
 
     const hideEverything = useCallback(() => {
         setIsGenerateOrImportVisible(false);
-        setIsSuccessfullyUploadedVisible(false);
+        setIsUploadResponseVisible(false);
         setIsPickDifficultyVisible(false);
         setIsSudokuVisible(false);
         setIsRestartButtonVisible(false);
@@ -97,17 +98,23 @@ const Sudoku = () => {
         setInitialSudoku("");
         setDifficulty(1);
         setIsGenerateOrImportVisible(true);
-        setIsSuccessfullyUploadedVisible(false);
+        setIsUploadResponseVisible(false);
         setIsPickDifficultyVisible(false);
         setIsSudokuVisible(false);
         setIsRestartButtonVisible(true);
+        responseMessage.current = "";
     }, []);
 
     const sendFile = (content) => {
         hideEverything();
         post('/upload/sudokus', content)
-            .then(() => {
-                setIsSuccessfullyUploadedVisible(true);
+            .then((response) => {
+                if (response.data === 1) {
+                    responseMessage.current = "Successfully uploaded!";
+                } else {
+                    responseMessage.current = response.data.toString();
+                }
+                setIsUploadResponseVisible(true);
                 setTimeout(() => {
                     restoreDefaults();
                 }, 1000);
@@ -127,10 +134,19 @@ const Sudoku = () => {
         hideEverything();
         get(`/${generateOrFetch}/sudoku${params}`)
             .then(response => {
-                setSudoku(response.data);
-                setInitialSudoku(response.data);
-                setIsSudokuVisible(true);
-                setIsRestartButtonVisible(true);
+                if (response.data.match(/^\d{81}$/)) {
+                    setSudoku(response.data);
+                    setInitialSudoku(response.data);
+                    setIsSudokuVisible(true);
+                    setIsRestartButtonVisible(true);
+                }
+                else {
+                    responseMessage.current = response.data;
+                    setIsUploadResponseVisible(true);
+                    setTimeout(() => {
+                        restoreDefaults();
+                    }, 1000);
+                }
             })
             .catch(error => {
                 alert("Error sending data: " + error.message);
@@ -150,10 +166,18 @@ const Sudoku = () => {
         }
         get(`/check/sudoku?initialSudoku=${initialSudoku}&currentSudoku=${sudoku}`)
             .then(response => {
-                let color = response.data === 1 ? 'green' : 'red';
-                let grid = document.querySelector('.sudoku-grid');
-                if (grid !== null) {
-                    showBorderThenRemove(grid, color);
+                if (response.data === 0 || response.data === 1) {
+                    let color = response.data === 1 ? 'green' : 'red';
+                    let grid = document.querySelector('.sudoku-grid');
+                    if (grid !== null) {
+                        showBorderThenRemove(grid, color);
+                    }
+                } else {
+                    responseMessage.current = response.data;
+                    setIsUploadResponseVisible(true);
+                    setTimeout(() => {
+                        restoreDefaults();
+                    }, 1000);
                 }
             })
             .catch(error => {
@@ -172,10 +196,19 @@ const Sudoku = () => {
         hideEverything();
         get(`/solve/sudoku?sudoku=${initialSudoku}`)
             .then(response => {
-                setSudoku(response.data);
-                setInitialSudoku(response.data);
-                setIsSudokuVisible(true);
-                setIsRestartButtonVisible(true);
+                if (response.data.match(/^\d{81}$/)) {
+                    setSudoku(response.data);
+                    setInitialSudoku(response.data);
+                    setIsSudokuVisible(true);
+                    setIsRestartButtonVisible(true);
+                }
+                else {
+                    responseMessage.current = response.data;
+                    setIsUploadResponseVisible(true);
+                    setTimeout(() => {
+                        restoreDefaults();
+                    }, 1000);
+                }
             })
             .catch(error => {
                 alert("Error sending data: " + error.message);
@@ -238,7 +271,7 @@ const Sudoku = () => {
                         <Button variant="success" onClick={handleGenerate}>Generate</Button>
                         <FileImporter onFileContentChange={sendFile} />
                     </>}
-                {isSuccessfullyUploadedVisible && <div>Successfully uploaded!</div>}
+                {isUploadResponseVisible && <div>{responseMessage.current}</div>}
                 {isPickDifficultyVisible &&
                     <Form>
                         <Form.Label>Pick difficulty (only for generated sudoku):</Form.Label>
