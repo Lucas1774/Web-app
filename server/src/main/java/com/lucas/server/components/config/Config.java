@@ -1,6 +1,5 @@
 package com.lucas.server.components.config;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +18,7 @@ public class Config {
     private String publicAddress;
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() throws IOException {
+    public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
@@ -32,7 +31,7 @@ public class Config {
 
     @Bean
     @DependsOn("corsConfigurationSource")
-    public CorsFilter corsFilter() throws IOException {
+    public CorsFilter corsFilter() {
         return new CorsFilter(corsConfigurationSource());
     }
 

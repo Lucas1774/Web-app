@@ -2,10 +2,11 @@ import { useState, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 import { renderStats, renderAllTimes } from './statsHelper';
 import icon from '../assets/images/copy.png'
+import { PropTypes } from 'prop-types';
 
-const Popup = (props) => {
-    const recentTimes = props.content.recentTimes;
-    const recentScrambles = props.content.recentScrambles;
+const Popup = ({ content, onPopupClose }) => {
+    const recentTimes = content.recentTimes;
+    const recentScrambles = content.recentScrambles;
 
     const [isEditTimeVisible, setIsEditTimeVisible] = useState(false);
     const [isStatisticSelected, setIsStatisticSelected] = useState(false);
@@ -69,7 +70,7 @@ const Popup = (props) => {
                         ? () => { selectedTime.current = null; setIsEditTimeVisible(false) }
                         : isStatisticSelected
                             ? () => { selectionIndexes.current = null; setIsStatisticSelected(false) }
-                            : props.onPopupClose}>X
+                            : onPopupClose}>X
                 </Button>
             </div>
             {
@@ -97,5 +98,10 @@ const Popup = (props) => {
         </div >
     );
 };
+
+Popup.propTypes = {
+    content: PropTypes.object,
+    onPopupClose: PropTypes.func
+}
 
 export default Popup;

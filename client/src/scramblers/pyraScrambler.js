@@ -13,8 +13,8 @@ const TIP_SCRAMBLE_MOVES = [
 
 export const Scramble = () => {
     let scramble = skewbScramble();
-    for (let i = 0; i < TIP_SCRAMBLE_MOVES.length; i++) {
-        scramble += TIP_SCRAMBLE_MOVES[i][Math.floor(Math.random() * 3)];
+    for (const element of TIP_SCRAMBLE_MOVES) {
+        scramble += element[Math.floor(Math.random() * 3)];
     }
     return scramble;
 };

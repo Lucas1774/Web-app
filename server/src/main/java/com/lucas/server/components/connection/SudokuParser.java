@@ -25,22 +25,22 @@ public class SudokuParser {
             String newRawData = "";
             for (int i = 0; i < lines.length; i++) {
                 if (0 == i % 10) {
-                    if (!newRawData.equals("")) {
-                        sudokus.add(Sudoku.withValues(newRawData.chars()
-                                .map(Character::getNumericValue)
-                                .toArray()));
+                    int[] values = Sudoku.deserialize(newRawData);
+                    if (Sudoku.NUMBER_OF_CELLS == values.length) {
+                        sudokus.add(Sudoku.withValues(values));
                     }
                     newRawData = "";
                 } else {
                     newRawData = newRawData.concat(lines[i]);
                 }
             }
-            sudokus.add(Sudoku.withValues(newRawData.chars()
-                    .map(Character::getNumericValue)
-                    .toArray()));
+            int[] values = Sudoku.deserialize(newRawData);
+            if (Sudoku.NUMBER_OF_CELLS == values.length) {
+                sudokus.add(Sudoku.withValues(values));
+            }
             return sudokus;
         } catch (Exception e) {
-            return null;
+            return new ArrayList<>();
         }
     }
 }

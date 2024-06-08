@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { PropTypes } from 'prop-types';
 
 const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
     const [focusedIndex, setFocusedIndex] = useState(null);
@@ -48,7 +49,7 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
                     <input
                         index={index}
                         inputMode="numeric"
-                        value={digit === '0' ? '' : digit}
+                        defaultValue={digit === '0' ? '' : digit}
                         onKeyDown={(event) => onSudokuChange(index, event)}
                         onFocus={() => setFocusedIndex(index)}
                         onBlur={() => setFocusedIndex(null)} />
@@ -57,5 +58,11 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
         </div><br></br></>
     );
 };
+
+SudokuGrid.propTypes = {
+    sudokuString: PropTypes.string,
+    onSudokuChange: PropTypes.func,
+    solved: PropTypes.func
+}
 
 export default SudokuGrid;

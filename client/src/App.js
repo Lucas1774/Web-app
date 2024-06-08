@@ -8,22 +8,20 @@ import "./assets/styles/App.css"
 
 const App = () => {
   return (
-    <>
-      <Row>
-        <Col>
-          <Calculator />
-        </Col>
-        <Col>
-          <Sudoku />
-        </Col>
-        <Col>
-          <SecretSanta />
-        </Col>
-        <Col>
-          <RubikTimer />
-        </Col>
-      </Row>
-    </>
+    <Row>
+      <Col>
+        <Calculator />
+      </Col>
+      <Col>
+        <Sudoku />
+      </Col>
+      <Col>
+        <SecretSanta />
+      </Col>
+      <Col>
+        <RubikTimer />
+      </Col>
+    </Row>
   );
 }
 
