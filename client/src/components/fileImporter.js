@@ -1,4 +1,5 @@
 import { Button } from 'react-bootstrap';
+import { PropTypes } from 'prop-types';
 
 const FileImporter = ({ onFileContentChange }) => {
     const handleFileChange = (event) => {
@@ -18,6 +19,10 @@ const FileImporter = ({ onFileContentChange }) => {
             <input id="file-input" type="file" accept=".txt" onChange={handleFileChange} />
         </>
     );
+};
+
+FileImporter.propTypes = {
+    onFileContentChange: PropTypes.func,
 };
 
 export default FileImporter;

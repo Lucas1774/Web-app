@@ -12,14 +12,15 @@ import { Scramble as megaScrambler } from "../scramblers/megaScrambler";
 import { Scramble as pyraminxScrambler } from "../scramblers/pyraScrambler";
 import { Scramble as skewbScrambler } from "../scramblers/skewbScrambler";
 import * as constants from "../constants";
+import { PropTypes } from 'prop-types';
 
-const Scramble = (props) => {
+const Scramble = ({ isNewScramble, onScrambleChange, puzzle, display, quantity }) => {
     const [scramble, setScramble] = useState("");
 
     useEffect(() => {
-        if (props.isNewScramble && props.display === "block") {
+        if (isNewScramble && display === "block") {
             let newScramble;
-            switch (props.puzzle) {
+            switch (puzzle) {
                 case constants.THREE:
                     newScramble = threeScrambler().trim();
                     break;
@@ -68,26 +69,35 @@ const Scramble = (props) => {
                 case constants.FIVE_BLD:
                     newScramble = "not implemented";
                     break;
-                case constants.MULTI:
+                case constants.MULTI: {
                     let multiScrambles = [];
-                    for (let i = 0; i < props.quantity; i++) {
+                    for (let i = 0; i < quantity; i++) {
                         multiScrambles.push(bldScrambler().trim());
                     }
                     newScramble = multiScrambles.map((scramble, index) => (
                         <p key={index}>{index + 1}{")"} {scramble}</p>
                     ));
                     break;
+                }
                 default:
                     newScramble = "";
             }
             setScramble(newScramble);
-            props.onScrambleChange(newScramble);
+            onScrambleChange(newScramble);
         }
-    }, [props]);
+    }, [display, isNewScramble, onScrambleChange, puzzle, quantity]);
 
     return (
-        <h2 data-testid="scramble" className={props.puzzle} style={{ display: props.display }}>{scramble}</h2>
+        <h2 data-testid="scramble" className={puzzle} style={{ display: display }}>{scramble}</h2>
     );
+};
+
+Scramble.propTypes = {
+    isNewScramble: PropTypes.bool,
+    onScrambleChange: PropTypes.func,
+    puzzle: PropTypes.string,
+    display: PropTypes.string,
+    quantity: PropTypes.number
 };
 
 export default Scramble;

@@ -13,15 +13,15 @@ const RubikTimer = () => {
     const [isTimerPrepared, setIsTimerPrepared] = useState(false);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [isFormVisible, setIsFormVisible] = useState(true);
-    const [scrambleDisplayMode, setScrambleDisplaymode] = useState("none");
+    const [scrambleDisplayMode, setScrambleDisplayMode] = useState("none");
     const [isTimerVisible, setIsTimerVisible] = useState(false);
     const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
     const [isSelectMultiLengthVisible, setIsSelectMultiLengthVisible] = useState(false);
     const [isMultiQuantityInvalidVisible, setIsMultiQuantityInvalidVisible] = useState(false);
     const [isShowMoreStatsVisible, setIsShowMoreStatsVisible] = useState(false);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const [focusTimer, setShouldFocusTimer] = useState("");
-    const [focusFormLabel, setShouldFocusFormLabel] = useState("");
+    const [focusTimer, setFocusTimer] = useState("");
+    const [focusFormLabel, setFocusFormLabel] = useState("");
     const [recentTimes, setRecentTimes] = useState([]);
     const [recentScrambles, setRecentScrambles] = useState([]);
     const [isHorizontal, setIsHorizontal] = useState(window.innerWidth > window.innerHeight && isAndroid);
@@ -47,7 +47,7 @@ const RubikTimer = () => {
             setIsTimerPrepared(true);
             setIsShowMoreStatsVisible(false);
             setIsRestartButtonVisible(false);
-            setScrambleDisplaymode("none");
+            setScrambleDisplayMode("none");
         }
     }, [isAndroid]);
 
@@ -58,7 +58,7 @@ const RubikTimer = () => {
                 if (isTouched.current) {
                     isNewScramble.current = false;
                     setIsTimerPrepared(false);
-                    setScrambleDisplaymode("block");
+                    setScrambleDisplayMode("block");
                     setIsShowMoreStatsVisible(true);
                     setIsRestartButtonVisible(true);
                 }
@@ -67,7 +67,7 @@ const RubikTimer = () => {
             isNewScramble.current = false;
             event.preventDefault();
             setIsTimerPrepared(false);
-            setScrambleDisplaymode("block");
+            setScrambleDisplayMode("block");
             setIsShowMoreStatsVisible(true);
             setIsRestartButtonVisible(true);
         }
@@ -94,7 +94,7 @@ const RubikTimer = () => {
             setIsTimerPrepared(false);
             setIsTimerRunning(true);
             if (isAndroid) {
-                setShouldFocusTimer("center");
+                setFocusTimer("center");
             }
         };
     }, [isAndroid]);
@@ -110,11 +110,11 @@ const RubikTimer = () => {
             setRecentScrambles((previousScrambles) => [...previousScrambles, scramble]);
             setIsTimerRunning(false);
             isNewScramble.current = true;
-            setScrambleDisplaymode("block");
+            setScrambleDisplayMode("block");
             if (isAndroid) {
                 isTouched.current = true;
                 setTimeout(() => {
-                    setShouldFocusTimer("end");
+                    setFocusTimer("end");
                 });
                 setTimeout(() => {
                     setIsShowMoreStatsVisible(true);
@@ -137,10 +137,10 @@ const RubikTimer = () => {
     const handleOrientationChange = useCallback(() => {
         setIsHorizontal(window.innerWidth > window.innerHeight);
         if (isTimerVisible) {
-            setShouldFocusTimer(isTimerRunning ? "center" : "end");
+            setFocusTimer(isTimerRunning ? "center" : "end");
         }
         if (isSelectMultiLengthVisible) {
-            setShouldFocusFormLabel("start");
+            setFocusFormLabel("start");
         }
     }, [isSelectMultiLengthVisible, isTimerRunning, isTimerVisible]);
 
@@ -277,7 +277,7 @@ const RubikTimer = () => {
             timer.current.scrollIntoView({
                 block: focusTimer
             })
-            setShouldFocusTimer("");
+            setFocusTimer("");
         }
     }, [focusTimer]);
 
@@ -287,33 +287,31 @@ const RubikTimer = () => {
             formLabel.current.scrollIntoView({
                 block: focusFormLabel
             })
-            setShouldFocusFormLabel("");
+            setFocusFormLabel("");
         }
     }, [focusFormLabel]);
 
     const renderForm = () => {
         return (
-            <>
-                <Form>
-                    <Button className="thirty-percent" id={constants.THREE} onClick={handleSubmit}>3x3</Button>
-                    <Button className="thirty-percent" id={constants.TWO} onClick={handleSubmit}>2x2</Button>
-                    <Button className="thirty-percent" id={constants.FOUR} onClick={handleSubmit}>4x4</Button>
-                    <Button className="thirty-percent" id={constants.FIVE} onClick={handleSubmit}>5X5</Button>
-                    <Button className="thirty-percent" id={constants.SEVEN} onClick={handleSubmit}>7X7</Button>
-                    <Button className="thirty-percent" id={constants.SIX} onClick={handleSubmit}>6X6</Button>
-                    <Button className="thirty-percent" id={constants.BLD} onClick={handleSubmit}>BLD</Button>
-                    <Button className="thirty-percent" id={constants.FMC} onClick={handleSubmit}>FMC</Button>
-                    <Button className="thirty-percent" id={constants.OH} onClick={handleSubmit}>OH</Button>
-                    <Button className="thirty-percent" id={constants.CLOCK} onClick={handleSubmit}>Clock</Button>
-                    <Button className="thirty-percent" id={constants.MEGAMINX} onClick={handleSubmit}>Mega</Button>
-                    <Button className="thirty-percent" id={constants.PYRAMINX} onClick={handleSubmit}>Pyra</Button>
-                    <Button className="thirty-percent" id={constants.SKEWB} onClick={handleSubmit}>Skewb</Button>
-                    <Button className="thirty-percent" id={constants.SQUARE} onClick={handleSubmit}>Sq-1</Button>
-                    <Button className="thirty-percent" id={constants.FOUR_BLD} onClick={handleSubmit}>4BLD</Button>
-                    <Button className="fifty-percent" id={constants.FIVE_BLD} onClick={handleSubmit}>5BLD</Button>
-                    <Button className="fifty-percent" id={constants.MULTI_UNPROCESSED} onClick={handleSubmit}>Multi</Button>
-                </Form>
-            </>
+            <Form>
+                <Button className="thirty-percent" id={constants.THREE} onClick={handleSubmit}>3x3</Button>
+                <Button className="thirty-percent" id={constants.TWO} onClick={handleSubmit}>2x2</Button>
+                <Button className="thirty-percent" id={constants.FOUR} onClick={handleSubmit}>4x4</Button>
+                <Button className="thirty-percent" id={constants.FIVE} onClick={handleSubmit}>5X5</Button>
+                <Button className="thirty-percent" id={constants.SEVEN} onClick={handleSubmit}>7X7</Button>
+                <Button className="thirty-percent" id={constants.SIX} onClick={handleSubmit}>6X6</Button>
+                <Button className="thirty-percent" id={constants.BLD} onClick={handleSubmit}>BLD</Button>
+                <Button className="thirty-percent" id={constants.FMC} onClick={handleSubmit}>FMC</Button>
+                <Button className="thirty-percent" id={constants.OH} onClick={handleSubmit}>OH</Button>
+                <Button className="thirty-percent" id={constants.CLOCK} onClick={handleSubmit}>Clock</Button>
+                <Button className="thirty-percent" id={constants.MEGAMINX} onClick={handleSubmit}>Mega</Button>
+                <Button className="thirty-percent" id={constants.PYRAMINX} onClick={handleSubmit}>Pyra</Button>
+                <Button className="thirty-percent" id={constants.SKEWB} onClick={handleSubmit}>Skewb</Button>
+                <Button className="thirty-percent" id={constants.SQUARE} onClick={handleSubmit}>Sq-1</Button>
+                <Button className="thirty-percent" id={constants.FOUR_BLD} onClick={handleSubmit}>4BLD</Button>
+                <Button className="fifty-percent" id={constants.FIVE_BLD} onClick={handleSubmit}>5BLD</Button>
+                <Button className="fifty-percent" id={constants.MULTI_UNPROCESSED} onClick={handleSubmit}>Multi</Button>
+            </Form>
         );
     };
 
@@ -340,27 +338,23 @@ const RubikTimer = () => {
 
     const renderSelectMultiLength = () => {
         return (
-            <>
-                <Form id={constants.MULTI} onSubmit={handleSubmit}>
-                    <Form.Label ref={formLabel}>Number of scrambles:</Form.Label>
-                    <Form.Control inputMode="numeric" onChange={(event) => multiQuantity.current = event.target.value} />
-                    <Button type="submit" variant="success">Generate</Button>
-                </Form>
-            </>
+            <Form id={constants.MULTI} onSubmit={handleSubmit}>
+                <Form.Label ref={formLabel}>Number of scrambles:</Form.Label>
+                <Form.Control inputMode="numeric" onChange={(event) => multiQuantity.current = event.target.value} />
+                <Button type="submit" variant="success">Generate</Button>
+            </Form>
         );
     };
 
     const renderScramble = () => {
         return (
-            <>
-                <Scramble
-                    isNewScramble={isNewScramble.current}
-                    onScrambleChange={(s) => { setScramble(s); isNewScramble.current = false }}
-                    puzzle={selectedPuzzle.current}
-                    display={scrambleDisplayMode}
-                    quantity={multiQuantity.current}>
-                </Scramble>
-            </>
+            <Scramble
+                isNewScramble={isNewScramble.current}
+                onScrambleChange={(s) => { setScramble(s); isNewScramble.current = false }}
+                puzzle={selectedPuzzle.current}
+                display={scrambleDisplayMode}
+                quantity={multiQuantity.current}>
+            </Scramble>
         );
     };
 
@@ -372,7 +366,7 @@ const RubikTimer = () => {
             setIsSelectMultiLengthVisible(true);
             setIsRestartButtonVisible(true);
             if (isAndroid) {
-                setShouldFocusFormLabel("start");
+                setFocusFormLabel("start");
             }
         } else {
             if (constants.MULTI === puzzle && (isNaN(multiQuantity.current) || multiQuantity.current < 1 || multiQuantity.current > 200)) {
@@ -383,18 +377,18 @@ const RubikTimer = () => {
                     setIsSelectMultiLengthVisible(true);
                     setIsRestartButtonVisible(true);
                     if (isAndroid) {
-                        setShouldFocusFormLabel("start");
+                        setFocusFormLabel("start");
                     }
                 }, 1000)
                 return;
             }
             hideEverything();
             selectedPuzzle.current = puzzle;
-            setScrambleDisplaymode("block");
+            setScrambleDisplayMode("block");
             setIsTimerVisible(true);
             if (isAndroid) {
                 setTimeout(() => {
-                    setShouldFocusTimer("end");
+                    setFocusTimer("end");
                 });
             }
             setIsShowMoreStatsVisible(true);
@@ -404,7 +398,7 @@ const RubikTimer = () => {
 
     const hideEverything = () => {
         setIsFormVisible(false);
-        setScrambleDisplaymode("none");
+        setScrambleDisplayMode("none");
         setIsTimerVisible(false);
         setIsRestartButtonVisible(false);
         setIsSelectMultiLengthVisible(false);
@@ -419,7 +413,7 @@ const RubikTimer = () => {
         setIsTimerPrepared(false);
         setIsTimerRunning(false);
         setIsFormVisible(true);
-        setScrambleDisplaymode("none");
+        setScrambleDisplayMode("none");
         setIsTimerVisible(false);
         setIsRestartButtonVisible(true);
         setIsSelectMultiLengthVisible(false);
@@ -442,6 +436,12 @@ const RubikTimer = () => {
                 {isFormVisible && renderForm()}
                 {isSelectMultiLengthVisible && renderSelectMultiLength()}
                 {isMultiQuantityInvalidVisible && <h2>Enter a number between 1 and 200</h2>}
+                {isTimerVisible && renderStats({
+                                times: recentTimes,
+                                averageDisplay: !isTimerVisible || isTimerRunning || isTimerPrepared ? "none" : "grid",
+                                params: [
+                                    { label: "session", align: "left" }]
+                            })}
                 <div className="timerContainer">
                     {isPopupVisible
                         ? <>
@@ -449,7 +449,7 @@ const RubikTimer = () => {
                                 content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }}
                                 onPopupClose={() => {
                                     setIsPopupVisible(false);
-                                    setScrambleDisplaymode("block");
+                                    setScrambleDisplayMode("block");
                                     setIsTimerVisible(true);
                                     setIsShowMoreStatsVisible(true);
                                 }}>
@@ -457,12 +457,6 @@ const RubikTimer = () => {
                             {renderScramble()}
                         </>
                         : <>
-                            {renderStats({
-                                times: recentTimes,
-                                averageDisplay: !isTimerVisible || isTimerRunning || isTimerPrepared ? "none" : "grid",
-                                params: [
-                                    { label: "session", align: "left" }]
-                            })}
                             {(isTimerVisible && renderAverages())}
                             {renderScramble()}
                             {(isTimerVisible && renderTimer())}
@@ -473,7 +467,7 @@ const RubikTimer = () => {
                 {isShowMoreStatsVisible && <Button onClick={() => {
                     setIsShowMoreStatsVisible(false);
                     setIsTimerVisible(false);
-                    setScrambleDisplaymode("none");
+                    setScrambleDisplayMode("none");
                     setIsPopupVisible(true);
                 }}>Session stats</Button>}
                 {isRestartButtonVisible && <Button className="restart" onClick={() => { hideEverything(); restoreDefaults(); }}

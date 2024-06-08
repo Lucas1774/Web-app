@@ -105,9 +105,7 @@ const SecretSanta = () => {
         const participant = participants[participantCounter - 1];
         const target = targets[(targets.indexOf(participant) + 1) % participants.length];
         return (
-            <>
-                <h2 style={{ textAlign: "center" }}>{target}!</h2>
-            </>
+            <h2 style={{ textAlign: "center" }}>{target}!</h2>
         );
     };
 
@@ -167,9 +165,7 @@ const SecretSanta = () => {
                         ? <div>Player already registered</div> : <div></div>)}
                 {isCalculatingVisible && <div>Calculating...</div>}
                 {isNoParticipantsVisible && (
-                    <>
-                        <div>Not enough participants</div>
-                    </>
+                    <div>Not enough participants</div>
                 )}
                 {isChosenVisible && renderChosen()}
                 {isTargetVisible && renderTarget()}
