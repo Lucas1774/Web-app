@@ -1,8 +1,8 @@
 package com.lucas.server.components.connection;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -11,27 +11,11 @@ import com.lucas.server.components.sudoku.Sudoku;
 
 @Repository
 public class DAO {
-
-    @Autowired
     private JdbcTemplate jdbcTemplate;
     private String mode = "ans";
 
-    public String get() {
-        if (mode == "ans") {
-            try {
-                Double ans = this.jdbcTemplate.queryForList("CALL get_ans", Double.class).get(0);
-                return ans.toString();
-            } catch (IndexOutOfBoundsException e) {
-                return "0";
-            }
-        } else {
-            try {
-                String text = this.jdbcTemplate.queryForList("CALL get_text", String.class).get(0);
-                return text;
-            } catch (IndexOutOfBoundsException e) {
-                return "";
-            }
-        }
+    public DAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public void insert(Double number) {
@@ -52,26 +36,40 @@ public class DAO {
         }
     }
 
-    public void insertSudoku(Sudoku sudoku) {
+    public String get() {
         try {
-            this.jdbcTemplate.update("CALL insert_sudoku(?)", sudoku.serialize());
+            return "ans".equals(mode)
+                    ? this.jdbcTemplate.queryForList("CALL get_ans", Double.class).get(0).toString()
+                    : this.jdbcTemplate.queryForList("CALL get_text", String.class).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            return "ans".equals(mode) ? "0" : "";
         } catch (DataAccessException e) {
             e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public void insertSudokus(List<Sudoku> sudokus) {
+        try {
+            this.jdbcTemplate.batchUpdate("CALL insert_sudoku(?)", sudokus.stream()
+                    .map(sudoku -> new Object[] { sudoku.serialize() })
+                    .collect(Collectors.toList()));
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
     public List<Sudoku> getSudokus() {
         try {
-            List<Sudoku> sudokus = this.jdbcTemplate.query("CALL get_sudokus", (resultSet, rowNum) -> {
-                return Sudoku.withValues(resultSet.getString("state").replace("\"", "")
-                        .chars()
-                        .map(Character::getNumericValue)
-                        .toArray());
-            });
-            return sudokus;
+            return this.jdbcTemplate.query("CALL get_sudokus",
+                    (resultSet, rowNum) -> Sudoku.withValues(resultSet.getString("state").replace("\"", "")
+                            .chars()
+                            .map(Character::getNumericValue)
+                            .toArray()));
         } catch (DataAccessException e) {
             e.printStackTrace();
-            return null;
+            throw e;
         }
     }
 }

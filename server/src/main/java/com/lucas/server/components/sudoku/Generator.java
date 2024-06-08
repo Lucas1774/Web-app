@@ -54,7 +54,7 @@ public class Generator {
     }
 
     private void setDifficulty(Sudoku sudoku, int difficulty) {
-        int cellsToSetToZero = (int) (Sudoku.NUMBER_OF_CELLS - (17 + ((9 - difficulty) * 6)));
+        int cellsToSetToZero = (Sudoku.NUMBER_OF_CELLS - (17 + ((9 - difficulty) * 6)));
         List<Integer> possibleCells = new ArrayList<>();
         for (int i = 0; i < Sudoku.NUMBER_OF_CELLS; i++) {
             possibleCells.add(i);

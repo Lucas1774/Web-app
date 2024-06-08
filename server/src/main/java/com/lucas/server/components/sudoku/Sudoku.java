@@ -1,11 +1,13 @@
 package com.lucas.server.components.sudoku;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Sudoku {
     public static final int SIZE = 9;
-    public static final int[] DIGITS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    protected static final int[] DIGITS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     public static final int NUMBER_OF_CELLS = 81;
     private int[] rawData = new int[NUMBER_OF_CELLS];
 
@@ -72,6 +74,16 @@ public class Sudoku {
         }
     }
 
+    public boolean solveWithTimeout() {
+        int maxRisk = 3;
+        long now = System.nanoTime();
+        while (!this.isSolved() && System.nanoTime() - now < 100000000) {
+            this.doSolve(maxRisk);
+            maxRisk++;
+        }
+        return this.isSolved() && this.isSolvable();
+    }
+
     /**
      * Using a copy of the sudoku is more efficient than editing and rolling back
      * even trivially-placed numbers
@@ -110,7 +122,7 @@ public class Sudoku {
                         sudoku.set(promisingCell, digit);
                         count++;
                         if (sudoku.doSolve(maxRisk--)) {
-                            this.rawData = sudoku.rawData;  
+                            this.rawData = sudoku.rawData;
                             return true;
                         }
                         if (count == i || maxRisk == 0) {
@@ -207,6 +219,23 @@ public class Sudoku {
         return true;
     }
 
+    public boolean isValid(int difficulty) {
+        long clueCount = Arrays.stream(this.get())
+                .filter(cell -> cell != 0)
+                .count();
+        boolean hasEightOrMoreUniqueDigits = IntStream.rangeClosed(1, 9)
+                .filter(digit -> Arrays.stream(this.get()).anyMatch(cell -> cell == digit))
+                .count() >= 8;
+        if (difficulty == -1) {
+            return clueCount >= 17
+                    && hasEightOrMoreUniqueDigits;
+        } else {
+            int expectedClues = 17 + ((9 - difficulty) * 6);
+            return clueCount == expectedClues
+                    && hasEightOrMoreUniqueDigits;
+        }
+    }
+
     public String serialize() {
         StringBuilder sb = new StringBuilder();
         sb.append("\"");
@@ -218,10 +247,14 @@ public class Sudoku {
     }
 
     public static int[] deserialize(String sudoku) {
-        int[] rawData = new int[NUMBER_OF_CELLS];
-        for (int i = 0; i < NUMBER_OF_CELLS; i++) {
-            rawData[i] = Character.getNumericValue(sudoku.charAt(i));
+        if (sudoku.matches("\\d{81}")) {
+            int[] rawData = new int[NUMBER_OF_CELLS];
+            for (int i = 0; i < NUMBER_OF_CELLS; i++) {
+                rawData[i] = Character.getNumericValue(sudoku.charAt(i));
+            }
+            return rawData;
+        } else {
+            return new int[0];
         }
-        return rawData;
     }
 }
