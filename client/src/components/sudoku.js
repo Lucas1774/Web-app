@@ -19,16 +19,6 @@ const Sudoku = () => {
     const formRef = useRef(null);
 
     useEffect(() => {
-        for (let i = 0; i < 81; i++) {
-            if (initialSudoku[i] === '0') {
-                let element = document.querySelector(`input[index="${i}"]`);
-                element.classList.remove(`blue-background`);
-                element.classList.add(`white-background`);
-            }
-        }
-    }, [initialSudoku]);
-
-    useEffect(() => {
         const arrowKeyListener = (event) => {
             if (event.key === 'ArrowUp' && difficulty < 9) {
                 event.preventDefault();
@@ -63,13 +53,12 @@ const Sudoku = () => {
         }
     };
 
-    const handleSudokuChange = (index, event) => {
+    const handleSudokuChange = (index, element, event) => {
         event.preventDefault();
         const newValue = (event.key === "Backspace" || event.key === "Delete") ? 0 : parseInt(event.key);
         if (newValue >= 0 && newValue <= 9 && initialSudoku[index] === '0') {
             let auxSudoku = [...sudoku];
             auxSudoku[index] = newValue.toString();
-            let element = document.querySelector(`input[index="${index}"]`);
             if (0 !== newValue) {
                 element.classList.remove(`white-background`);
                 element.classList.add(`blue-background`);

@@ -102,6 +102,6 @@ const Popup = ({ content, onPopupClose }) => {
 Popup.propTypes = {
     content: PropTypes.object,
     onPopupClose: PropTypes.func
-}
+};
 
 export default Popup;
