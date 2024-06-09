@@ -1,13 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { PropTypes } from 'prop-types';
+import React, { useState, useEffect, useRef, createRef } from "react";
+import PropTypes from 'prop-types';
 
 const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
     const [focusedIndex, setFocusedIndex] = useState(null);
     const [started, setStarted] = useState(false);
+    const inputRefs = useRef(Array.from({ length: 81 }, () => createRef()));
+
+    useEffect(() => {
+        for (let i = 0; i < 81; i++) {
+            if (sudokuString[i] === '0') {
+                const element = inputRefs.current[i].current;
+                if (element) {
+                    element.classList.remove('blue-background');
+                    element.classList.add('white-background');
+                }
+            }
+        }
+    }, [sudokuString]);
 
     useEffect(() => {
         if (!solved() && !started) {
-            const input = document.querySelector(`.sudoku-cell:nth-child(1) input`);
+            const input = inputRefs.current[0].current;
             input.focus();
             setStarted(true);
         }
@@ -27,7 +40,7 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
                 event.preventDefault();
                 const newIndex = focusedIndex + arrowKeyMap[key];
                 if (newIndex >= 0 && newIndex < 81) {
-                    const input = document.querySelector(`.sudoku-cell:nth-child(${newIndex + 1}) input`);
+                    const input = inputRefs.current[newIndex].current;
                     if (input) {
                         input.focus();
                         setFocusedIndex(newIndex);
@@ -35,7 +48,6 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
                 }
             }
         };
-
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
@@ -43,19 +55,23 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
     }, [focusedIndex]);
 
     return (
-        <><div className="sudoku-grid">
-            {sudokuString.split('').map((digit, index) => (
-                <span className="sudoku-cell" key={index}>
-                    <input
-                        index={index}
-                        inputMode="numeric"
-                        defaultValue={digit === '0' ? '' : digit}
-                        onKeyDown={(event) => onSudokuChange(index, event)}
-                        onFocus={() => setFocusedIndex(index)}
-                        onBlur={() => setFocusedIndex(null)} />
-                </span>
-            ))}
-        </div><br></br></>
+        <>
+            <div className="sudoku-grid">
+                {sudokuString.split('').map((digit, index) => (
+                    <span className="sudoku-cell" key={index}>
+                        <input
+                            ref={inputRefs.current[index]}
+                            inputMode="numeric"
+                            defaultValue={digit === '0' ? '' : digit}
+                            onKeyDown={(event) => onSudokuChange(index, inputRefs.current[index].current, event)}
+                            onFocus={() => setFocusedIndex(index)}
+                            onBlur={() => setFocusedIndex(null)}
+                        />
+                    </span>
+                ))}
+            </div>
+            <br></br>
+        </>
     );
 };
 
@@ -63,6 +79,6 @@ SudokuGrid.propTypes = {
     sudokuString: PropTypes.string,
     onSudokuChange: PropTypes.func,
     solved: PropTypes.func
-}
+};
 
 export default SudokuGrid;
