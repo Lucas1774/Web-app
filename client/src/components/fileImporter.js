@@ -1,7 +1,10 @@
 import { Button } from 'react-bootstrap';
 import { PropTypes } from 'prop-types';
+import React, { useRef } from 'react';
 
 const FileImporter = ({ onFileContentChange }) => {
+    const fileInput = useRef(null);
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         const fileReader = new FileReader();
@@ -15,8 +18,8 @@ const FileImporter = ({ onFileContentChange }) => {
 
     return (
         <>
-            <Button onClick={() => document.getElementById('file-input').click()}>Choose File</Button>
-            <input id="file-input" type="file" accept=".txt" onChange={handleFileChange} />
+            <Button onClick={() => fileInput.current.click()}>Choose File</Button>
+            <input ref={fileInput} id="file-input" type="file" accept=".txt" onChange={handleFileChange} />
         </>
     );
 };
