@@ -69,6 +69,9 @@ While the timer is very precise, the displayed time's refresh rate is declared a
 Select a puzzle for which to generate a random scramble.  
 Set the timer to zero by holding `spacebar` or touching your phone screen (buttons and form fields have priority over this functionality).  
 Start the timer by releasing, or cancel the start-up by dragging your finger or pressing any other key. The scramble won't be lost unless the key is `escape`.  
+Stats will be updated on the fly. Press `show more stats` to access detailed statistics and the times log.  
+Pressing a statistic will show the times involved. Pressing a time from the global list will allow you to delete it or mark it as `DNF` (Did Not Finish).  
+The app is provided with logic to improve UX like input control, screen lock prevention or orientation-based dynamic rendering.  
 As with the other apps, pressing `escape` is equivalent to clicking or pressing `reset`.
 
 
