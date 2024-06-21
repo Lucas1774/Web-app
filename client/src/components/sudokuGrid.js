@@ -62,7 +62,8 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
                         <input
                             ref={inputRefs.current[index]}
                             inputMode="numeric"
-                            defaultValue={digit === '0' ? '' : digit}
+                            value={digit === '0' ? '' : digit}
+                            readOnly={false}
                             onKeyDown={(event) => onSudokuChange(index, inputRefs.current[index].current, event)}
                             onFocus={() => setFocusedIndex(index)}
                             onBlur={() => setFocusedIndex(null)}
