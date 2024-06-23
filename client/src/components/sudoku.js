@@ -4,6 +4,7 @@ import { Form, Button } from 'react-bootstrap';
 import FileImporter from './fileImporter';
 import SudokuGrid from "./sudokuGrid";
 import "../assets/styles/sudoku.css";
+import Spinner from "./spinner.js";
 
 const Sudoku = () => {
     const [sudoku, setSudoku] = useState("");
@@ -14,6 +15,7 @@ const Sudoku = () => {
     const [isPickDifficultyVisible, setIsPickDifficultyVisible] = useState(false);
     const [isSudokuVisible, setIsSudokuVisible] = useState(false);
     const [isRestartButtonVisible, setIsRestartButtonVisible] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const responseMessage = useRef("");
     const formRef = useRef(null);
@@ -96,8 +98,10 @@ const Sudoku = () => {
 
     const sendFile = (content) => {
         hideEverything();
+        setIsLoading(true);
         post('/upload/sudokus', content)
             .then((response) => {
+                setIsLoading(false);
                 if (response.data === 1) {
                     responseMessage.current = "Successfully uploaded!";
                 } else {
@@ -109,6 +113,7 @@ const Sudoku = () => {
                 }, 1000);
             })
             .catch(error => {
+                setIsLoading(false);
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
             });
@@ -121,8 +126,10 @@ const Sudoku = () => {
     const generateOrFetch = useCallback((generateOrFetch) => {
         let params = generateOrFetch === "generate" ? `?difficulty=${difficulty}` : "";
         hideEverything();
+        setIsLoading(true);
         get(`/${generateOrFetch}/sudoku${params}`)
             .then(response => {
+                setIsLoading(false);
                 if (response.data.match(/^\d{81}$/)) {
                     setSudoku(response.data);
                     setInitialSudoku(response.data);
@@ -138,6 +145,7 @@ const Sudoku = () => {
                 }
             })
             .catch(error => {
+                setIsLoading(false);
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
             });
@@ -183,8 +191,10 @@ const Sudoku = () => {
 
     const solve = useCallback(() => {
         hideEverything();
+        setIsLoading(true);
         get(`/solve/sudoku?sudoku=${initialSudoku}`)
             .then(response => {
+                setIsLoading(false);
                 if (response.data.match(/^\d{81}$/)) {
                     setSudoku(response.data);
                     setInitialSudoku(response.data);
@@ -200,6 +210,7 @@ const Sudoku = () => {
                 }
             })
             .catch(error => {
+                setIsLoading(false);
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
             });
@@ -273,6 +284,7 @@ const Sudoku = () => {
                         <Button type="submit" variant="success" onClick={solve}>Solve</Button>
                         <Button onClick={check}>Check</Button></>
                 }
+                {isLoading && <Spinner />}
                 {isRestartButtonVisible && <Button className="restart" onClick={restoreDefaults}>Restart</Button>}
             </div>
         </>
