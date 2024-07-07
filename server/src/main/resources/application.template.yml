@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: web app
+  IPAddress:
+    publicAddress: <address>
+    publicAddressProduction: <address>
+  security:
+    user:
+      name: <username>
+      password: <password>
+  datasource:
+    url: jdbc:<server>://<address>:<port>/<database>;<options>
+    username: <username>
+    password: <password>
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+server:
+  port: 8080

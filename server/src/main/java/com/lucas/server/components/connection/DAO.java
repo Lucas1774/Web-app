@@ -3,6 +3,7 @@ package com.lucas.server.components.connection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -11,16 +12,19 @@ import com.lucas.server.components.sudoku.Sudoku;
 
 @Repository
 public class DAO {
+
+    private String schemaName;
     private JdbcTemplate jdbcTemplate;
     private String mode = "ans";
 
-    public DAO(JdbcTemplate jdbcTemplate) {
+    public DAO(JdbcTemplate jdbcTemplate, @Value("${spring.datasource.url}") String datasourceUrl) {
         this.jdbcTemplate = jdbcTemplate;
+        this.schemaName = this.extractSchemaFromUrl(datasourceUrl);
     }
 
     public void insert(Double number) {
         try {
-            this.jdbcTemplate.update("CALL update_ans(?)", number);
+            this.jdbcTemplate.update("{call " + sanitizePorcedureName("update_ans") + "(?)}", String.valueOf(number));
             this.mode = "ans";
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -29,7 +33,7 @@ public class DAO {
 
     public void insertString(String string) {
         try {
-            this.jdbcTemplate.update("CALL update_text(?)", string);
+            this.jdbcTemplate.update("{call " + sanitizePorcedureName("update_text") + "(?)" + "}", string);
             this.mode = "string";
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -39,8 +43,8 @@ public class DAO {
     public String get() {
         try {
             return "ans".equals(mode)
-                    ? this.jdbcTemplate.queryForList("CALL get_ans", Double.class).get(0).toString()
-                    : this.jdbcTemplate.queryForList("CALL get_text", String.class).get(0);
+                    ? this.jdbcTemplate.queryForObject("{call " + sanitizePorcedureName("get_ans") + "}", String.class)
+                    : this.jdbcTemplate.queryForObject("{call " + sanitizePorcedureName("get_text") + "}", String.class);
         } catch (IndexOutOfBoundsException e) {
             return "ans".equals(mode) ? "0" : "";
         } catch (DataAccessException e) {
@@ -51,9 +55,10 @@ public class DAO {
 
     public void insertSudokus(List<Sudoku> sudokus) {
         try {
-            this.jdbcTemplate.batchUpdate("CALL insert_sudoku(?)", sudokus.stream()
-                    .map(sudoku -> new Object[] { sudoku.serialize() })
-                    .collect(Collectors.toList()));
+            this.jdbcTemplate.batchUpdate("{call " + sanitizePorcedureName("insert_sudoku") + "(?) }",
+                    sudokus.stream()
+                            .map(sudoku -> new Object[] { sudoku.serialize() })
+                            .collect(Collectors.toList()));
         } catch (DataAccessException e) {
             e.printStackTrace();
             throw e;
@@ -62,7 +67,7 @@ public class DAO {
 
     public List<Sudoku> getSudokus() {
         try {
-            return this.jdbcTemplate.query("CALL get_sudokus",
+            return this.jdbcTemplate.query("{call " + sanitizePorcedureName("get_sudokus") + "}",
                     (resultSet, rowNum) -> Sudoku.withValues(resultSet.getString("state").replace("\"", "")
                             .chars()
                             .map(Character::getNumericValue)
@@ -70,6 +75,23 @@ public class DAO {
         } catch (DataAccessException e) {
             e.printStackTrace();
             throw e;
+        }
+    }
+
+    private String extractSchemaFromUrl(String url) {
+        String[] parts = url.split(";database=");
+        if (parts.length > 1) {
+            return parts[1].split(";")[0];
+        } else {
+            return null;
+        }
+    }
+
+    private String sanitizePorcedureName(String procName) {
+        if (this.schemaName == null) {
+            return procName;
+        } else {
+            return this.schemaName + "." + procName;
         }
     }
 }
