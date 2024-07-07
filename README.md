@@ -1,13 +1,14 @@
 This page represents the front end of a bigger web application.
 Its purpose is to emulate the deployment phase. 
 This instance of the application didn't work for the longest time, but now it does!  
-The calculator "ans" key and the Sudoku import/export functionalities don't work because I'm still missing a database,  
-but everything else is tied up.
+The real challenge was to have it done for free, but I learned a lot on the way and the project is huge right now.  
+I only regret not finding the "My SQL in-app" built-in server before I had the Microsoft SQL Server up and running.
 
-The server is hosted on Azure (and not on my personal computer anymore), and so will the database soon enough  
-(if it can be done for free, which is the actual challenge).  
+The server and database are hosted on Azure (and not on my personal computer anymore).
 It is quite slow and seems to go idle after a little (as if sitting in the US wasn't enough), but it works.
 It works from Android too (as a Cordova-wrapped Android app), but I'm not sure if I want to commit to the $25 fee to deploy at the app store.
+
+The calculator app can store text (on invalid expression), so read the last message and send a new one!
 
 I've added a stupid serverless Secret Santa raffler to play with my co-workers now that Christmas is coming.  
 The cool part is that it guarantees a single cycle (reminded me of that one Futurama episode), so it's more fun this way.
