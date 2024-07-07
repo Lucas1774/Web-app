@@ -28,13 +28,17 @@ public class Controller {
 
     @PostMapping("/ans")
     public String post(@RequestBody String number) {
-        String result = solver.solveExpression(number);
-        if (!"Invalid expression".equals(result)) {
-            dao.insert(Double.parseDouble(result));
+        if (number.length() > 200) {
+            return "Stop";
         } else {
-            dao.insertString(number);
+            String result = solver.solveExpression(number);
+            if (!"Invalid expression".equals(result)) {
+                dao.insert(Double.parseDouble(result));
+            } else {
+                dao.insertString(number);
+            }
+            return result;
         }
-        return result;
     }
 
     @GetMapping("/ans")
@@ -48,21 +52,25 @@ public class Controller {
 
     @PostMapping("/upload/sudokus")
     public String handleFileUpload(@RequestBody String file) {
-        try {
-            List<Sudoku> sudokus = sudokuParser.fromString(file.replace("\"", "")).stream()
-                    .filter(s -> {
-                        Sudoku copy = Sudoku.withValues(s.get());
-                        return s.isValid(-1) && copy.solveWithTimeout();
-                    })
-                    .collect(Collectors.toList());
-            if (!sudokus.isEmpty()) {
-                dao.insertSudokus(sudokus);
-                return "1";
-            } else {
-                return "No sudokus were inserted";
+        if (file.length() > 10000) {
+            return "Stop";
+        } else {
+            try {
+                List<Sudoku> sudokus = sudokuParser.fromString(file.replace("\"", "")).stream()
+                        .filter(s -> {
+                            Sudoku copy = Sudoku.withValues(s.get());
+                            return s.isValid(-1) && copy.solveWithTimeout();
+                        })
+                        .collect(Collectors.toList());
+                if (!sudokus.isEmpty()) {
+                    dao.insertSudokus(sudokus);
+                    return "1";
+                } else {
+                    return "No sudokus were inserted";
+                }
+            } catch (DataAccessException e) {
+                return e.getMessage();
             }
-        } catch (DataAccessException e) {
-            return e.getMessage();
         }
     }
 
