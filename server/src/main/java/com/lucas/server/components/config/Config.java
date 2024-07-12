@@ -1,6 +1,7 @@
 package com.lucas.server.components.config;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,16 +17,14 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 public class Config {
-    @Value("${spring.IPAddress.publicAddress}")
-    private String publicAddress;
-    @Value("${spring.IPAddress.publicAddressProduction}")
-    private String publicAddressProduction;
+    @Value("${spring.IPAddress}")
+    List<String> ipAddress;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(publicAddress, publicAddressProduction));
+        configuration.setAllowedOrigins(ipAddress);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

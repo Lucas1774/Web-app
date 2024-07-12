@@ -1,9 +1,7 @@
 spring:
   application:
     name: web app
-  IPAddress:
-    publicAddress: <address>
-    publicAddressProduction: <address>
+  IPAddress: <address1>, <address2>
   security:
     user:
       name: <username>
@@ -12,7 +10,7 @@ spring:
     url: jdbc:<server>://<address>:<port>/<database>;<options>
     username: <username>
     password: <password>
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    driver-class-name: <package>.<class>
 
 server:
-  port: 8080
+  port: 8443
