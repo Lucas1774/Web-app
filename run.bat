@@ -6,7 +6,8 @@ cd "%~dp0"
 netsh advfirewall set privateprofile state off
 git switch master
 
-set JAVA_HOME=C:\Program Files\Java\jdk-19
+set JAVA_HOME=C:\Program Files\Java\jdk-21
+powershell -Command "(Get-Content server\src\main\resources\application.yml -Raw) -replace 'active: .*', 'active: dev' | Set-Content server\src\main\resources\application.yml -NoNewline"
 start /B cmd.exe /c "cd server && mvnw spring-boot:run" >nul 2>&1
 start /B cmd.exe /c "cd client && npm start" >nul 2>&1
 
