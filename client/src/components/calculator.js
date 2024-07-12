@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../components/api";
-
-const BASE_URL = 'http://localhost:8080';
+import {post, get} from "../components/api";
 
 function Calculator() {
   const [input, setInput] = useState("");
@@ -16,7 +14,7 @@ function Calculator() {
   }, [input]);
 
   function handleKeyDown(event) {
-    const disallowedChars = /[^0-9.()+\-*/=\s]/;
+    const disallowedChars = /[^0-9.+\-*/=\s]/;
     if (input !== ""){setInput(event.target.value.replace(disallowedChars, ''));}
     else {setInput(event.target.value.replace(disallowedChars, '').replace(/^\d/, ""));}
     
@@ -33,7 +31,7 @@ function Calculator() {
     
   function handleSubmit(event) {
     event.preventDefault();
-    api.post(BASE_URL + '/api', input)
+    post('/ans', input)
     .then(response => {
       setInput(response.data);
     })
@@ -43,7 +41,7 @@ function Calculator() {
   }
 
   function handleReceive() {
-    api.get(BASE_URL + '/api')
+    get('/ans')
     .then(response => {
       setInput (input + response.data);
     })

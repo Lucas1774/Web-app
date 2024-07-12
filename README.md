@@ -1,7 +1,8 @@
 ## TODO:
 
 Fill this file.
-Clean input handler.
-Write math logic (repurpose?).
-Deal with parentheses.
-Polish interface.
+Deal with parenthesis.
+Clean display question.
+Implement logic (reconsider?).
+Debug.
+Polish.
