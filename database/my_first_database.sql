@@ -30,6 +30,7 @@ AUTO_INCREMENT = 493
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
+INSERT INTO `my_first_database`.`my_table` (`id`, `ans`, `text`) VALUES (1, NULL, NULL);
 
 -- -----------------------------------------------------
 -- Table `my_first_database`.`sudokus`
@@ -51,7 +52,7 @@ USE `my_first_database` ;
 
 DELIMITER $$
 USE `my_first_database`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ans`()
+CREATE PROCEDURE `get_ans`()
 BEGIN
 	SELECT ans FROM my_table WHERE id = 1;
 END$$
@@ -64,7 +65,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `my_first_database`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_sudokus`()
+CREATE PROCEDURE `get_sudokus`()
 BEGIN
 	SELECT state FROM sudokus;
 END$$
@@ -77,7 +78,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `my_first_database`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_text`()
+CREATE PROCEDURE `get_text`()
 BEGIN
 	SELECT text FROM my_table WHERE id = 1;
 END$$
@@ -90,7 +91,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `my_first_database`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_sudoku`(
+CREATE PROCEDURE `insert_sudoku`(
     IN p_state VARCHAR(255)
 )
 BEGIN
@@ -112,7 +113,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `my_first_database`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_ans`(IN p_number varchar(50))
+CREATE PROCEDURE `update_ans`(IN p_number varchar(50))
 BEGIN
 	UPDATE my_table SET ans = p_number WHERE id = 1;
 END$$
@@ -125,7 +126,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `my_first_database`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_text`(IN p_string varchar(255))
+CREATE PROCEDURE `update_text`(IN p_string varchar(255))
 BEGIN
 	UPDATE my_table SET text = p_string WHERE id = 1;
 END$$
