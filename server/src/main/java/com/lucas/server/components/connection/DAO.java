@@ -1,6 +1,7 @@
 package com.lucas.server.components.connection;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,6 @@ public class DAO {
 
     private String schemaName;
     private JdbcTemplate jdbcTemplate;
-    private String mode = "ans";
 
     public DAO(JdbcTemplate jdbcTemplate, @Value("${spring.datasource.url}") String datasourceUrl) {
         this.jdbcTemplate = jdbcTemplate;
@@ -25,7 +25,6 @@ public class DAO {
     public void insert(Double number) {
         try {
             this.jdbcTemplate.update("{call " + sanitizePorcedureName("update_ans") + "(?)}", String.valueOf(number));
-            this.mode = "ans";
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -34,7 +33,6 @@ public class DAO {
     public void insertString(String string) {
         try {
             this.jdbcTemplate.update("{call " + sanitizePorcedureName("update_text") + "(?)" + "}", string);
-            this.mode = "string";
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -42,11 +40,10 @@ public class DAO {
 
     public String get() {
         try {
-            return "ans".equals(mode)
-                    ? this.jdbcTemplate.queryForObject("{call " + sanitizePorcedureName("get_ans") + "}", String.class)
-                    : this.jdbcTemplate.queryForObject("{call " + sanitizePorcedureName("get_text") + "}", String.class);
-        } catch (IndexOutOfBoundsException e) {
-            return "ans".equals(mode) ? "0" : "";
+            return this.jdbcTemplate.queryForObject("{call " + sanitizePorcedureName("get_calculator_data") + "}",
+                    (rs, rowNum) -> rs.getBoolean("text_mode")
+                            ? Optional.ofNullable(rs.getString("text")).orElse("Nothing here yet")
+                            : Optional.ofNullable(rs.getString("ans")).orElse(String.valueOf(0)));
         } catch (DataAccessException e) {
             e.printStackTrace();
             throw e;

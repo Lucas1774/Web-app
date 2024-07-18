@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `my_first_database`.`my_table` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `ans` VARCHAR(50) NULL DEFAULT NULL,
   `text` VARCHAR(255) NULL DEFAULT NULL,
+  `text_mode` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 493
@@ -47,14 +48,14 @@ COLLATE = utf8mb4_0900_ai_ci;
 USE `my_first_database` ;
 
 -- -----------------------------------------------------
--- procedure get_ans
+-- procedure get
 -- -----------------------------------------------------
 
 DELIMITER $$
 USE `my_first_database`$$
-CREATE PROCEDURE `get_ans`()
+CREATE PROCEDURE `get_calculator_data`()
 BEGIN
-	SELECT ans FROM my_table WHERE id = 1;
+	SELECT * FROM my_table WHERE id = 1;
 END$$
 
 DELIMITER ;
@@ -68,19 +69,6 @@ USE `my_first_database`$$
 CREATE PROCEDURE `get_sudokus`()
 BEGIN
 	SELECT state FROM sudokus;
-END$$
-
-DELIMITER ;
-
--- -----------------------------------------------------
--- procedure get_text
--- -----------------------------------------------------
-
-DELIMITER $$
-USE `my_first_database`$$
-CREATE PROCEDURE `get_text`()
-BEGIN
-	SELECT text FROM my_table WHERE id = 1;
 END$$
 
 DELIMITER ;
@@ -115,7 +103,7 @@ DELIMITER $$
 USE `my_first_database`$$
 CREATE PROCEDURE `update_ans`(IN p_number varchar(50))
 BEGIN
-	UPDATE my_table SET ans = p_number WHERE id = 1;
+	UPDATE my_table SET ans = p_number, text_mode = 0 WHERE id = 1;
 END$$
 
 DELIMITER ;
@@ -128,7 +116,7 @@ DELIMITER $$
 USE `my_first_database`$$
 CREATE PROCEDURE `update_text`(IN p_string varchar(255))
 BEGIN
-	UPDATE my_table SET text = p_string WHERE id = 1;
+	UPDATE my_table SET text = p_string, text_mode = 1 WHERE id = 1;
 END$$
 
 DELIMITER ;
