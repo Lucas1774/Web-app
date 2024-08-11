@@ -1,5 +1,6 @@
 This page represents the front end of a bigger web application.  
-Its purpose is to emulate the development process from outside the code.  
+Its purpose is to emulate the deployment phase of the development process,  
+together with the other elements that constitute the  application (server and database).  
 This instance of the application didn't work for the longest time, but now it does!  
 The real challenge was to have it done for free, but I learned a lot along the way.  
 The project is huge right now (horizontally, that is). The apps, although nice, are only an excuse.
