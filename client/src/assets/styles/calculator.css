@@ -29,6 +29,10 @@
   background-color: salmon;
 }
 
+.app.calculator form {
+  position: relative;
+}
+
 @media (pointer: coarse) {
   .app.calculator {
     width: 360px;

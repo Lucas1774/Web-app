@@ -1,11 +1,17 @@
-const Spinner = () => (
+const Spinner = ({ color = "#fff", position = "relative" }) => (
     <svg xmlns="http://www.w3.org/2000/svg"
         width="40"
         height="40"
         viewBox="0 0 40 40"
-        stroke="#fff"
-        fill="#fff"
-        style={{ display: 'block', margin: 'auto' }}>
+        stroke={color}
+        fill={color}
+        style={{
+            display: 'block', margin: 'auto', position: position, ...(position === 'absolute' && {
+                alignSelf: 'center',
+                left: '50%',
+                transform: 'translateX(-50%)'
+            })
+        }}>
         <g fill="none" fillRule="evenodd">
             <g transform="translate(2 2)" strokeWidth="4">
                 <circle strokeOpacity=".5" cx="18" cy="18" r="18" />

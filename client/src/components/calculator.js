@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { post, get } from "../components/api";
 import { Form, Button, Row } from 'react-bootstrap';
 import "../assets/styles/calculator.css"
+import Spinner from "./spinner.js";
 
 const Calculator = () => {
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleKeyDown = (event) => {
     event.preventDefault();
@@ -26,21 +28,27 @@ const Calculator = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setIsLoading(true);
     post('/ans', input)
       .then(response => {
+        setIsLoading(false);
         setInput(response.data.toString());
       })
       .catch(error => {
+        setIsLoading(false);
         alert("Error sending data: " + error.message);
       });
   };
 
   const handleReceive = () => {
+    setIsLoading(true);
     get('/ans')
       .then(response => {
+        setIsLoading(false);
         setInput(input + response.data.toString());
       })
       .catch(error => {
+        setIsLoading(false);
         alert("Error receiving data: " + error.message);
       });
   };
@@ -50,6 +58,7 @@ const Calculator = () => {
       <div className="app calculator">
         <Form onSubmit={handleSubmit}>
           <Form.Control value={input} onChange={handleKeyDown} />
+          {isLoading && <Spinner color="#000" position="absolute" />}
         </Form>
         <Row className="first">
           <Button onClick={handleClick} value="(">{'('}</Button>
