@@ -105,7 +105,6 @@ const Sudoku = () => {
         setIsLoading(true);
         get(`/${generateOrFetch}/sudoku${params}`)
             .then(response => {
-                setIsLoading(false);
                 if (response.data.match(/^\d{81}$/)) {
                     setSudoku(response.data);
                     setInitialSudoku(response.data);
@@ -121,9 +120,11 @@ const Sudoku = () => {
                 }
             })
             .catch(error => {
-                setIsLoading(false);
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }, [difficulty, hideEverything, restoreDefaults]);
 
@@ -159,7 +160,6 @@ const Sudoku = () => {
         setIsLoading(true);
         get(`/solve/sudoku?sudoku=${initialSudoku}`)
             .then(response => {
-                setIsLoading(false);
                 if (response.data.match(/^\d{81}$/)) {
                     setSudoku(response.data);
                     setInitialSudoku(response.data);
@@ -175,9 +175,11 @@ const Sudoku = () => {
                 }
             })
             .catch(error => {
-                setIsLoading(false);
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }, [hideEverything, initialSudoku, restoreDefaults]);
 
@@ -262,7 +264,6 @@ const Sudoku = () => {
         setIsLoading(true);
         post('/upload/sudokus', content)
             .then((response) => {
-                setIsLoading(false);
                 if (response.data === 1) {
                     responseMessage.current = "Successfully uploaded!";
                 } else {
@@ -274,9 +275,12 @@ const Sudoku = () => {
                 }, 1000);
             })
             .catch(error => {
-                setIsLoading(false);
+                ;
                 alert("Error sending data: " + error.message);
                 restoreDefaults();
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 

@@ -31,12 +31,13 @@ const Calculator = () => {
     setIsLoading(true);
     post('/ans', input)
       .then(response => {
-        setIsLoading(false);
         setInput(response.data.toString());
       })
       .catch(error => {
-        setIsLoading(false);
         alert("Error sending data: " + error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -44,12 +45,13 @@ const Calculator = () => {
     setIsLoading(true);
     get('/ans')
       .then(response => {
-        setIsLoading(false);
         setInput(input + response.data.toString());
       })
       .catch(error => {
-        setIsLoading(false);
         alert("Error receiving data: " + error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
