@@ -26,8 +26,9 @@ const Calculator = () => {
     setInput("");
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = () => {
+    let tempInput = input;
+    setInput("");
     setIsLoading(true);
     post('/ans', input)
       .then(response => {
@@ -35,6 +36,7 @@ const Calculator = () => {
       })
       .catch(error => {
         alert("Error sending data: " + error.message);
+        setInput(tempInput);
       })
       .finally(() => {
         setIsLoading(false);
@@ -42,6 +44,8 @@ const Calculator = () => {
   };
 
   const handleReceive = () => {
+    let tempInput = input;
+    setInput("");
     setIsLoading(true);
     get('/ans')
       .then(response => {
@@ -49,6 +53,7 @@ const Calculator = () => {
       })
       .catch(error => {
         alert("Error receiving data: " + error.message);
+        setInput(tempInput);
       })
       .finally(() => {
         setIsLoading(false);
