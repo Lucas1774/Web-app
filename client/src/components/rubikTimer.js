@@ -261,7 +261,7 @@ const RubikTimer = () => {
 
     // Set up non-selectable document
     useEffect(() => {
-        if (isTimerVisible) {
+        if (isTimerVisible && isAndroid) {
             document.body.classList.add("nonSelectable");
         } else {
             document.body.classList.remove("nonSelectable");
@@ -269,7 +269,7 @@ const RubikTimer = () => {
         return () => {
             document.body.classList.remove("nonSelectable");
         };
-    }, [isTimerVisible]);
+    }, [isAndroid, isTimerVisible]);
 
     // Auto-scroll effect
     useEffect(() => {
