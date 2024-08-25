@@ -4,12 +4,12 @@ import { renderStats, renderAllTimes } from './statsHelper';
 import icon from '../assets/images/copy.png'
 import { PropTypes } from 'prop-types';
 
-const Popup = ({ content, onPopupClose }) => {
+const Popup = ({ content, justEditLast = false, onPopupClose }) => {
     const recentTimes = content.recentTimes;
     const recentScrambles = content.recentScrambles;
 
-    const [isEditTimeVisible, setIsEditTimeVisible] = useState(false);
-    const [isStatisticSelected, setIsStatisticSelected] = useState(false);
+    const [isEditTimeVisible, setIsEditTimeVisible] = useState(justEditLast);
+    const [isStatisticSelected, setIsStatisticSelected] = useState(justEditLast);
 
     const popupContent = useRef(null);
     const selectedTime = useRef(null);
@@ -43,19 +43,31 @@ const Popup = ({ content, onPopupClose }) => {
     }
 
     const setToEmpty = () => {
-        let timeToRemove = selectedTime.current;
-        recentTimes[timeToRemove] = Infinity;
-        selectedTime.current = null;
-        setIsEditTimeVisible(false);
+        if (justEditLast) {
+            recentTimes[recentTimes.length - 1] = Infinity;
+            onPopupClose();
+        } else {
+            let timeToEdit = selectedTime.current;
+            recentTimes[timeToEdit] = Infinity;
+            timeToEdit = null;
+            setIsEditTimeVisible(false);
+        }
     };
 
     const deleteTime = () => {
-        let timeToRemove = selectedTime.current;
-        recentTimes.splice(timeToRemove, 1);
-        recentScrambles.splice(timeToRemove, 1);
-        selectedTime.current = null;
-        setIsEditTimeVisible(false);
+        if (justEditLast) {
+            recentTimes.pop();
+            recentScrambles.pop();
+            onPopupClose();
+        } else {
+            let timeToRemove = selectedTime.current;
+            recentTimes.splice(timeToRemove, 1);
+            recentScrambles.splice(timeToRemove, 1);
+            selectedTime.current = null;
+            setIsEditTimeVisible(false);
+        }
     };
+
     return (
         <div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -66,9 +78,9 @@ const Popup = ({ content, onPopupClose }) => {
                     : <div></div>
                 }
                 <Button className="restart popup-icon"
-                    onClick={isEditTimeVisible
+                    onClick={isEditTimeVisible && !justEditLast
                         ? () => { selectedTime.current = null; setIsEditTimeVisible(false) }
-                        : isStatisticSelected
+                        : isStatisticSelected && !justEditLast
                             ? () => { selectionIndexes.current = null; setIsStatisticSelected(false) }
                             : onPopupClose}>X
                 </Button>
@@ -101,6 +113,7 @@ const Popup = ({ content, onPopupClose }) => {
 
 Popup.propTypes = {
     content: PropTypes.object,
+    justEditLast: PropTypes.bool,
     onPopupClose: PropTypes.func
 };
 

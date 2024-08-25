@@ -20,6 +20,7 @@ const RubikTimer = () => {
     const [isMultiQuantityInvalidVisible, setIsMultiQuantityInvalidVisible] = useState(false);
     const [isShowMoreStatsVisible, setIsShowMoreStatsVisible] = useState(false);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [isEditTimeVisible, setIsEditTimeVisible] = useState(false);
     const [focusTimer, setFocusTimer] = useState("");
     const [focusFormLabel, setFocusFormLabel] = useState("");
     const [recentTimes, setRecentTimes] = useState([]);
@@ -51,12 +52,11 @@ const RubikTimer = () => {
         }
     }, [isAndroid]);
 
-    const handleInterrupt = useCallback((event) => {
+    const handleInterruptByDrag = useCallback((event) => {
         if (isAndroid && isTouched.current) {
             event.preventDefault();
             setTimeout(() => {
                 if (isTouched.current) {
-                    isNewScramble.current = false;
                     setIsTimerPrepared(false);
                     setScrambleDisplayMode("block");
                     setIsShowMoreStatsVisible(true);
@@ -64,12 +64,21 @@ const RubikTimer = () => {
                 }
             }, 100)
         } else if (event.key !== " ") {
-            isNewScramble.current = false;
             event.preventDefault();
             setIsTimerPrepared(false);
             setScrambleDisplayMode("block");
             setIsShowMoreStatsVisible(true);
             setIsRestartButtonVisible(true);
+        }
+    }, [isAndroid]);
+
+    const handleInterruptByTapOrPressDel = useCallback((event) => {
+        if (isAndroid || event.key === "Delete") {
+            event.preventDefault();
+            setIsShowMoreStatsVisible(false);
+            setIsTimerVisible(false);
+            setScrambleDisplayMode("none");
+            setIsEditTimeVisible(true);
         }
     }, [isAndroid]);
 
@@ -171,16 +180,29 @@ const RubikTimer = () => {
 
     // Set up interrupt event listener
     useEffect(() => {
-        const abortTrigger = isAndroid ? "touchmove" : "keydown";
+        const abortByDraggingTrigger = isAndroid ? "touchmove" : "keydown";
         if (isTimerPrepared) {
-            document.addEventListener(abortTrigger, handleInterrupt, { passive: false });
+            document.addEventListener(abortByDraggingTrigger, handleInterruptByDrag, { passive: false });
         } else {
-            document.removeEventListener(abortTrigger, handleInterrupt);
+            document.removeEventListener(abortByDraggingTrigger, handleInterruptByDrag);
         }
         return () => {
-            document.removeEventListener(abortTrigger, handleInterrupt);
+            document.removeEventListener(abortByDraggingTrigger, handleInterruptByDrag);
         }
-    }, [handleInterrupt, isAndroid, isTimerPrepared]);
+    }, [handleInterruptByDrag, isAndroid, isTimerPrepared]);
+
+    // Set up interrupt by tapping event listener
+    useEffect(() => {
+        const abortByTappingTrigger = "touchstart";
+        if (isAndroid && isTimerPrepared && 0 !== recentTimes.length) {
+            document.addEventListener(abortByTappingTrigger, handleInterruptByTapOrPressDel, { passive: false });
+        } else {
+            document.removeEventListener(abortByTappingTrigger, handleInterruptByTapOrPressDel);
+        }
+        return () => {
+            document.removeEventListener(abortByTappingTrigger, handleInterruptByTapOrPressDel);
+        }
+    }, [handleInterruptByTapOrPressDel, isAndroid, isTimerPrepared, recentTimes.length]);
 
     // Set up drag after stop event listener
     useEffect(() => {
@@ -233,6 +255,19 @@ const RubikTimer = () => {
             document.removeEventListener(goBackTrigger, handleGoBack);
         };
     }, [handleGoBack, isAndroid, isPopupVisible, isTimerVisible]);
+
+    // Set up delete press event listener
+    useEffect(() => {
+        const editLastTimeTrigger = "keydown"
+        if (!isAndroid && isTimerVisible && !isTimerPrepared && !isTimerRunning && 0 !== recentTimes.length) {
+            document.addEventListener(editLastTimeTrigger, handleInterruptByTapOrPressDel);
+        } else {
+            document.removeEventListener(editLastTimeTrigger, handleInterruptByTapOrPressDel);
+        };
+        return () => {
+            document.removeEventListener(editLastTimeTrigger, handleInterruptByTapOrPressDel);
+        };
+    }, [handleInterruptByTapOrPressDel, isAndroid, isTimerPrepared, isTimerRunning, isTimerVisible, recentTimes.length]);
 
     // Set up orientation change event listener
     useEffect(() => {
@@ -437,11 +472,11 @@ const RubikTimer = () => {
                 {isSelectMultiLengthVisible && renderSelectMultiLength()}
                 {isMultiQuantityInvalidVisible && <h2>Enter a number between 1 and 200</h2>}
                 {isTimerVisible && renderStats({
-                                times: recentTimes,
-                                averageDisplay: !isTimerVisible || isTimerRunning || isTimerPrepared ? "none" : "grid",
-                                params: [
-                                    { label: "session", align: "left" }]
-                            })}
+                    times: recentTimes,
+                    averageDisplay: !isTimerVisible || isTimerRunning || isTimerPrepared ? "none" : "grid",
+                    params: [
+                        { label: "session", align: "left" }]
+                })}
                 <div className="timerContainer">
                     {isPopupVisible
                         ? <>
@@ -464,6 +499,15 @@ const RubikTimer = () => {
                     }
                 </div>
                 <Button style={{ display: isShowMoreStatsVisible && isAndroid && selectedPuzzle.current === constants.MULTI ? "block" : "none" }} variant="success" onTouchStart={handlePrepare}>Start</Button>
+                {isEditTimeVisible && <Popup content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }}
+                    justEditLast={true}
+                    onPopupClose={() => {
+                        setIsEditTimeVisible(false);
+                        setScrambleDisplayMode("block");
+                        setIsTimerVisible(true);
+                        setIsShowMoreStatsVisible(true);
+                    }}
+                />}
                 {isShowMoreStatsVisible && <Button onClick={() => {
                     setIsShowMoreStatsVisible(false);
                     setIsTimerVisible(false);
