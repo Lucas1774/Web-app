@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { post, get } from "../components/api";
-import { Form, Button, Row } from 'react-bootstrap';
-import "../assets/styles/calculator.css"
-import Spinner from "./spinner.js";
+import { post, get } from "../../api";
+import { Form, Button, Row } from "react-bootstrap";
+import "./Calculator.css"
+import Spinner from "../Spinner";
 
 const Calculator = () => {
   const [input, setInput] = useState("");
@@ -30,7 +30,7 @@ const Calculator = () => {
     let tempInput = input;
     setInput("");
     setIsLoading(true);
-    post('/ans', input)
+    post("/ans", input)
       .then(response => {
         setInput(response.data.toString());
       })
@@ -47,7 +47,7 @@ const Calculator = () => {
     let tempInput = input;
     setInput("");
     setIsLoading(true);
-    get('/ans')
+    get("/ans")
       .then(response => {
         setInput(input + response.data.toString());
       })
@@ -68,9 +68,9 @@ const Calculator = () => {
           {isLoading && <Spinner color="#000" position="absolute" />}
         </Form>
         <Row className="first">
-          <Button onClick={handleClick} value="(">{'('}</Button>
-          <Button onClick={handleClick} value=")">{')'}</Button>
-          <Button onClick={handleClick} value="sqrt">{'\u221A'}</Button>
+          <Button onClick={handleClick} value="(">{"("}</Button>
+          <Button onClick={handleClick} value=")">{")"}</Button>
+          <Button onClick={handleClick} value="sqrt">{"\u221A"}</Button>
           <Button onClick={handleClick} value="^">^</Button>
           <Button onClick={handleClick} value="log">log</Button>
         </Row>
@@ -78,7 +78,7 @@ const Calculator = () => {
           <Button onClick={handleClick} value="7">7</Button>
           <Button onClick={handleClick} value="8">8</Button>
           <Button onClick={handleClick} value="9">9</Button>
-          <Button onClick={handleDelete}>{'\u2190'}</Button>
+          <Button onClick={handleDelete}>{"\u2190"}</Button>
           <Button onClick={handleClear}>C</Button>
         </Row>
         <Row>

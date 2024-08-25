@@ -2,8 +2,8 @@ import {
     Scramble as threeScramble,
     SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH,
     SCRAMBLE_MOVES as THREE_SCRAMBLE_MOVES
-} from './threeScrambler.js';
-import { SCRAMBLE_LENGTH as TWO_SCRAMBLER_LENGTH } from './twoScrambler.js';
+} from "./threeScrambler";
+import { SCRAMBLE_LENGTH as TWO_SCRAMBLER_LENGTH } from "./twoScrambler";
 
 export const SCRAMBLE_LENGTH = 48;
 const MOVES_TO_REMOVE = 3

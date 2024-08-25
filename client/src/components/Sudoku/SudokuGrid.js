@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, createRef } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
     const [focusedIndex, setFocusedIndex] = useState(null);
@@ -8,11 +8,11 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
 
     useEffect(() => {
         for (let i = 0; i < 81; i++) {
-            if (sudokuString[i] === '0') {
+            if (sudokuString[i] === "0") {
                 const element = inputRefs.current[i].current;
                 if (element) {
-                    element.classList.remove('blue-background');
-                    element.classList.add('white-background');
+                    element.classList.remove("blue-background");
+                    element.classList.add("white-background");
                 }
             }
         }
@@ -48,21 +48,21 @@ const SudokuGrid = ({ sudokuString, onSudokuChange, solved }) => {
                 }
             }
         };
-        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener("keydown", handleKeyDown);
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener("keydown", handleKeyDown);
         };
     }, [focusedIndex]);
 
     return (
         <>
             <div className="sudoku-grid">
-                {sudokuString.split('').map((digit, index) => (
+                {sudokuString.split("").map((digit, index) => (
                     <span className="sudoku-cell" key={index}>
                         <input
                             ref={inputRefs.current[index]}
                             inputMode="numeric"
-                            value={digit === '0' ? '' : digit}
+                            value={digit === "0" ? "" : digit}
                             readOnly={false}
                             onKeyDown={(event) => onSudokuChange(index, inputRefs.current[index].current, event)}
                             onFocus={() => setFocusedIndex(index)}

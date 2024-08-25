@@ -1,8 +1,8 @@
-import { useState, useRef } from 'react';
-import { Button } from 'react-bootstrap';
-import { renderStats, renderAllTimes } from './statsHelper';
-import icon from '../assets/images/copy.png'
-import { PropTypes } from 'prop-types';
+import { useState, useRef } from "react";
+import { Button } from "react-bootstrap";
+import { renderStats, renderAllTimes } from "./statsHelper";
+import icon from "../../assets/images/copy.png"
+import { PropTypes } from "prop-types";
 
 const Popup = ({ content, justEditLast = false, onPopupClose }) => {
     const recentTimes = content.recentTimes;
@@ -23,7 +23,7 @@ const Popup = ({ content, justEditLast = false, onPopupClose }) => {
             selection.removeAllRanges();
             selection.addRange(range);
             try {
-                document.execCommand('copy');
+                document.execCommand("copy");
             } catch (err) {
                 console.log(err);
             }

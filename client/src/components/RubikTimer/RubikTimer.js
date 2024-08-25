@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Form, Button } from 'react-bootstrap';
-import * as constants from "../constants";
-import Scramble from "../scramblers/provider";
+import { Form, Button } from "react-bootstrap";
+import * as constants from "../../constants";
+import Scramble from "./scramblers/Scramble";
 import { renderStats, formatTime } from "./statsHelper";
-import Popup from "./popup";
-import "../assets/styles/rubikTimer.css";
+import Popup from "./Popup";
+import "./RubikTimer.css";
 const RubikTimer = () => {
     // IDENTIFIERS
     const isAndroid = /Android/i.test(navigator.userAgent);
@@ -82,17 +82,15 @@ const RubikTimer = () => {
         setIsTimerRunning(false);
         isNewScramble.current = true;
         setScrambleDisplayMode("block");
+        setIsShowMoreStatsVisible(true);
+        setIsRestartButtonVisible(true);
         if (isAndroid) {
             isDragAllowed.current = false // to not accidentally drag, restart or click a button
-            setTimeout(() => {
-                setFocusTimer("end");
-            });
+            setFocusTimer("end");
             setTimeout(() => {
                 isDragAllowed.current = true;
             }, 300);
         }
-        setIsShowMoreStatsVisible(true);
-        setIsRestartButtonVisible(true);
     }, [isAndroid, scramble]);
 
     const editLastTime = useCallback(() => {
@@ -101,6 +99,7 @@ const RubikTimer = () => {
         setIsTimerPrepared(false);
         setScrambleDisplayMode("none");
         setIsEditTimeVisible(true);
+        setIsRestartButtonVisible(true);
     }, []);
 
     const hideEverything = () => {
@@ -224,13 +223,11 @@ const RubikTimer = () => {
             selectedPuzzle.current = puzzle;
             setScrambleDisplayMode("block");
             setIsTimerVisible(true);
-            if (isAndroid) {
-                setTimeout(() => {
-                    setFocusTimer("end");
-                });
-            }
             setIsShowMoreStatsVisible(true);
             setIsRestartButtonVisible(true);
+            if (isAndroid) {
+                setFocusTimer("end");
+            }
         }
     };
 
@@ -264,7 +261,7 @@ const RubikTimer = () => {
         const requestWakeLock = async () => {
             if (navigator.wakeLock) {
                 try {
-                    wakeLock.current = await navigator.wakeLock.request('screen');
+                    wakeLock.current = await navigator.wakeLock.request("screen");
                 } catch (error) {
                     console.error(error);
                 }
@@ -371,13 +368,11 @@ const RubikTimer = () => {
 
     const renderScramble = () => {
         return (
-            <Scramble
-                isNewScramble={isNewScramble.current}
+            <Scramble isNewScramble={isNewScramble.current}
                 onScrambleChange={(s) => { setScramble(s); isNewScramble.current = false }}
                 puzzle={selectedPuzzle.current}
                 display={scrambleDisplayMode}
-                quantity={multiQuantity.current}>
-            </Scramble>
+                quantity={multiQuantity.current} />
         );
     };
 
@@ -397,34 +392,34 @@ const RubikTimer = () => {
                 <div className="timerContainer">
                     {isPopupVisible
                         ? <>
-                            <Popup
-                                content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }}
-                                onPopupClose={() => {
-                                    setIsPopupVisible(false);
-                                    setScrambleDisplayMode("block");
-                                    setIsTimerVisible(true);
-                                    setIsShowMoreStatsVisible(true);
-                                }}>
-                            </Popup>
+                            <Popup content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }} onPopupClose={() => {
+                                setIsPopupVisible(false);
+                                setElapsedTime(recentTimes.length > 0
+                                    ? recentTimes[recentTimes.length - 1]
+                                    : 0);
+                                setScrambleDisplayMode("block");
+                                setIsTimerVisible(true);
+                                setIsShowMoreStatsVisible(true);
+                            }} />
                             {renderScramble()}
                         </>
                         : <>
-                            {(isTimerVisible && renderAverages())}
+                            {isTimerVisible && renderAverages()}
                             {renderScramble()}
-                            {(isTimerVisible && renderTimer())}
+                            {isTimerVisible && renderTimer()}
                         </>
                     }
                 </div>
                 <Button style={{ display: isShowMoreStatsVisible && isAndroid && selectedPuzzle.current === constants.MULTI ? "block" : "none" }} variant="success" onTouchStart={prepare}>Start</Button>
-                {isEditTimeVisible && <Popup content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }}
-                    justEditLast={true}
-                    onPopupClose={() => {
-                        setIsEditTimeVisible(false);
-                        setScrambleDisplayMode("block");
-                        setIsTimerVisible(true);
-                        setIsShowMoreStatsVisible(true);
-                    }}
-                />}
+                {isEditTimeVisible && <Popup content={{ recentTimes: recentTimes, recentScrambles: recentScrambles }} justEditLast={true} onPopupClose={() => {
+                    setIsEditTimeVisible(false);
+                    setElapsedTime(recentTimes.length > 0
+                        ? recentTimes[recentTimes.length - 1]
+                        : 0);
+                    setScrambleDisplayMode("block");
+                    setIsTimerVisible(true);
+                    setIsShowMoreStatsVisible(true);
+                }} />}
                 {isShowMoreStatsVisible && <Button onClick={(event) => {
                     if (isAndroid && !isDragAllowed.current) {
                         event.preventDefault();

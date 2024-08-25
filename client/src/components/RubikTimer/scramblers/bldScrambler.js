@@ -1,7 +1,7 @@
 import {
     Scramble as threeScramble,
     SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH
-} from './threeScrambler.js';
+} from "./threeScrambler";
 
 const LAST_TWO = [
     ["Dw ", "Dw2 ", "Dw' "],

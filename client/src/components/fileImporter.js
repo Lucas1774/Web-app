@@ -1,6 +1,6 @@
-import { Button } from 'react-bootstrap';
-import { PropTypes } from 'prop-types';
-import React, { useRef } from 'react';
+import { Button } from "react-bootstrap";
+import { PropTypes } from "prop-types";
+import React, { useRef } from "react";
 
 const FileImporter = ({ onFileContentChange }) => {
     const fileInput = useRef(null);

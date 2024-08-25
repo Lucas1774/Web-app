@@ -1,15 +1,15 @@
-const Spinner = ({ color = "#fff", position = "relative" }) => (
-    <svg xmlns="http://www.w3.org/2000/svg"
+const Spinner = ({ color = "#fff", position = "relative" }) => {
+    return <svg xmlns="http://www.w3.org/2000/svg"
         width="40"
         height="40"
         viewBox="0 0 40 40"
         stroke={color}
         fill={color}
         style={{
-            display: 'block', margin: 'auto', position: position, ...(position === 'absolute' && {
-                alignSelf: 'center',
-                left: '50%',
-                transform: 'translateX(-50%)'
+            display: "block", margin: "auto", position: position, ...(position === "absolute" && {
+                alignSelf: "center",
+                left: "50%",
+                transform: "translateX(-50%)"
             })
         }}>
         <g fill="none" fillRule="evenodd">
@@ -28,6 +28,6 @@ const Spinner = ({ color = "#fff", position = "relative" }) => (
             </g>
         </g>
     </svg>
-);
+};
 
 export default Spinner;

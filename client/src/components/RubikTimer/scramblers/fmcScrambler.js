@@ -1,7 +1,7 @@
 import {
     SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH,
     SCRAMBLE_MOVES
-} from './threeScrambler.js';
+} from "./threeScrambler";
 
 export const FMC_PREFIX = "R' U' F "
 export const SCRAMBLE_LENGTH = THREE_SCRAMBLE_LENGTH + ((FMC_PREFIX.trim().split(" ").length) * 2);

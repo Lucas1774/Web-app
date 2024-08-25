@@ -1,4 +1,4 @@
-import { SCRAMBLE_MOVES as THREE_SCRAMBLE_MOVES } from './threeScrambler.js';
+import { SCRAMBLE_MOVES as THREE_SCRAMBLE_MOVES } from "./threeScrambler";
 
 export const SCRAMBLE_LENGTH = 60;
 export const FOUR_SCRAMBLE_MOVES = [

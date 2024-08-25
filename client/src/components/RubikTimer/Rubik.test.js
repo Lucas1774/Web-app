@@ -1,7 +1,7 @@
-import { render, screen, within } from '@testing-library/react';
-import Scramble from "./scramblers/provider";
-import { renderStats } from "./components/statsHelper";
-import * as constants from "./constants";
+import { render, screen, within } from "@testing-library/react";
+import Scramble from "./scramblers/Scramble";
+import { renderStats } from "./statsHelper";
+import * as constants from "../../constants";
 import { SCRAMBLE_LENGTH as THREE_SCRAMBLE_LENGTH } from "./scramblers/threeScrambler";
 import { SCRAMBLE_LENGTH as TWO_SCRAMBLE_LENGTH } from "./scramblers/twoScrambler";
 import { SCRAMBLE_LENGTH as FOUR_SCRAMBLE_LENGTH } from "./scramblers/fourScrambler";
@@ -35,7 +35,7 @@ test("3x3", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.THREE} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
 		expect(axisMoves.length).toBe(THREE_SCRAMBLE_LENGTH);
 		checkThreeScramble(axisMoves);
@@ -46,7 +46,7 @@ test("2x2", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.TWO} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
 		expect(axisMoves.length).toBe(TWO_SCRAMBLE_LENGTH);
 		expect(axisMoves).not.toContain("UU");
@@ -104,7 +104,7 @@ test("4x4", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.FOUR} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
 		expect(axisMoves.length).toBe(FOUR_SCRAMBLE_LENGTH);
 		const numberOfWideMoves = scramble.match(/w/g).length;
@@ -124,7 +124,7 @@ test("5x5", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.FIVE} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[2'\sw]/g, "");
 		expect(axisMoves.length).toBe(FIVE_SCRAMBLE_LENGTH);
 		const sanitizedMoves = scramble.replace(/[2']/g, "");
@@ -173,7 +173,7 @@ test("7X7", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.SEVEN} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[32'\sw]/g, "");
 		expect(axisMoves.length).toBe(SEVEN_SCRAMBLE_LENGTH);
 		const sanitizedMoves = scramble.replace(/[2']/g, "");
@@ -188,7 +188,7 @@ test("6x6", () => {
 	let simpleMoves = 0;
 	let doubleMoves = 0;
 	let tripleMoves = 0;
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[32'\sw]/g, "");
 		expect(axisMoves.length).toBe(SIX_SCRAMBLE_LENGTH);
 		const sanitizedMoves = scramble.replace(/[2']/g, "");
@@ -257,7 +257,7 @@ test("BLD", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.BLD} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const numberOfWideMoves = (scramble.match(/w/g) || []).length;
 		checkBldScramble(scramble, numberOfWideMoves);
 		if (numberOfWideMoves === 0) {
@@ -280,7 +280,7 @@ test("fmc", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.FMC} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		expect(scramble.startsWith(FMC_PREFIX)).toBe(true);
 		expect(scramble.endsWith(FMC_PREFIX.trim())).toBe(true);
 		const axisMoves = scramble.replace(/[2'\s]/g, "");
@@ -293,7 +293,7 @@ test("megaminx", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.MEGAMINX} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/[-+'\s]/g, "");
 		expect(axisMoves.length).toBe(MEGAMINX_SCRAMBLE_LENGTH);
 		expect(axisMoves.startsWith("R")).toBe(true);
@@ -319,7 +319,7 @@ test("pyraminx", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.PYRAMINX} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/['\s]/g, "");
 		const numberOfTipsScrambled = (scramble.match(/[ubrl]/g) || []).length;
 		expect(numberOfTipsScrambled).not.toBeGreaterThan(4);
@@ -353,7 +353,7 @@ test("skewb", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.SKEWB} display="block" quantity={0} ></Scramble>)
 	}
-	for (let scramble of screen.getAllByTestId('scramble').map(scramble => scramble.textContent)) {
+	for (let scramble of screen.getAllByTestId("scramble").map(scramble => scramble.textContent)) {
 		const axisMoves = scramble.replace(/['\s]/g, "");
 		expect(axisMoves.length).toBe(SKEWB_SCRAMBLE_LENGTH);
 		checkSkewbScramble(axisMoves);
@@ -368,7 +368,7 @@ test("multi", () => {
 	for (let i = 0; i < NUMBER_OF_RUNS / SCRAMBLES_PER_BATCH; i++) {
 		render(<Scramble isNewScramble={true} onScrambleChange={() => { }} puzzle={constants.MULTI} display="block" quantity={SCRAMBLES_PER_BATCH} ></Scramble>)
 	}
-	for (let scrambles of screen.getAllByTestId('scramble')) {
+	for (let scrambles of screen.getAllByTestId("scramble")) {
 		const specificScrambles = within(scrambles).getAllByText(text => text.includes(")")).map(scramble => scramble.textContent);
 		expect(specificScrambles.length).toBe(SCRAMBLES_PER_BATCH);
 		for (let i = 0; i < specificScrambles.length; i++) {
@@ -397,40 +397,40 @@ test("multi", () => {
 test("Render Averages", () => {
 	const times = [484, 148567, 4847, 61874, 848975, 1877894, 157, 87974, 4876, 15879, 189687, 489751, 48976, 487, 7888];
 	const { container } = render(renderStats({ times }));
-	expect(container.innerHTML).toContain('best 0:00:157');
-	expect(container.innerHTML).toContain('mo3 0:19:117');
-	expect(container.innerHTML).toContain('avg5 1:22:183');
-	expect(container.innerHTML).toContain('avg12 2:55:636');
-	expect(container.innerHTML).toContain('mo50 ' + constants.EMPTY_TIMER);
-	expect(container.innerHTML).toContain('mo100 ' + constants.EMPTY_TIMER);
+	expect(container.innerHTML).toContain("best 0:00:157");
+	expect(container.innerHTML).toContain("mo3 0:19:117");
+	expect(container.innerHTML).toContain("avg5 1:22:183");
+	expect(container.innerHTML).toContain("avg12 2:55:636");
+	expect(container.innerHTML).toContain("mo50 " + constants.EMPTY_TIMER);
+	expect(container.innerHTML).toContain("mo100 " + constants.EMPTY_TIMER);
 });
 
 test("Render incomplete averages", () => {
 	const times = [148567, 484, 4847, 61874];
 	const { container } = render(renderStats({ times }));
-	expect(container.innerHTML).toContain('mean 0:53:943');
-	expect(container.innerHTML).toContain('median 0:33:360');
-	expect(container.innerHTML).toContain('last 1:01:874');
-	expect(container.innerHTML).toContain('best 0:00:484');
-	expect(container.innerHTML).toContain('worst 2:28:567');
-	expect(container.innerHTML).toContain('current mo3 0:22:401');
-	expect(container.innerHTML).toContain('best mo3 0:22:401');
-	expect(container.innerHTML).toContain('worst mo3 0:51:299');
-	expect(container.innerHTML).toContain('current avg5 1:11:762');
-	expect(container.innerHTML).toContain('best avg5 1:11:762');
-	expect(container.innerHTML).toContain('worst avg5 1:11:762');
-	expect(container.innerHTML).toContain('avg12 ' + constants.EMPTY_TIMER);
-	expect(container.innerHTML).toContain('mo50 ' + constants.EMPTY_TIMER);
-	expect(container.innerHTML).toContain('mo100 ' + constants.EMPTY_TIMER);
+	expect(container.innerHTML).toContain("mean 0:53:943");
+	expect(container.innerHTML).toContain("median 0:33:360");
+	expect(container.innerHTML).toContain("last 1:01:874");
+	expect(container.innerHTML).toContain("best 0:00:484");
+	expect(container.innerHTML).toContain("worst 2:28:567");
+	expect(container.innerHTML).toContain("current mo3 0:22:401");
+	expect(container.innerHTML).toContain("best mo3 0:22:401");
+	expect(container.innerHTML).toContain("worst mo3 0:51:299");
+	expect(container.innerHTML).toContain("current avg5 1:11:762");
+	expect(container.innerHTML).toContain("best avg5 1:11:762");
+	expect(container.innerHTML).toContain("worst avg5 1:11:762");
+	expect(container.innerHTML).toContain("avg12 " + constants.EMPTY_TIMER);
+	expect(container.innerHTML).toContain("mo50 " + constants.EMPTY_TIMER);
+	expect(container.innerHTML).toContain("mo100 " + constants.EMPTY_TIMER);
 });
 
 test("Render worst best and current averages", () => {
 	const times = [6000, 7000, 5, 4, 6, 5000, 4000, 3000, 11, 5];
 	const { container } = render(renderStats({ times }));
-	expect(container.innerHTML).toContain('current mo3 0:01:005');
-	expect(container.innerHTML).toContain('best mo3 0:00:005');
-	expect(container.innerHTML).toContain('worst mo3 0:04:335');
-	expect(container.innerHTML).toContain('current avg5 0:02:337');
-	expect(container.innerHTML).toContain('best avg5 0:01:337');
-	expect(container.innerHTML).toContain('worst avg5 0:02:337');
+	expect(container.innerHTML).toContain("current mo3 0:01:005");
+	expect(container.innerHTML).toContain("best mo3 0:00:005");
+	expect(container.innerHTML).toContain("worst mo3 0:04:335");
+	expect(container.innerHTML).toContain("current avg5 0:02:337");
+	expect(container.innerHTML).toContain("best avg5 0:01:337");
+	expect(container.innerHTML).toContain("worst avg5 0:02:337");
 });

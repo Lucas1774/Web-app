@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { post, get } from "../components/api";
-import { Form, Button } from 'react-bootstrap';
-import FileImporter from './fileImporter';
-import SudokuGrid from "./sudokuGrid";
-import "../assets/styles/sudoku.css";
-import Spinner from "./spinner.js";
+import { post, get } from "../../api";
+import { Form, Button } from "react-bootstrap";
+import FileImporter from "../FileImporter";
+import SudokuGrid from "./SudokuGrid";
+import "./Sudoku.css";
+import Spinner from "../Spinner";
 
 const Sudoku = () => {
     const [sudoku, setSudoku] = useState("");
@@ -22,10 +22,10 @@ const Sudoku = () => {
     const wakeLock = useRef(null);
 
     const handleArrowKeyPress = useCallback((event) => {
-        if (event.key === 'ArrowUp' && difficulty < 9) {
+        if (event.key === "ArrowUp" && difficulty < 9) {
             event.preventDefault();
             setDifficulty(prevDifficulty => prevDifficulty + 1);
-        } else if (event.key === 'ArrowDown' && difficulty > 1) {
+        } else if (event.key === "ArrowDown" && difficulty > 1) {
             event.preventDefault();
             setDifficulty(prevDifficulty => prevDifficulty - 1);
         }
@@ -33,13 +33,13 @@ const Sudoku = () => {
 
     useEffect(() => {
         if (isPickDifficultyVisible) {
-            document.addEventListener('keydown', handleArrowKeyPress);
+            document.addEventListener("keydown", handleArrowKeyPress);
             formRef.current.focus();
         } else {
-            document.removeEventListener('keydown', handleArrowKeyPress);
+            document.removeEventListener("keydown", handleArrowKeyPress);
         }
         return () => {
-            document.removeEventListener('keydown', handleArrowKeyPress);
+            document.removeEventListener("keydown", handleArrowKeyPress);
         };
     }, [handleArrowKeyPress, isPickDifficultyVisible]);
 
@@ -64,7 +64,7 @@ const Sudoku = () => {
     }, []);
 
     const isSolved = useCallback(() => {
-        return sudoku.indexOf('0') === -1;
+        return sudoku.indexOf("0") === -1;
     }, [sudoku]);
 
     const check = useCallback(() => {
@@ -80,8 +80,8 @@ const Sudoku = () => {
         get(`/check/sudoku?initialSudoku=${initialSudoku}&currentSudoku=${sudoku}`)
             .then(response => {
                 if (response.data === 0 || response.data === 1) {
-                    let color = response.data === 1 ? 'green' : 'red';
-                    let grid = document.querySelector('.sudoku-grid');
+                    let color = response.data === 1 ? "green" : "red";
+                    let grid = document.querySelector(".sudoku-grid");
                     if (grid !== null) {
                         showBorderThenRemove(grid, color);
                     }
@@ -129,16 +129,16 @@ const Sudoku = () => {
     }, [difficulty, hideEverything, restoreDefaults]);
 
     useEffect(() => {
-        if (sudoku.length === 81 && isSolved() && initialSudoku.indexOf('0') !== -1) {
+        if (sudoku.length === 81 && isSolved() && initialSudoku.indexOf("0") !== -1) {
             check();
         }
     }, [check, initialSudoku, isSolved, sudoku.length]);
 
     const handleGenerateOrReset = useCallback((event) => {
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
             event.preventDefault();
             generateOrFetch(event.ctrlKey ? "fetch" : "generate");
-        } else if (event.key === 'Escape') {
+        } else if (event.key === "Escape") {
             event.preventDefault();
             restoreDefaults();
         }
@@ -146,12 +146,12 @@ const Sudoku = () => {
 
     useEffect(() => {
         if (isPickDifficultyVisible) {
-            document.addEventListener('keydown', handleGenerateOrReset);
+            document.addEventListener("keydown", handleGenerateOrReset);
         } else {
-            document.removeEventListener('keydown', handleGenerateOrReset);
+            document.removeEventListener("keydown", handleGenerateOrReset);
         }
         return () => {
-            document.removeEventListener('keydown', handleGenerateOrReset);
+            document.removeEventListener("keydown", handleGenerateOrReset);
         };
     }, [handleGenerateOrReset, isPickDifficultyVisible]);
 
@@ -184,14 +184,14 @@ const Sudoku = () => {
     }, [hideEverything, initialSudoku, restoreDefaults]);
 
     const handleCheckOrSolve = useCallback((event) => {
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
             event.preventDefault();
             if (event.ctrlKey) {
                 solve();
             } else {
                 check();
             }
-        } else if (event.key === 'Escape') {
+        } else if (event.key === "Escape") {
             restoreDefaults();
         }
     }, [check, restoreDefaults, solve]);
@@ -199,7 +199,7 @@ const Sudoku = () => {
     const requestWakeLock = useCallback(async () => {
         if (navigator.wakeLock) {
             try {
-                wakeLock.current = await navigator.wakeLock.request('screen');
+                wakeLock.current = await navigator.wakeLock.request("screen");
             } catch (error) {
                 console.error(error);
             }
@@ -208,12 +208,12 @@ const Sudoku = () => {
 
     useEffect(() => {
         if (isSudokuVisible) {
-            document.addEventListener('keydown', handleCheckOrSolve);
+            document.addEventListener("keydown", handleCheckOrSolve);
         } else {
-            document.removeEventListener('keydown', handleCheckOrSolve);
+            document.removeEventListener("keydown", handleCheckOrSolve);
         }
         return () => {
-            document.removeEventListener('keydown', handleCheckOrSolve);
+            document.removeEventListener("keydown", handleCheckOrSolve);
         };
     }, [handleCheckOrSolve, isSudokuVisible]);
 
@@ -245,7 +245,7 @@ const Sudoku = () => {
     const handleSudokuChange = (index, element, event) => {
         event.preventDefault();
         const newValue = (event.key === "Backspace" || event.key === "Delete") ? 0 : parseInt(event.key);
-        if (newValue >= 0 && newValue <= 9 && initialSudoku[index] === '0') {
+        if (newValue >= 0 && newValue <= 9 && initialSudoku[index] === "0") {
             let auxSudoku = [...sudoku];
             auxSudoku[index] = newValue.toString();
             if (0 !== newValue) {
@@ -255,14 +255,14 @@ const Sudoku = () => {
                 element.classList.remove(`blue-background`);
                 element.classList.add(`white-background`);
             }
-            setSudoku(auxSudoku.join(''));
+            setSudoku(auxSudoku.join(""));
         }
     };
 
     const sendFile = (content) => {
         hideEverything();
         setIsLoading(true);
-        post('/upload/sudokus', content)
+        post("/upload/sudokus", content)
             .then((response) => {
                 if (response.data === 1) {
                     responseMessage.current = "Successfully uploaded!";

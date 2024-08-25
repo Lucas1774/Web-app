@@ -1,4 +1,4 @@
-import { EMPTY_TIMER, DNF } from "../constants";
+import { EMPTY_TIMER, DNF } from "../../constants";
 
 export const formatTime = (time) => {
     if (time === Infinity) {
@@ -8,8 +8,8 @@ export const formatTime = (time) => {
         return EMPTY_TIMER;
     }
     const minutes = parseInt(Math.floor(time / 60000)).toString();
-    const seconds = parseInt(Math.floor((time % 60000) / 1000)).toString().padStart(2, '0');
-    const milliseconds = parseInt((time % 1000)).toString().padStart(3, '0');
+    const seconds = parseInt(Math.floor((time % 60000) / 1000)).toString().padStart(2, "0");
+    const milliseconds = parseInt((time % 1000)).toString().padStart(3, "0");
     return `${minutes}:${seconds}:${milliseconds}`;
 };
 

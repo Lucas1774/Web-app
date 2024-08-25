@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-function Readme() {
+const ParsedAbout = () => {
   const [readmeContent, setReadmeContent] = useState('');
 
   useEffect(() => {
-    const readmePath = require('../assets/about/README.md');
+    const readmePath = require('../../assets/about/README.md');
     fetch(readmePath)
       .then(response => response.text())
       .then(data => {
@@ -26,5 +26,5 @@ function Readme() {
   );
 }
 
-export default Readme;
+export default ParsedAbout;
 
